@@ -3,8 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterCombat : MonoBehaviour {
 
-    public event System.EventHandler OnAttackEnded;
-
     [Tooltip("When the attack key is pressed an impulse force is applied to push the character forward")]
     [SerializeField] private float forceAmount = 1000f;
     [Tooltip("Linear drag coefficient to apply to the character's rigidbody for the duration of the attack. " +
@@ -25,7 +23,7 @@ public class CharacterCombat : MonoBehaviour {
         defaultGravityScale = playerRb.gravityScale;
     }
 
-    public void EnterAttackState() {
+    public void EnterMeleeState() {
         if (zeroGravity)
             playerRb.gravityScale = 0f;
         playerRb.drag = linearDrag;
@@ -34,7 +32,7 @@ public class CharacterCombat : MonoBehaviour {
         playerRb.AddForce(velocity, ForceMode2D.Impulse);
     }
 
-    public void ExitAttackState() {
+    public void ExitMeleeState() {
         playerRb.drag = defaultLinearDrag;
         playerRb.gravityScale = defaultGravityScale;
     }

@@ -1,3 +1,4 @@
+#if LEDGE_GRAB_COMPONENT
 using CocaCopa;
 using UnityEngine;
 
@@ -106,7 +107,7 @@ public class CharacterLedgeGrab : MonoBehaviour {
             }
         }
         else {
-            if (characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.LedgeClimb, 1f)) {
+            if (characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.LedgeClimb, 0.99f)) {
                 isLedgeClimbing = false;
                 playerRb.isKinematic = false;
             }
@@ -118,3 +119,4 @@ public class CharacterLedgeGrab : MonoBehaviour {
         
     }
 }
+#endif

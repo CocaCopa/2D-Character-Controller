@@ -3,9 +3,9 @@ using UnityEngine;
 using CocaCopa;
 using System.Collections;
 
-[RequireComponent(typeof(CharacterMovement), typeof(CharacterEnvironmentalQuery))]
-public abstract class HumanoidController : MonoBehaviour
-{
+[RequireComponent(typeof(CharacterMovement), typeof(CharacterEnvironmentalQuery), typeof(Rigidbody2D))]
+public abstract class HumanoidController : MonoBehaviour {
+
     #region --- Events ---
     public class OnCharacterAttackStartEventArgs {
         public int attackCounter;
@@ -13,7 +13,6 @@ public abstract class HumanoidController : MonoBehaviour
     public event EventHandler OnCharacterJump;
     public event EventHandler OnCharacterDash;
     public event EventHandler<OnCharacterAttackStartEventArgs> OnCharacterAttackStart;
-    public event EventHandler OnCharacterAttackEnd;
     #endregion
 
     #region --- Serializable Variables ---
@@ -33,7 +32,7 @@ public abstract class HumanoidController : MonoBehaviour
     [Tooltip("Time in seconds where jump can be performed if the character leaves 'Grounded' state")]
     [SerializeField] private float coyoteTime = 0.1f;
     [Tooltip("Number of jumps the character is allowed to perform while on air")]
-    [SerializeField] private int numberOfAirJumps = 0;
+    [SerializeField] private int numberOfAirJumps = 1;
     [Tooltip("True: numberOfJumps - WallJump - LedgeJump || False: numberOfJumps + WallJump + LedgeJump")]
     [SerializeField] private bool alwaysDecreaseJumpCounter = false;
 #if COMBAT_COMPONENT
@@ -41,7 +40,7 @@ public abstract class HumanoidController : MonoBehaviour
     [Tooltip("Attack cooldown in seconds")]
     [SerializeField] private float attackCooldown = 0.65f;
     [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack")]
-    [SerializeField] private float attackBufferTime;
+    [SerializeField] private float meleeAttackBufferTime = 0.4f;
 #endif
 #if DASH_COMPONENT
     [Header("--- Dash ---")]
@@ -81,6 +80,7 @@ public abstract class HumanoidController : MonoBehaviour
     private bool floorSlideFlag = true;
     private bool wallAboveWhenSliding = false;
     private bool exitLedgeGrab = false;
+    private bool canWallSlide = false;
     private bool attackBufferButton = false;
     private bool attackCompleted = false;
     private bool attackOnCooldown = false;
@@ -201,7 +201,7 @@ public abstract class HumanoidController : MonoBehaviour
             return IsGrounded && !RunsIntoWall(wallSlideCheck: false);
         }
         bool WallSlide() {
-            bool canWallSlide = envQuery.WallInFront() && !IsGrounded && !IsLedgeClimbing && !IsLedgeGrabbing;
+            bool canWallSlide = this.canWallSlide && envQuery.WallInFront() && !IsGrounded && !IsLedgeClimbing && !IsLedgeGrabbing;
             bool wallSlideCondition = IsLedgeGrabbing == false && RunsIntoWall(wallSlideCheck: true);
             return characterSlide
                 ? canWallSlide && wallSlideCondition
@@ -219,17 +219,18 @@ public abstract class HumanoidController : MonoBehaviour
         void HandleAttackState() {
             if (!characterCombat) {
                 isAttacking = false;
+                return;
             }
 
             if (IsAttacking) {
                 bool completedAttack_1 = characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.Attack_1, 0.9f);
                 bool completedAttack_2 = characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.Attack_2, 0.9f);
                 if (attackCounter == 1 && completedAttack_1) {
-                    characterCombat.ExitAttackState();
+                    characterCombat.ExitMeleeState();
                     attackCompleted = true;
                 }
                 else if (attackCounter == 2 && completedAttack_2) {
-                    characterCombat.ExitAttackState();
+                    characterCombat.ExitMeleeState();
                     attackCompleted = true;
                 }
             }
@@ -368,11 +369,15 @@ public abstract class HumanoidController : MonoBehaviour
     #endregion
 
     #region --- Ledge Grab / Climb ---
+#if LEDGE_GRAB_COMPONENT
     /// <summary>
     /// Your character will enter ledge grab state, if a ledge is detected
     /// </summary>
     /// <param name="canLedgeGrab">Leave this parameter as is if you want your character to automatically grab the ledge when detected</param>
     protected void LedgeGrab(bool canLedgeGrab = true) {
+        if (!characterLedgeGrab) {
+            return;
+        }
         if (LedgeDetected && canLedgeGrab) {
             isLedgeGrabbing = true;
             characterLedgeGrab.EnterLedgeGrabState(ledgePosition);
@@ -392,6 +397,9 @@ public abstract class HumanoidController : MonoBehaviour
     /// If a ledge is detected, your character will climb it automatically
     /// </summary>
     protected void LedgeClimb(bool canLedgeClimb = true) {
+        if (!characterLedgeGrab) {
+            return;
+        }
         if (LedgeDetected && canLedgeClimb) {
             characterLedgeGrab.LedgeClimb(ledgePosition, out isLedgeClimbing, out Vector3 endPosition);
             if (IsLedgeClimbing == false) {
@@ -407,9 +415,11 @@ public abstract class HumanoidController : MonoBehaviour
         yield return new WaitForEndOfFrame();
         characterRb.position = position;
     }
+#endif
     #endregion
 
     #region --- Dash ---
+#if DASH_COMPONENT
     /// <summary>
     /// Your character will perform a Dash, if certain conditions are met
     /// </summary>
@@ -452,9 +462,11 @@ public abstract class HumanoidController : MonoBehaviour
         characterDash.Dash(activeCollider.bounds.size.y, IsGrounded);
         isDashing = true;
     }
+#endif
     #endregion
 
     #region --- FloorSlide ---
+#if SLIDE_COMPONENT
     /// <summary>
     /// You character will begin floor sliding, if possible
     /// </summary>
@@ -519,14 +531,16 @@ public abstract class HumanoidController : MonoBehaviour
 
         return !preventFloorSlide && floorSlideFlag;
     }
+#endif
     #endregion
 
     #region --- WallSlide ---
+#if SLIDE_COMPONENT
     protected void WallSlide(bool canWallSlide = true) {
         if (!characterSlide) {
             return;
         }
-        isWallSliding = IsWallSliding && canWallSlide;
+        this.canWallSlide = canWallSlide;
         if (IsWallSliding) {
 
             characterSlide.EnterWallSlide();
@@ -536,13 +550,14 @@ public abstract class HumanoidController : MonoBehaviour
             characterSlide.ExitWallSlide();
         }
     }
+#endif
     #endregion
 
     #region --- Attack ---
     /// <summary>
     /// An attack will be initiated, if certain conditions are met
     /// </summary>
-    protected void TryInitiateAttack() {
+    protected void TryMeleeAttack() {
 
         if (!characterCombat) {
             return;
@@ -554,14 +569,14 @@ public abstract class HumanoidController : MonoBehaviour
         bool allowAttack = IsGrounded && !IsFloorSliding && !IsLedgeClimbing;
 
         if (allowAttack && !IsAttacking) {
-            Attack();
+            MeleeAttack();
         }
         else if (allowAttack) {
-            attackBufferTimer = attackBufferTime;
+            attackBufferTimer = meleeAttackBufferTime;
         }
     }
 
-    private void Attack() {
+    private void MeleeAttack() {
         attackCooldownTimer = attackCooldown;
         attackCounter++;
         if (attackCounter == 3) {
@@ -571,21 +586,21 @@ public abstract class HumanoidController : MonoBehaviour
         OnCharacterAttackStart?.Invoke(this, new OnCharacterAttackStartEventArgs {
             attackCounter = attackCounter
         });
-        characterCombat.EnterAttackState();
+        characterCombat.EnterMeleeState();
         characterMovement.CurrentSpeed = 0;
         isAttacking = true;
         attackCompleted = false;
     }
 
     private void AttackInputBuffer() {
-        Utilities.TickTimer(ref attackBufferTimer, attackBufferTime, false);
+        Utilities.TickTimer(ref attackBufferTimer, meleeAttackBufferTime, false);
         if (attackBufferTimer == 0) {
             attackBufferButton = false;
         }
         if (attackBufferTimer > 0 && attackCompleted && attackBufferButton) {
             attackBufferTimer = 0;
             isAttacking = true;
-            Attack();
+            MeleeAttack();
         }
     }
     #endregion

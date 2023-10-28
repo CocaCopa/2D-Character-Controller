@@ -11,8 +11,6 @@ public enum HumanoidAnimator {
 };
 public class CharacterAnimator : MonoBehaviour {
 
-    /*[SerializeField] private string controllerScriptName = "PlayerController";
-    [SerializeField] private MonoBehaviour test;*/
     private Animator animator;
     private HumanoidController humanoidController;
 
@@ -41,12 +39,8 @@ public class CharacterAnimator : MonoBehaviour {
     #endregion
 
     private void Awake() {
-
         animator = GetComponent<Animator>();
         humanoidController = GetComponentInParent<HumanoidController>();
-
-        /*var type = System.Type.GetType(controllerScriptName);
-        test = (MonoBehaviour)GetComponentInParent(type);*/
     }
 
     private void Start() {

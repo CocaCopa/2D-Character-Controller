@@ -39,7 +39,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     [Tooltip("How far should the cast check for a platform in front of the character")]
     [SerializeField, Range(0, 2)] private float wallDetectionDistance = 0.06f;
     [Tooltip("How far should the cast check for a platform above the character")]
-    [SerializeField, Range(0, 2)] private float wallAboveDetectionDistance = 1.37f;
+    [SerializeField, Range(0, 2)] private float wallAboveDetectionDistance = 1f;
     [Tooltip("")]
     [SerializeField, Range(0, 2)] private float ledgeGrabRadius = 0.14f;
 

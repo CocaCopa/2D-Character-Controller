@@ -1,3 +1,4 @@
+#if DASH_COMPONENT
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CharacterEnvironmentalQuery))]
@@ -206,3 +207,4 @@ public class CharacterDash : MonoBehaviour {
         targetDashPosition = endPoint;
     }
 }
+#endif

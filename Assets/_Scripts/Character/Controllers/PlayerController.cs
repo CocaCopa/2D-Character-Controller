@@ -36,7 +36,7 @@ public class PlayerController : HumanoidController {
     }
 
     private void Input_OnAttackPerformed(object sender, System.EventArgs e) {
-        TryInitiateAttack();
+        TryMeleeAttack();
     }
 
     private void Input_OnDashPerformed(object sender, System.EventArgs e) {

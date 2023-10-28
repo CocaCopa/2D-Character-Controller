@@ -232,8 +232,8 @@ MonoBehaviour:
   headRayTransform: {fileID: 1635141476}
   chestRayTransform: {fileID: 1006945747}
   feetRayTransform: {fileID: 4253622530668412611}
-  excludePlayer: 1
-  playerMask: Player
+  excludeCharacter: 1
+  characterMask: Player
   useSpecifiedLayer: 0
   specifiedLayer:
     serializedVersion: 2
@@ -267,7 +267,7 @@ MonoBehaviour:
   numberOfAirJumps: 1
   alwaysDecreaseJumpCounter: 0
   attackCooldown: 0.65
-  attackBufferTime: 0.4
+  meleeAttackBufferTime: 0.4
   dashCooldown: 1.2
   minimumDashDistance: 1
   minimumFloorSlideSpeed: 6
@@ -461,11 +461,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteHolderTransform: {fileID: 1740074665312921847}
   colliderTransform: {fileID: 2353421477066155364}
-  offsetSprite: {x: -0.7801, y: -1.616}
-  offsetColliderHeight: -0.42
   ledgeClimbEndTransform: {fileID: 8940434408844919690}
   isAnimationStill: 0
   ledgeClimbSpeed: 2
+  offsetSprite: {x: -0.7801, y: -1.616}
+  offsetColliderHeight: -0.42
 --- !u!114 &2353421476736477843
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ public class HumanoidControllerEditor : Editor {
     SerializedProperty coyoteTime;
     SerializedProperty numberOfAirJumps;
     SerializedProperty alwaysDecreaseJumpCounter;
-    SerializedProperty attackCooldown;
+    SerializedProperty meleeAttackCooldown;
     SerializedProperty meleeAttackBufferTime;
     SerializedProperty dashCooldown;
     SerializedProperty minimumDashDistance;
@@ -26,7 +26,7 @@ public class HumanoidControllerEditor : Editor {
         coyoteTime = serializedObject.FindProperty(nameof(coyoteTime));
         numberOfAirJumps = serializedObject.FindProperty(nameof(numberOfAirJumps));
         alwaysDecreaseJumpCounter = serializedObject.FindProperty(nameof(alwaysDecreaseJumpCounter));
-        attackCooldown = serializedObject.FindProperty(nameof(attackCooldown));
+        meleeAttackCooldown = serializedObject.FindProperty(nameof(meleeAttackCooldown));
         meleeAttackBufferTime = serializedObject.FindProperty(nameof(meleeAttackBufferTime));
         dashCooldown = serializedObject.FindProperty(nameof(dashCooldown));
         minimumDashDistance = serializedObject.FindProperty(nameof(minimumDashDistance));
@@ -47,7 +47,7 @@ public class HumanoidControllerEditor : Editor {
         EditorGUILayout.PropertyField(numberOfAirJumps);
         EditorGUILayout.PropertyField(alwaysDecreaseJumpCounter);
 
-        EditorGUILayout.PropertyField(attackCooldown);
+        EditorGUILayout.PropertyField(meleeAttackCooldown);
         EditorGUILayout.PropertyField(meleeAttackBufferTime);
 
         if (controller.TryGetComponent<CharacterDash>(out _)) {

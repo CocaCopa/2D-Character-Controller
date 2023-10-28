@@ -38,7 +38,7 @@ public abstract class HumanoidController : MonoBehaviour {
 #if COMBAT_COMPONENT
     [Header("--- Attack ---")]
     [Tooltip("Attack cooldown in seconds")]
-    [SerializeField] private float attackCooldown = 0.65f;
+    [SerializeField] private float meleeAttackCooldown = 0.65f;
     [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack")]
     [SerializeField] private float meleeAttackBufferTime = 0.4f;
 #endif
@@ -237,7 +237,7 @@ public abstract class HumanoidController : MonoBehaviour {
             if (attackCompleted && !attackBufferButton) {
                 isAttacking = false;
                 attackCounter = 0;
-                attackOnCooldown = !Utilities.TickTimer(ref attackCooldownTimer, attackCooldown, false);
+                attackOnCooldown = !Utilities.TickTimer(ref attackCooldownTimer, meleeAttackCooldown, false);
             }
         }
     }
@@ -577,7 +577,7 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     private void MeleeAttack() {
-        attackCooldownTimer = attackCooldown;
+        attackCooldownTimer = meleeAttackCooldown;
         attackCounter++;
         if (attackCounter == 3) {
             attackOnCooldown = true;

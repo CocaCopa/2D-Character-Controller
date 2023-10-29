@@ -44,20 +44,13 @@ public class CharacterCombat : MonoBehaviour {
     }
 
     public void EnterAttackState(AttackSO attackData = null) {
-        /*if (zeroGravity)
-            playerRb.gravityScale = 0f;
-        playerRb.drag = linearDrag;
-        playerRb.velocity = Vector3.zero;
-        Vector3 velocity = new(forceAmount * transform.right.x, 0f);
-        playerRb.AddForce(velocity, ForceMode2D.Impulse);*/
-
         if (!attackData.UseGravity) {
             playerRb.gravityScale = 0f;
         }
         if (attackData.AttackPushesCharacter) {
             StartCoroutine(PushCharacter(attackData));
+            playerRb.drag = attackData.DragCoeficient;
         }
-        playerRb.drag = attackData.DragCoeficient;
         playerRb.velocity = Vector2.zero;
 
         if (attackData.IsChargeableAttack) {
@@ -67,7 +60,9 @@ public class CharacterCombat : MonoBehaviour {
 
     private System.Collections.IEnumerator PushCharacter(AttackSO attackData) {
         yield return new WaitForSeconds(attackData.DelayForceTime);
-        playerRb.AddForce(attackData.Force, attackData.ForceMode);
+        Vector3 direction = transform.right;
+        Vector3 force = attackData.Force * direction.x;
+        playerRb.AddForce(force, attackData.ForceMode);
     }
 
     public void ExitAttackState() {
@@ -75,17 +70,18 @@ public class CharacterCombat : MonoBehaviour {
         playerRb.gravityScale = defaultGravityScale;
     }
 
-    public void ChargeAttack() {
-        if (standWhileCharging) {
+    public void ChargeAttack(AttackSO attackData) {
+        if (!attackData.CanMoveWhileCharging) {
             playerRb.isKinematic = true;
             playerRb.velocity = Vector3.zero;
         }
 
-        rangedAttackCharged = CocaCopa.Utilities.TickTimer(ref chargeTimer, chargeTime, false);
+        rangedAttackCharged = CocaCopa.Utilities.TickTimer(ref chargeTimer, attackData.ChargeTime, false);
 
         if (rangedAttackCharged) {
-            if (CocaCopa.Utilities.TickTimer(ref holdAttackTimer, holdAttackTime, false)) {
+            if (CocaCopa.Utilities.TickTimer(ref holdAttackTimer, attackData.HoldChargeTime, false)) {
                 rangedAttackCharged = false;
+                ExitAttackState();
             }
         }
     }

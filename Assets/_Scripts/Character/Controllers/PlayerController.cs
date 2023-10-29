@@ -1,4 +1,9 @@
+using System.Collections.Generic;
+using UnityEngine;
+
 public class PlayerController : HumanoidController {
+
+    [SerializeField] private List<AttackSO> meleeCombo_1 = new();
 
     private PlayerInput input;
     private bool canLedgeClimb = false;
@@ -36,7 +41,7 @@ public class PlayerController : HumanoidController {
     }
 
     private void Input_OnAttackPerformed(object sender, System.EventArgs e) {
-        TryMeleeAttack();
+        TryComboAttack(meleeCombo_1);
     }
 
     private void Input_OnDashPerformed(object sender, System.EventArgs e) {

@@ -266,13 +266,13 @@ MonoBehaviour:
   coyoteTime: 0.1
   numberOfAirJumps: 1
   alwaysDecreaseJumpCounter: 0
-  attackCooldown: 0.65
-  meleeAttackBufferTime: 0.4
   dashCooldown: 1.2
   minimumDashDistance: 1
   minimumFloorSlideSpeed: 6
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
+  meleeAttackCooldown: 0.65
+  meleeAttackBufferTime: 0.4
 --- !u!114 &2353421476736477845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,7 +463,7 @@ MonoBehaviour:
   colliderTransform: {fileID: 2353421477066155364}
   ledgeClimbEndTransform: {fileID: 8940434408844919690}
   isAnimationStill: 0
-  ledgeClimbSpeed: 2
+  ledgeClimbSpeed: 0
   offsetSprite: {x: -0.7801, y: -1.616}
   offsetColliderHeight: -0.42
 --- !u!114 &2353421476736477843
@@ -500,6 +500,10 @@ MonoBehaviour:
   linearDrag: 10
   zeroGravity: 1
   adjustPosition: {x: 0, y: 0}
+  projectileSpawnTransform: {fileID: 0}
+  standWhileCharging: 0
+  chargeTime: 0
+  holdAttackTime: 4
 --- !u!1 &2353421476987182329
 GameObject:
   m_ObjectHideFlags: 0

@@ -153,17 +153,6 @@
                 },
                 {
                     "name": "",
-                    "id": "fa723f01-35ef-4c2b-a6f7-a73532d240b4",
-                    "path": "<Keyboard>/z",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Slide",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5324f5b0-d2f0-41d1-96bd-0c40a7d769c0",
                     "path": "<Keyboard>/s",
                     "interactions": "",

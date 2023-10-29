@@ -53,7 +53,7 @@ public class AttackSO : ScriptableObject {
     public bool IsChargeableAttack => isChargeableAttack;
     public float ChargeTime => chargeTime;
     public float HoldChargeTime => holdChargeTime;
-    public bool MoveWhileCharging => canMoveWhileCharging;
+    public bool CanMoveWhileCharging => canMoveWhileCharging;
     public float DamageAmount => damageAmount;
     public float Cooldown => cooldown;
     public bool ThrowsProjectile => throwsProjectile;

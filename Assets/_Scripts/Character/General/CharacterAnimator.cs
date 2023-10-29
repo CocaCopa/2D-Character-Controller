@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum HumanoidAnimator {
+public enum HumanoidStateName {
     None,
     Idle,
     LedgeGrabEnter,
@@ -49,7 +49,8 @@ public class CharacterAnimator : MonoBehaviour {
     }
 
     private void Controller_OnCharacterAttackStart(object sender, HumanoidController.OnCharacterAttackStartEventArgs e) {
-        animator.SetTrigger(ATTACK_ + e.attackCounter);
+        //animator.SetTrigger(ATTACK_ + e.attackCounter);
+        animator.Play(e.attackClip.name);
     }
 
     private void Controller_OnCharacterJump(object sender, System.EventArgs e) {
@@ -84,7 +85,7 @@ public class CharacterAnimator : MonoBehaviour {
     private void LedgeGrabLogic() {
 
         bool isLedgeGrabbing = humanoidController.IsLedgeGrabbing;
-        bool ledgeEnterPlaying = CheckAnimClipPlaying(HumanoidAnimator.LedgeGrabEnter);
+        bool ledgeEnterPlaying = IsStateActive(HumanoidStateName.LedgeGrabEnter);
 
         if (isLedgeGrabbing == false) {
 
@@ -106,55 +107,66 @@ public class CharacterAnimator : MonoBehaviour {
     /// <summary>
     /// Checks if the animation clip with the given name has played less or more than the given percentage
     /// </summary>
-    /// <param name="clipName">Name of the animation to check</param>
+    /// <param name="stateName">Name of the animation to check</param>
     /// <param name="percentage">Percentage to compare</param>
     /// <param name="lessThan">True to check for 'less than', False to check for 'more than'</param>
     /// <returns>True, once the animation clip has played more than the given percentage</returns>
-    public bool CheckAnimClipPercentage(HumanoidAnimator clipName,  float percentage, bool lessThan = false) {
+    public bool CheckStatePlayPercentage(HumanoidStateName stateName, float percentage, bool lessThan = false) {
 
-        string animationName = ConvertToAnimationClipName(clipName);
-        bool ledgeEnterPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(animationName);
-        bool ledgeMoreThanPercentage = lessThan
+        string stateNameString = ConvertToAnimationClipName(stateName);
+        bool stateIsPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(stateNameString);
+        bool stateMoreThanPercentage = lessThan
             ? animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= percentage
             : animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= percentage;
-        bool reachedPercentage = ledgeEnterPlaying && ledgeMoreThanPercentage;
+        bool reachedPercentage = stateIsPlaying && stateMoreThanPercentage;
 
         return reachedPercentage;
+    }
+
+    public bool IsClipPlaying(AnimationClip clip) {
+        AnimatorClipInfo[] currentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
+        foreach (var clipInfo in currentClipInfo) {
+            if (clipInfo.clip == clip) {
+                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.98f)
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>
     /// Checks if the animation clip with the given name is playing
     /// </summary>
-    /// <param name="clipName"></param>
+    /// <param name="stateName"></param>
     /// <returns></returns>
-    public bool CheckAnimClipPlaying(HumanoidAnimator clipName) {
+    public bool IsStateActive(HumanoidStateName stateName) {
 
-        string clipNameString = ConvertToAnimationClipName(clipName);
-        bool clipIsPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(clipNameString);
+        string stateNameString = ConvertToAnimationClipName(stateName);
+        bool stateIsPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(stateNameString);
 
-        return clipIsPlaying;
+        return stateIsPlaying;
     }
 
-    private static string ConvertToAnimationClipName(HumanoidAnimator clipName) {
+    private static string ConvertToAnimationClipName(HumanoidStateName stateName) {
 
         string name = "";
-        switch (clipName) {
-            case HumanoidAnimator.Idle:
+        switch (stateName) {
+            case HumanoidStateName.Idle:
             name = IDLE;
             break;
-            case HumanoidAnimator.LedgeGrabEnter:
+            case HumanoidStateName.LedgeGrabEnter:
             name = LEDGE_GRAB_ENTER_NAME;
             break;
-            case HumanoidAnimator.LedgeGrabLoop:
+            case HumanoidStateName.LedgeGrabLoop:
             name = LEDGE_GRAB_LOOP_NAME;
             break;
-            case HumanoidAnimator.LedgeClimb:
+            case HumanoidStateName.LedgeClimb:
             name = LEDGE_CLIMB_NAME;
             break;
-            case HumanoidAnimator.Attack_1:
+            case HumanoidStateName.Attack_1:
             name = MELEE_NAME_1;
             break;
-            case HumanoidAnimator.Attack_2:
+            case HumanoidStateName.Attack_2:
             name = MELEE_NAME_2;
             break;
         }

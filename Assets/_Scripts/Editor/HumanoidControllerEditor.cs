@@ -1,16 +1,19 @@
+using System;
+using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
-[CustomEditor(typeof(PlayerController))]
+[CustomEditor(typeof(HumanoidController), true)]
 public class HumanoidControllerEditor : Editor {
 
     #region --- Serialized Properties ---
+    SerializedProperty timeScale;
     SerializedProperty horizontalCollider;
     SerializedProperty verticalCollider;
     SerializedProperty smoothMovement;
     SerializedProperty coyoteTime;
     SerializedProperty numberOfAirJumps;
     SerializedProperty alwaysDecreaseJumpCounter;
-    SerializedProperty meleeAttackCooldown;
     SerializedProperty meleeAttackBufferTime;
     SerializedProperty dashCooldown;
     SerializedProperty minimumDashDistance;
@@ -19,13 +22,13 @@ public class HumanoidControllerEditor : Editor {
     SerializedProperty maxLedgeGrabTime;
 
     private void OnEnable() {
+        timeScale = serializedObject.FindProperty(nameof(timeScale));
         horizontalCollider = serializedObject.FindProperty(nameof(horizontalCollider));
         verticalCollider = serializedObject.FindProperty(nameof(verticalCollider));
         smoothMovement = serializedObject.FindProperty(nameof(smoothMovement));
         coyoteTime = serializedObject.FindProperty(nameof(coyoteTime));
         numberOfAirJumps = serializedObject.FindProperty(nameof(numberOfAirJumps));
         alwaysDecreaseJumpCounter = serializedObject.FindProperty(nameof(alwaysDecreaseJumpCounter));
-        meleeAttackCooldown = serializedObject.FindProperty(nameof(meleeAttackCooldown));
         meleeAttackBufferTime = serializedObject.FindProperty(nameof(meleeAttackBufferTime));
         dashCooldown = serializedObject.FindProperty(nameof(dashCooldown));
         minimumDashDistance = serializedObject.FindProperty(nameof(minimumDashDistance));
@@ -36,35 +39,79 @@ public class HumanoidControllerEditor : Editor {
     #endregion
 
     public override void OnInspectorGUI() {
+        DisplayScriptReference();
+        DrawCustomInspector();
+        EditorGUILayout.Space(1);
+        DrawDefaultExcludingCustomFields();
 
-        PlayerController controller = (PlayerController)target;
+        HumanoidController playerController = target as HumanoidController;
+        Type attackSOType = typeof(AttackSO); // Change this to the actual type you're looking for.
 
+        // Get all fields in the playerController script.
+        FieldInfo[] fields = playerController.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Debug.Log(fields.Length);
+        // Find and list fields of the desired type.
+        foreach (FieldInfo field in fields) {
+            if (field.FieldType == attackSOType) {
+                EditorGUILayout.LabelField(field.Name);
+            }
+        }
+    }
+
+    private void DisplayScriptReference() {
+        MonoBehaviour scriptComponent = target as MonoBehaviour;
+        SerializedObject m_serializedObject = new(scriptComponent);
+        SerializedProperty scriptProperty = m_serializedObject.FindProperty("m_Script");
+        EditorGUI.BeginDisabledGroup(true);
+        EditorGUILayout.PropertyField(scriptProperty, true, new GUILayoutOption[0]);
+        EditorGUI.EndDisabledGroup();
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    private void DrawCustomInspector() {
+        HumanoidController controller = target as HumanoidController;
         serializedObject.Update();
+        EditorGUILayout.PropertyField(timeScale);
         EditorGUILayout.PropertyField(horizontalCollider);
         EditorGUILayout.PropertyField(verticalCollider);
         EditorGUILayout.PropertyField(smoothMovement);
         EditorGUILayout.PropertyField(coyoteTime);
         EditorGUILayout.PropertyField(numberOfAirJumps);
         EditorGUILayout.PropertyField(alwaysDecreaseJumpCounter);
-
         if (controller.TryGetComponent<CharacterDash>(out _)) {
             EditorGUILayout.PropertyField(dashCooldown);
             EditorGUILayout.PropertyField(minimumDashDistance);
         }
-
         if (controller.TryGetComponent<CharacterSlide>(out _)) {
             EditorGUILayout.PropertyField(minimumFloorSlideSpeed);
         }
-
         if (controller.TryGetComponent<CharacterLedgeGrab>(out _)) {
             EditorGUILayout.PropertyField(ledgeJumpThreshold);
             EditorGUILayout.PropertyField(maxLedgeGrabTime);
         }
-
         if (controller.TryGetComponent<CharacterCombat>(out _)) {
-            EditorGUILayout.PropertyField(meleeAttackCooldown);
             EditorGUILayout.PropertyField(meleeAttackBufferTime);
         }
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    private void DrawDefaultExcludingCustomFields() {
+        string[] excludeFields = new string[14];
+        excludeFields[0] = "m_Script";
+        excludeFields[1] = nameof(timeScale);
+        excludeFields[2] = nameof(horizontalCollider);
+        excludeFields[3] = nameof(verticalCollider);
+        excludeFields[4] = nameof(smoothMovement);
+        excludeFields[5] = nameof(coyoteTime);
+        excludeFields[6] = nameof(numberOfAirJumps);
+        excludeFields[7] = nameof(alwaysDecreaseJumpCounter);
+        excludeFields[8] = nameof(meleeAttackBufferTime);
+        excludeFields[9] = nameof(dashCooldown);
+        excludeFields[10] = nameof(minimumDashDistance);
+        excludeFields[11] = nameof(minimumFloorSlideSpeed);
+        excludeFields[12] = nameof(ledgeJumpThreshold);
+        excludeFields[13] = nameof(maxLedgeGrabTime);
+        DrawPropertiesExcluding(serializedObject, excludeFields);
         serializedObject.ApplyModifiedProperties();
     }
 }

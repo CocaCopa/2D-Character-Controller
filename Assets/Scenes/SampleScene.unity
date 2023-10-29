@@ -584,11 +584,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!4 &946356904 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-  m_PrefabInstance: {fileID: 1614694581}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1120118268
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,9 +874,49 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: kappa
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: singleKick
+      value: 
+      objectReference: {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: autoLedgeGrab
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: f45099718b4fe444184956f4b657cdda, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5d22ecdaa56b6a0448d82b5116433d1c, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: acc4437e7231d594681e3b47009d0ad0, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: 457c2446622f5d04b945c78baa0fd060, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.data[6]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5d22ecdaa56b6a0448d82b5116433d1c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
 --- !u!1 &1739717495
@@ -984,6 +1019,11 @@ MonoBehaviour:
   headCollisionSizeY: 0.154
   chestCollisionSizeY: 0.05
   feetCollisionSizeY: 0.154
+--- !u!4 &2353421477272445475 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+  m_PrefabInstance: {fileID: 1614694581}
+  m_PrefabAsset: {fileID: 0}
 --- !u!50 &3262112705334332589
 Rigidbody2D:
   serializedVersion: 4
@@ -1413,7 +1453,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &6848621672834906317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1438,9 +1478,8 @@ MonoBehaviour:
   minimumFloorSlideSpeed: 6
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
-  meleeAttackCooldown: 0.65
   meleeAttackBufferTime: 0.4
-  playerTransform: {fileID: 946356904}
+  playerTransform: {fileID: 2353421477272445475}
 --- !u!4 &6848621673041298277
 Transform:
   m_ObjectHideFlags: 0

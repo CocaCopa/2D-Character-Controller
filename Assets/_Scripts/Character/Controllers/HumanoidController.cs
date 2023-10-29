@@ -2,12 +2,15 @@ using System;
 using UnityEngine;
 using CocaCopa;
 using System.Collections;
+using System.Collections.Generic;
+using Mono.Cecil.Cil;
 
 [RequireComponent(typeof(CharacterMovement), typeof(CharacterEnvironmentalQuery), typeof(Rigidbody2D))]
 public abstract class HumanoidController : MonoBehaviour {
 
     #region --- Events ---
     public class OnCharacterAttackStartEventArgs {
+        public AnimationClip attackClip;
         public int attackCounter;
     }
     public event EventHandler OnCharacterJump;
@@ -56,8 +59,6 @@ public abstract class HumanoidController : MonoBehaviour {
 #endif
 #if COMBAT_COMPONENT
     [Header("--- Attack ---")]
-    [Tooltip("Attack cooldown in seconds")]
-    [SerializeField] private float meleeAttackCooldown = 0.65f;
     [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack")]
     [SerializeField] private float meleeAttackBufferTime = 0.4f;
 #endif
@@ -73,6 +74,8 @@ public abstract class HumanoidController : MonoBehaviour {
     private CharacterDash characterDash;
     private CharacterLedgeGrab characterLedgeGrab;
     private CharacterCombat characterCombat;
+    private List<AttackSO> comboData;
+    private AnimationClip currentAttackClip = null;
 
     private bool floorSlideInputHold = false;
     private bool jumpKeyPressed = false;
@@ -223,26 +226,25 @@ public abstract class HumanoidController : MonoBehaviour {
             }
 
             if (IsAttacking) {
-                bool completedAttack_1 = characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.Attack_1, 0.9f);
-                bool completedAttack_2 = characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.Attack_2, 0.9f);
-                if (attackCounter == 1 && completedAttack_1) {
+                if (attackCompleted) {
                     characterCombat.ExitAttackState();
-                    attackCompleted = true;
                 }
-                else if (attackCounter == 2 && completedAttack_2) {
-                    characterCombat.ExitAttackState();
-                    attackCompleted = true;
-                }
+                StartCoroutine(CheckAttackAnimation());
             }
+
             if (attackCompleted && !attackBufferButton) {
                 isAttacking = false;
                 attackCounter = 0;
-                attackOnCooldown = !Utilities.TickTimer(ref attackCooldownTimer, meleeAttackCooldown, false);
+                attackOnCooldown = !Utilities.TickTimer(ref attackCooldownTimer, comboData[attackCounter].Cooldown, false);
             }
         }
     }
+    private IEnumerator CheckAttackAnimation() {
+        yield return new WaitForEndOfFrame();
+        attackCompleted = !characterAnimator.IsClipPlaying(currentAttackClip);
+    }
     #endregion
-
+    
     #region --- General Every Frame Adjustments ---
     private void AdjustProperties() {
 
@@ -318,8 +320,8 @@ public abstract class HumanoidController : MonoBehaviour {
             return false;
         }
 
-        bool desiredLedgePercentage = characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.LedgeGrabEnter, ledgeJumpThreshold);
-        bool ledgeLoopPlaying = characterAnimator.CheckAnimClipPlaying(HumanoidAnimator.LedgeGrabLoop);
+        bool desiredLedgePercentage = characterAnimator.CheckStatePlayPercentage(HumanoidStateName.LedgeGrabEnter, ledgeJumpThreshold);
+        bool ledgeLoopPlaying = characterAnimator.IsStateActive(HumanoidStateName.LedgeGrabLoop);
         bool canLedgeJump = IsLedgeGrabbing && (desiredLedgePercentage || ledgeLoopPlaying);
         bool bypassJumpCheck = IsWallSliding || canLedgeJump;
 
@@ -554,11 +556,14 @@ public abstract class HumanoidController : MonoBehaviour {
     #endregion
 
     #region --- Attack ---
+    protected void TrySingleAttack(AttackSO singleAttack) {
+        List<AttackSO> singleToList = new() { singleAttack };
+        TryComboAttack(singleToList);
+    }
     /// <summary>
     /// An attack will be initiated, if certain conditions are met
     /// </summary>
-    protected void TryMeleeAttack() {
-
+    protected void TryComboAttack(List<AttackSO> comboData) {
         if (!characterCombat) {
             return;
         }
@@ -567,7 +572,7 @@ public abstract class HumanoidController : MonoBehaviour {
         }
         attackBufferButton = true;
         bool allowAttack = IsGrounded && !IsFloorSliding && !IsLedgeClimbing;
-
+        this.comboData = comboData;
         if (allowAttack && !IsAttacking) {
             MeleeAttack();
         }
@@ -577,19 +582,20 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     private void MeleeAttack() {
-        attackCooldownTimer = meleeAttackCooldown;
-        attackCounter++;
-        if (attackCounter == 3) {
+        if (attackCounter + 1 == comboData.Count) {
             attackOnCooldown = true;
-            return;
         }
-        OnCharacterAttackStart?.Invoke(this, new OnCharacterAttackStartEventArgs {
-            attackCounter = attackCounter
-        });
-        characterCombat.EnterAttackState();
+        attackCooldownTimer = comboData[attackCounter].Cooldown;
+        characterCombat.EnterAttackState(comboData[attackCounter]);
         characterMovement.CurrentSpeed = 0;
         isAttacking = true;
         attackCompleted = false;
+        currentAttackClip = comboData[attackCounter].AttackAnimation;
+        OnCharacterAttackStart?.Invoke(this, new OnCharacterAttackStartEventArgs {
+            attackClip = comboData[attackCounter].AttackAnimation,
+            attackCounter = attackCounter
+        });
+        attackCounter++;
     }
 
     private void AttackInputBuffer() {
@@ -597,7 +603,7 @@ public abstract class HumanoidController : MonoBehaviour {
         if (attackBufferTimer == 0) {
             attackBufferButton = false;
         }
-        if (attackBufferTimer > 0 && attackCompleted && attackBufferButton) {
+        if (attackCompleted && attackBufferButton) {
             attackBufferTimer = 0;
             isAttacking = true;
             MeleeAttack();

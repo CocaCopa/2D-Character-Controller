@@ -35,13 +35,6 @@ public abstract class HumanoidController : MonoBehaviour {
     [SerializeField] private int numberOfAirJumps = 1;
     [Tooltip("True: numberOfJumps - WallJump - LedgeJump || False: numberOfJumps + WallJump + LedgeJump")]
     [SerializeField] private bool alwaysDecreaseJumpCounter = false;
-#if COMBAT_COMPONENT
-    [Header("--- Attack ---")]
-    [Tooltip("Attack cooldown in seconds")]
-    [SerializeField] private float meleeAttackCooldown = 0.65f;
-    [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack")]
-    [SerializeField] private float meleeAttackBufferTime = 0.4f;
-#endif
 #if DASH_COMPONENT
     [Header("--- Dash ---")]
     [Tooltip("Dash cooldown in seconds")]
@@ -60,6 +53,13 @@ public abstract class HumanoidController : MonoBehaviour {
     [SerializeField, Range(0.01f, 0.99f)] private float ledgeJumpThreshold = 25f / 100f;
     [Tooltip("For how long should the character be able to hang from a ledge, before falling")]
     [SerializeField] private float maxLedgeGrabTime = 4f;
+#endif
+#if COMBAT_COMPONENT
+    [Header("--- Attack ---")]
+    [Tooltip("Attack cooldown in seconds")]
+    [SerializeField] private float meleeAttackCooldown = 0.65f;
+    [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack")]
+    [SerializeField] private float meleeAttackBufferTime = 0.4f;
 #endif
     #endregion
 
@@ -226,11 +226,11 @@ public abstract class HumanoidController : MonoBehaviour {
                 bool completedAttack_1 = characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.Attack_1, 0.9f);
                 bool completedAttack_2 = characterAnimator.CheckAnimClipPercentage(HumanoidAnimator.Attack_2, 0.9f);
                 if (attackCounter == 1 && completedAttack_1) {
-                    characterCombat.ExitMeleeState();
+                    characterCombat.ExitAttackState();
                     attackCompleted = true;
                 }
                 else if (attackCounter == 2 && completedAttack_2) {
-                    characterCombat.ExitMeleeState();
+                    characterCombat.ExitAttackState();
                     attackCompleted = true;
                 }
             }
@@ -586,7 +586,7 @@ public abstract class HumanoidController : MonoBehaviour {
         OnCharacterAttackStart?.Invoke(this, new OnCharacterAttackStartEventArgs {
             attackCounter = attackCounter
         });
-        characterCombat.EnterMeleeState();
+        characterCombat.EnterAttackState();
         characterMovement.CurrentSpeed = 0;
         isAttacking = true;
         attackCompleted = false;

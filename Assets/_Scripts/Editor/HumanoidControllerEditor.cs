@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(PlayerController))]
@@ -37,7 +36,8 @@ public class HumanoidControllerEditor : Editor {
     #endregion
 
     public override void OnInspectorGUI() {
-        PlayerController controller = target as PlayerController;
+
+        PlayerController controller = (PlayerController)target;
 
         serializedObject.Update();
         EditorGUILayout.PropertyField(horizontalCollider);
@@ -46,9 +46,6 @@ public class HumanoidControllerEditor : Editor {
         EditorGUILayout.PropertyField(coyoteTime);
         EditorGUILayout.PropertyField(numberOfAirJumps);
         EditorGUILayout.PropertyField(alwaysDecreaseJumpCounter);
-
-        EditorGUILayout.PropertyField(meleeAttackCooldown);
-        EditorGUILayout.PropertyField(meleeAttackBufferTime);
 
         if (controller.TryGetComponent<CharacterDash>(out _)) {
             EditorGUILayout.PropertyField(dashCooldown);
@@ -62,6 +59,11 @@ public class HumanoidControllerEditor : Editor {
         if (controller.TryGetComponent<CharacterLedgeGrab>(out _)) {
             EditorGUILayout.PropertyField(ledgeJumpThreshold);
             EditorGUILayout.PropertyField(maxLedgeGrabTime);
+        }
+
+        if (controller.TryGetComponent<CharacterCombat>(out _)) {
+            EditorGUILayout.PropertyField(meleeAttackCooldown);
+            EditorGUILayout.PropertyField(meleeAttackBufferTime);
         }
         serializedObject.ApplyModifiedProperties();
     }

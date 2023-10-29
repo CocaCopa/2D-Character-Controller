@@ -3,6 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterCombat : MonoBehaviour {
 
+    public class OnAttackInitiatedEventArgs {
+        public Animation animationClip;
+    }
+    public event System.EventHandler<OnAttackInitiatedEventArgs> OnAttackInitiated;
+
     [Header("--- Melee Attack ---")]
     [Tooltip("When the attack key is pressed an impulse force is applied to push the character forward")]
     [SerializeField] private float forceAmount = 1000f;
@@ -24,6 +29,7 @@ public class CharacterCombat : MonoBehaviour {
     [Tooltip("For how long should your character be able to hold their attack once charged.")]
     [SerializeField] private float holdAttackTime = 4f;
 
+    private AttackSO attackData;
     private Rigidbody2D playerRb;
     private float defaultLinearDrag;
     private float defaultGravityScale;
@@ -37,21 +43,39 @@ public class CharacterCombat : MonoBehaviour {
         defaultGravityScale = playerRb.gravityScale;
     }
 
-    public void EnterMeleeState() {
-        if (zeroGravity)
+    public void EnterAttackState(AttackSO attackData = null) {
+        /*if (zeroGravity)
             playerRb.gravityScale = 0f;
         playerRb.drag = linearDrag;
         playerRb.velocity = Vector3.zero;
         Vector3 velocity = new(forceAmount * transform.right.x, 0f);
-        playerRb.AddForce(velocity, ForceMode2D.Impulse);
+        playerRb.AddForce(velocity, ForceMode2D.Impulse);*/
+
+        if (!attackData.UseGravity) {
+            playerRb.gravityScale = 0f;
+        }
+        if (attackData.AttackPushesCharacter) {
+            StartCoroutine(PushCharacter(attackData));
+        }
+        playerRb.drag = attackData.DragCoeficient;
+        playerRb.velocity = Vector2.zero;
+
+        if (attackData.IsChargeableAttack) {
+            // todo: chargeable logic;
+        }
     }
 
-    public void ExitMeleeState() {
+    private System.Collections.IEnumerator PushCharacter(AttackSO attackData) {
+        yield return new WaitForSeconds(attackData.DelayForceTime);
+        playerRb.AddForce(attackData.Force, attackData.ForceMode);
+    }
+
+    public void ExitAttackState() {
         playerRb.drag = defaultLinearDrag;
         playerRb.gravityScale = defaultGravityScale;
     }
 
-    public void ChargeRangedAttack() {
+    public void ChargeAttack() {
         if (standWhileCharging) {
             playerRb.isKinematic = true;
             playerRb.velocity = Vector3.zero;
@@ -66,12 +90,12 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
-    public void ReleaseRangedAttack(GameObject projectileToShoot, bool attackCanceled = false) {
+    public void ReleaseChargedAttack(bool attackCanceled = false) {
         if (standWhileCharging) {
             playerRb.isKinematic = false;
         }
         if (!attackCanceled) {
-            Instantiate(projectileToShoot, projectileSpawnTransform.position, Quaternion.identity);
+            //Instantiate(projectileToShoot, projectileSpawnTransform.position, Quaternion.identity);
         }
     }
 }

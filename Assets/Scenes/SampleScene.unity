@@ -1086,6 +1086,10 @@ MonoBehaviour:
   linearDrag: 10
   zeroGravity: 1
   adjustPosition: {x: 0, y: 0}
+  projectileSpawnTransform: {fileID: 0}
+  standWhileCharging: 0
+  chargeTime: 0
+  holdAttackTime: 4
 --- !u!1 &6283228091207994131
 GameObject:
   m_ObjectHideFlags: 0
@@ -1429,13 +1433,13 @@ MonoBehaviour:
   coyoteTime: 0.1
   numberOfAirJumps: 0
   alwaysDecreaseJumpCounter: 0
-  meleeAttackCooldown: 0.65
-  meleeAttackBufferTime: 0.4
   dashCooldown: 1.2
   minimumDashDistance: 1
   minimumFloorSlideSpeed: 6
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
+  meleeAttackCooldown: 0.65
+  meleeAttackBufferTime: 0.4
   playerTransform: {fileID: 946356904}
 --- !u!4 &6848621673041298277
 Transform:

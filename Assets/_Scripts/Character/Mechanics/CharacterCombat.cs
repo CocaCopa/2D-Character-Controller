@@ -51,7 +51,9 @@ public class CharacterCombat : MonoBehaviour {
             StartCoroutine(PushCharacter(attackData));
             playerRb.drag = attackData.DragCoeficient;
         }
-        playerRb.velocity = Vector2.zero;
+        if (attackData.ResetVelocity) {
+            playerRb.velocity = Vector2.zero;
+        }
 
         if (attackData.IsChargeableAttack) {
             // todo: chargeable logic;
@@ -61,7 +63,8 @@ public class CharacterCombat : MonoBehaviour {
     private System.Collections.IEnumerator PushCharacter(AttackSO attackData) {
         yield return new WaitForSeconds(attackData.DelayForceTime);
         Vector3 direction = transform.right;
-        Vector3 force = attackData.Force * direction.x;
+        Vector3 force = attackData.Force;
+        force.x *= direction.x;
         playerRb.AddForce(force, attackData.ForceMode);
     }
 

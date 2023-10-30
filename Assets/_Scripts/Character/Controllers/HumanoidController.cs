@@ -9,13 +9,13 @@ using Mono.Cecil.Cil;
 public abstract class HumanoidController : MonoBehaviour {
 
     #region --- Events ---
-    public class OnCharacterAttackStartEventArgs {
+    public class OnCharacterInitiateAttackEventArgs {
         public AnimationClip attackClip;
         public int attackCounter;
     }
     public event EventHandler OnCharacterJump;
     public event EventHandler OnCharacterDash;
-    public event EventHandler<OnCharacterAttackStartEventArgs> OnCharacterAttackStart;
+    public event EventHandler<OnCharacterInitiateAttackEventArgs> OnCharacterInitiateAttack;
     #endregion
 
     #region --- Serializable Variables ---
@@ -36,7 +36,7 @@ public abstract class HumanoidController : MonoBehaviour {
     [SerializeField] private float coyoteTime = 0.1f;
     [Tooltip("Number of jumps the character is allowed to perform while on air")]
     [SerializeField] private int numberOfAirJumps = 1;
-    [Tooltip("True: numberOfJumps - WallJump - LedgeJump || False: numberOfJumps + WallJump + LedgeJump")]
+    [Tooltip("True means that wall jumps and ledge jumps will be considered as air jumps, while False indicates that only standard air jumps will be counted.")]
     [SerializeField] private bool alwaysDecreaseJumpCounter = false;
 #if DASH_COMPONENT
     [Header("--- Dash ---")]
@@ -574,14 +574,14 @@ public abstract class HumanoidController : MonoBehaviour {
         bool allowAttack = IsGrounded && !IsFloorSliding && !IsLedgeClimbing;
         this.comboData = comboData;
         if (allowAttack && !IsAttacking) {
-            MeleeAttack();
+            Attack();
         }
         else if (allowAttack) {
             attackBufferTimer = meleeAttackBufferTime;
         }
     }
 
-    private void MeleeAttack() {
+    private void Attack() {
         if (attackCounter + 1 == comboData.Count) {
             attackOnCooldown = true;
         }
@@ -591,7 +591,7 @@ public abstract class HumanoidController : MonoBehaviour {
         isAttacking = true;
         attackCompleted = false;
         currentAttackClip = comboData[attackCounter].AttackAnimation;
-        OnCharacterAttackStart?.Invoke(this, new OnCharacterAttackStartEventArgs {
+        OnCharacterInitiateAttack?.Invoke(this, new OnCharacterInitiateAttackEventArgs {
             attackClip = comboData[attackCounter].AttackAnimation,
             attackCounter = attackCounter
         });
@@ -606,7 +606,7 @@ public abstract class HumanoidController : MonoBehaviour {
         if (attackCompleted && attackBufferButton) {
             attackBufferTimer = 0;
             isAttacking = true;
-            MeleeAttack();
+            Attack();
         }
     }
     #endregion

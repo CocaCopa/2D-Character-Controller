@@ -817,14 +817,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 2353421476736477801, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 2353421476736477801, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -838,26 +830,6 @@ PrefabInstance:
       value: -4.7
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -869,54 +841,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2353421477066412480, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: kappa
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: singleKick
-      value: 
-      objectReference: {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: autoLedgeGrab
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: meleeCombo_1.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: meleeCombo_1.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: f45099718b4fe444184956f4b657cdda, type: 2}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: meleeCombo_1.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: meleeCombo_1.Array.data[2]
-      value: 
-      objectReference: {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: meleeCombo_1.Array.data[3]
-      value: 
-      objectReference: {fileID: 11400000, guid: 5d22ecdaa56b6a0448d82b5116433d1c, type: 2}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: meleeCombo_1.Array.data[4]
-      value: 
-      objectReference: {fileID: 11400000, guid: acc4437e7231d594681e3b47009d0ad0, type: 2}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: meleeCombo_1.Array.data[5]
-      value: 
-      objectReference: {fileID: 11400000, guid: 457c2446622f5d04b945c78baa0fd060, type: 2}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: meleeCombo_1.Array.data[6]
-      value: 
-      objectReference: {fileID: 11400000, guid: 5d22ecdaa56b6a0448d82b5116433d1c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
 --- !u!1 &1739717495

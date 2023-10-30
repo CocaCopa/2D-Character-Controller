@@ -3,11 +3,15 @@ using UnityEditor;
 [CustomEditor(typeof(AttackSO))]
 public class AttackSOEditor : Editor {
 
+    #region --- Serialized Properties ---
     SerializedProperty attackName;
     SerializedProperty icon;
     SerializedProperty attackAnimation;
     SerializedProperty whatIsDamageable;
     SerializedProperty attackPushesCharacter;
+    SerializedProperty resetVelocity;
+    SerializedProperty damageAmount;
+    SerializedProperty cooldown;
     SerializedProperty forceMode;
     SerializedProperty force;
     SerializedProperty delayForceTime;
@@ -17,8 +21,6 @@ public class AttackSOEditor : Editor {
     SerializedProperty chargeTime;
     SerializedProperty holdChargeTime;
     SerializedProperty canMoveWhileCharging;
-    SerializedProperty damageAmount;
-    SerializedProperty cooldown;
     SerializedProperty throwsProjectile;
     SerializedProperty projectilePrefab;
 
@@ -28,6 +30,9 @@ public class AttackSOEditor : Editor {
         attackAnimation = serializedObject.FindProperty(nameof(attackAnimation));
         whatIsDamageable = serializedObject.FindProperty(nameof(whatIsDamageable));
         attackPushesCharacter = serializedObject.FindProperty(nameof(attackPushesCharacter));
+        resetVelocity = serializedObject.FindProperty(nameof(resetVelocity));
+        damageAmount = serializedObject.FindProperty(nameof(damageAmount));
+        cooldown = serializedObject.FindProperty(nameof(cooldown));
         forceMode = serializedObject.FindProperty(nameof(forceMode));
         force = serializedObject.FindProperty(nameof(force));
         delayForceTime = serializedObject.FindProperty(nameof(delayForceTime));
@@ -37,19 +42,25 @@ public class AttackSOEditor : Editor {
         chargeTime = serializedObject.FindProperty(nameof(chargeTime));
         holdChargeTime = serializedObject.FindProperty(nameof(holdChargeTime));
         canMoveWhileCharging = serializedObject.FindProperty(nameof(canMoveWhileCharging));
-        damageAmount = serializedObject.FindProperty(nameof(damageAmount));
-        cooldown = serializedObject.FindProperty(nameof(cooldown));
         throwsProjectile = serializedObject.FindProperty(nameof(throwsProjectile));
         projectilePrefab = serializedObject.FindProperty(nameof(projectilePrefab));
     }
+    #endregion
 
     public override void OnInspectorGUI() {
+        DrawCustomEditor();
+    }
+
+    private void DrawCustomEditor() {
         AttackSO attackSO = target as AttackSO;
         serializedObject.Update();
         EditorGUILayout.PropertyField(attackName);
         EditorGUILayout.PropertyField(icon);
         EditorGUILayout.PropertyField(attackAnimation);
         EditorGUILayout.PropertyField(whatIsDamageable);
+        EditorGUILayout.PropertyField(resetVelocity);
+        EditorGUILayout.PropertyField(damageAmount);
+        EditorGUILayout.PropertyField(cooldown);
         if (attackSO.AttackPushesCharacter) {
             EditorGUILayout.Space(10);
         }
@@ -72,9 +83,7 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.PropertyField(canMoveWhileCharging);
             EditorGUILayout.Space(10);
         }
-        EditorGUILayout.PropertyField(damageAmount);
-        EditorGUILayout.PropertyField(cooldown);
-        if (attackSO.ThrowsProjectile) {
+        if (attackSO.ThrowsProjectile && !attackSO.IsChargeableAttack) {
             EditorGUILayout.Space(10);
         }
         EditorGUILayout.PropertyField(throwsProjectile);

@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 3064424124245081108}
   - component: {fileID: 2353421476736477843}
   - component: {fileID: 3090859874179469632}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -271,8 +271,11 @@ MonoBehaviour:
   minimumFloorSlideSpeed: 6
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
-  meleeAttackCooldown: 0.65
   meleeAttackBufferTime: 0.4
+  meleeCombo_1:
+  - {fileID: 11400000, guid: f45099718b4fe444184956f4b657cdda, type: 2}
+  - {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
+  - {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
 --- !u!114 &2353421476736477845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,7 +615,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2353421477066412483}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.004, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.2917, y: 1.2917, z: 1.2917}
   m_ConstrainProportionsScale: 0
   m_Children: []

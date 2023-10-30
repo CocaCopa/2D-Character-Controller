@@ -45,10 +45,10 @@ public class CharacterAnimator : MonoBehaviour {
 
     private void Start() {
         humanoidController.OnCharacterJump += Controller_OnCharacterJump;
-        humanoidController.OnCharacterAttackStart += Controller_OnCharacterAttackStart;
+        humanoidController.OnCharacterInitiateAttack += Controller_OnCharacterAttackStart;
     }
 
-    private void Controller_OnCharacterAttackStart(object sender, HumanoidController.OnCharacterAttackStartEventArgs e) {
+    private void Controller_OnCharacterAttackStart(object sender, HumanoidController.OnCharacterInitiateAttackEventArgs e) {
         //animator.SetTrigger(ATTACK_ + e.attackCounter);
         animator.Play(e.attackClip.name);
     }

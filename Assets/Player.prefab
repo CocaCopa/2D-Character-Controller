@@ -276,6 +276,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f45099718b4fe444184956f4b657cdda, type: 2}
   - {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
   - {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
+  meleeCombo_1_Types: 000000000000000000000000
 --- !u!114 &2353421476736477845
 MonoBehaviour:
   m_ObjectHideFlags: 0

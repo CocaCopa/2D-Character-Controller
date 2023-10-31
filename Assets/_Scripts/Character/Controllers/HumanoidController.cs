@@ -557,8 +557,8 @@ public abstract class HumanoidController : MonoBehaviour {
 
     #region --- Attack ---
     protected void TrySingleAttack(AttackSO singleAttack) {
-        List<AttackSO> singleToList = new() { singleAttack };
-        TryComboAttack(singleToList);
+        List<AttackSO> singleAttackToList = new() { singleAttack };
+        TryComboAttack(singleAttackToList);
     }
     /// <summary>
     /// An attack will be initiated, if certain conditions are met

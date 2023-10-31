@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 748551abfae5915438534e35c217d069, type: 3}
+  m_Name: Single_Charge_Attack 1
+  m_EditorClassIdentifier: 
+  attackName: 
+  icon: {fileID: 0}
+  attackAnimation: {fileID: 7400000, guid: 10573f78446dc8d48bdd19cad83f3ef0, type: 2}
+  whatIsDamageable:
+    serializedVersion: 2
+    m_Bits: 0
+  resetVelocity: 1
+  damageAmount: 0
+  cooldown: 1
+  attackPushesCharacter: 0
+  forceMode: 1
+  force: {x: 0, y: 0}
+  delayForceTime: 0
+  useGravity: 0
+  dragCoeficient: 0
+  isChargeableAttack: 1
+  chargeTime: 5
+  holdChargeTime: 5
+  canMoveWhileCharging: 0
+  throwsProjectile: 0
+  projectilePrefab: {fileID: 0}

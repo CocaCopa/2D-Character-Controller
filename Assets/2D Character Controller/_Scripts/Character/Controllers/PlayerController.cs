@@ -89,7 +89,7 @@ public class PlayerController : HumanoidController {
 
         switch (debugLedgeAction) {
             case DebugLedgeAction.Normal:
-            LedgeGrab(input.GetMovementInput().x * transform.right.x > 0);
+            LedgeGrab(/*input.GetMovementInput().x * transform.right.x > 0*/);
             LedgeClimb(canLedgeClimb);
             ledgeModeText.text = "Ledge grab + Ledge climb";
             break;

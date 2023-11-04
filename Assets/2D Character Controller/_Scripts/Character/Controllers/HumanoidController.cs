@@ -801,4 +801,9 @@ public abstract class HumanoidController : MonoBehaviour {
         airJumpCounter = numberOfAirJumps;
     }
     #endregion
+
+    private void OnDrawGizmos() {
+        Gizmos.DrawWireSphere(ledgePosition, 0.2f);
+        Debug.Log("Gizmos");
+    }
 }

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterEnvironmentalQuery : MonoBehaviour {
@@ -218,10 +219,18 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
         if (!ledgeDetected)
             exitLedgeGrab = false;
 
-        fixedOffset = GetLedgeInfo().point;
+        Vector2 origin = new(transform.position.x, ledgeGrabTransform.position.y - ledgeGrabRadius - 0.05f);
+        Vector2 direction = transform.right;
+        float distance = (ledgeGrabTransform.position.x - transform.position.x) + 0.15f;
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, distance, ~LayerMask.GetMask(characterMask));
+        fixedOffset.x = hit.point.x;
+        fixedOffset.y = GetLedgeInfo().point.y;
+        fixedOffset.z = 0;
+        Debug.DrawRay(origin, direction * distance);
+        Debug.Log("Draw Ray");
         return ledgeDetected;
     }
-
+    
     private bool InLedgeGrabRange() {
 
         Vector3 origin = activeCollider.bounds.center;

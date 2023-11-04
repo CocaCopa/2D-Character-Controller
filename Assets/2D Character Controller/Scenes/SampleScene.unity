@@ -1262,11 +1262,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.4
+      value: 0.39
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.45
+      value: -3.21
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1306,7 +1306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3064424124245081108, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: offsetSprite.x
-      value: -0.3
+      value: -0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064424124245081108, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: offsetSprite.y
+      value: -1.64
       objectReference: {fileID: 0}
     - target: {fileID: 3064424124245081108, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: interpolateOffsets
@@ -1314,11 +1318,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4591163795354460110, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.40999985
+      value: 0.328
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591163795354460110, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.598
       objectReference: {fileID: 0}
     - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: debugNoInput
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: maxLedgeGrabTime
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: debugMode
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3725be8803d0f4e469db78f40f704457, type: 3}

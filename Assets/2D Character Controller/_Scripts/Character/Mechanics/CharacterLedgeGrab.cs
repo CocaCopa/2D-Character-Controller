@@ -66,6 +66,7 @@ public class CharacterLedgeGrab : MonoBehaviour {
             : -offsetSprite.x;
 
         Vector3 offsetPosition = ledgePosition + spriteOffset;
+        //ledgePosition = transform.InverseTransformPoint(ledgePosition);
 
         if (spriteHolderTransform != null) {
             if (interpolateOffsets) {

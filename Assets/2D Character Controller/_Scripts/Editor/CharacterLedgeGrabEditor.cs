@@ -11,9 +11,6 @@ public class CharacterLedgeGrabEditor : Editor {
     SerializedProperty ledgeClimbSpeed;
     SerializedProperty offsetSprite;
     SerializedProperty offsetColliderHeight;
-    SerializedProperty interpolateOffsets;
-    SerializedProperty interpolateIn;
-    SerializedProperty interpolateOut;
 
     private void OnEnable() {
         spriteHolderTransform = serializedObject.FindProperty(nameof(spriteHolderTransform));
@@ -23,9 +20,6 @@ public class CharacterLedgeGrabEditor : Editor {
         ledgeClimbSpeed = serializedObject.FindProperty(nameof(ledgeClimbSpeed));
         offsetSprite = serializedObject.FindProperty(nameof(offsetSprite));
         offsetColliderHeight = serializedObject.FindProperty(nameof(offsetColliderHeight));
-        interpolateOffsets = serializedObject.FindProperty(nameof(interpolateOffsets));
-        interpolateIn = serializedObject.FindProperty(nameof(interpolateIn));
-        interpolateOut = serializedObject.FindProperty(nameof(interpolateOut));
     }
 
     public override void OnInspectorGUI() {
@@ -45,15 +39,6 @@ public class CharacterLedgeGrabEditor : Editor {
         }
         EditorGUILayout.PropertyField(offsetSprite);
         EditorGUILayout.PropertyField(offsetColliderHeight);
-        if (ledgeGrab.InterpolateOffsets) {
-            EditorGUILayout.Space(10);
-        }
-        EditorGUILayout.PropertyField(interpolateOffsets);
-        if (ledgeGrab.InterpolateOffsets) {
-            EditorGUILayout.PropertyField(interpolateIn);
-            EditorGUILayout.PropertyField(interpolateOut);
-            EditorGUILayout.Space(10);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 

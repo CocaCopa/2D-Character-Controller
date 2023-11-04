@@ -1305,17 +1305,13 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3064424124245081108, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: offsetSprite.x
-      value: -0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 3064424124245081108, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: offsetSprite.y
-      value: -1.64
-      objectReference: {fileID: 0}
-    - target: {fileID: 3064424124245081108, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: interpolateOffsets
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3064424124245081108, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: ledgeClimbAnimation
+      value: 
+      objectReference: {fileID: 7400000, guid: 13f95e20373a37f45a4189a87697081b, type: 2}
     - target: {fileID: 4591163795354460110, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.328
@@ -1329,12 +1325,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: targetFrameRate
+      value: 144
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: maxLedgeGrabTime
       value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: debugMode
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8940434408844919690, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.681
+      objectReference: {fileID: 0}
+    - target: {fileID: 8940434408844919690, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.122
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
@@ -1567,9 +1575,6 @@ MonoBehaviour:
   ledgeClimbSpeed: 2
   offsetSprite: {x: -0.7801, y: -1.616}
   offsetColliderHeight: -0.42
-  interpolateOffsets: 0
-  interpolateIn: 0
-  interpolateOut: 0
 --- !u!114 &6144820641062405093
 MonoBehaviour:
   m_ObjectHideFlags: 0

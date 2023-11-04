@@ -15,19 +15,12 @@ public class CharacterLedgeGrab : MonoBehaviour {
     [SerializeField] private bool isAnimationStill = false;
     [Tooltip("How fast should the character climb off a ledge. (Works if 'isAnimationStill' is set to true)")]
     [SerializeField] private float ledgeClimbSpeed;
-    [Tooltip("Adjust the character sprite's position when grabbing a ledge if it doesn't align with the intended position.")]
-    [SerializeField] private Vector2 offsetSprite = new (-0.7f, -2.0f);
+    [Tooltip("Your character is expected to be offseted. Adjust this 'Vector2' value to set it back to the intended position")]
+    [SerializeField] private Vector2 offsetSprite = new (-0.25f, -1.64f);
     [Tooltip("Offset the character's collider if it doesn't correspond to the player's position.")]
-    [SerializeField] private float offsetColliderHeight = -0.42f;
-    [Tooltip("True, the sprite will interpolate to the set offset position, False, the sprite will snap to the set offset position")]
-    [SerializeField] private bool interpolateOffsets;
-    [Tooltip("How fast should the sprite interpolate to their set offset position")]
-    [SerializeField] private float interpolateIn;
-    [Tooltip("How fast should the sprite interpolate back to their normal position")]
-    [SerializeField] private float interpolateOut;
+    [SerializeField] private float offsetColliderHeight = 0;
 
     public bool IsAnimationStill => isAnimationStill;
-    public bool InterpolateOffsets => interpolateOffsets;
 
     private float climbAnimationPoints;
     private readonly AnimationCurve climbCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
@@ -66,16 +59,10 @@ public class CharacterLedgeGrab : MonoBehaviour {
             : -offsetSprite.x;
 
         Vector3 offsetPosition = ledgePosition + spriteOffset;
-        //ledgePosition = transform.InverseTransformPoint(ledgePosition);
 
-        if (spriteHolderTransform != null) {
-            if (interpolateOffsets) {
-                spriteHolderTransform.position = Vector3.Lerp(spriteHolderTransform.position, offsetPosition, interpolateIn * Time.deltaTime);
-            }
-            else {
-                spriteHolderTransform.position = offsetPosition;
-            }
-        }
+        if (spriteHolderTransform != null)
+            spriteHolderTransform.position = offsetPosition;
+        
         if (colliderTransform != null) {
             Vector2 position = colliderTransform.localPosition;
             position.y = offsetColliderHeight;
@@ -84,14 +71,8 @@ public class CharacterLedgeGrab : MonoBehaviour {
     }
 
     private void ResetOffsets() {
-        if (spriteHolderTransform != null) {
-            if (interpolateOffsets) {
-                spriteHolderTransform.localPosition = Vector3.Lerp(spriteHolderTransform.localPosition, Vector3.zero, interpolateOut * Time.deltaTime);
-            }
-            else {
-                spriteHolderTransform.localPosition = Vector3.zero;
-            }
-        }
+        if (spriteHolderTransform != null)
+            spriteHolderTransform.localPosition = Vector3.zero;
 
         if (colliderTransform != null)
             colliderTransform.localPosition = Vector3.zero;
@@ -106,9 +87,7 @@ public class CharacterLedgeGrab : MonoBehaviour {
         isLedgeClimbing = true;
         playerRb.velocity = Vector2.zero;
         playerRb.isKinematic = true;
-
-        RaycastHit2D hit = Physics2D.Raycast(ledgeClimbEndTransform.position, Vector2.down, 25f, ~LayerMask.GetMask("Player"));
-        endPosition = hit.point;
+        endPosition = GetEndPosition();
 
         if (isAnimationStill) {
             float lerpTime = Utilities.EvaluateAnimationCurve(climbCurve, ref climbAnimationPoints, ledgeClimbSpeed);
@@ -122,15 +101,18 @@ public class CharacterLedgeGrab : MonoBehaviour {
             }
         }
         else {
-            if (characterAnimator.CheckStatePlayPercentage(HumanoidStateName.LedgeClimb, 1f)) {
-                isLedgeClimbing = false;
-                spriteHolderTransform.position = endPosition;
-            }
             if (isLedgeClimbing) {
                 OffsetPositions(ledgePosition);
             }
+            if (characterAnimator.CheckStatePercentage(HumanoidStateName.LedgeClimb, 1f)) {
+                isLedgeClimbing = false;
+            }
         }
-        
+    }
+
+    private Vector3 GetEndPosition() {
+        RaycastHit2D hit = Physics2D.Raycast(ledgeClimbEndTransform.position, Vector2.down, 25f, ~LayerMask.GetMask("Player"));
+        return hit.point;
     }
 }
 #endif

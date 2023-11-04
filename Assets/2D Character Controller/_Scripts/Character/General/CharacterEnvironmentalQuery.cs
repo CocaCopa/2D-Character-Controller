@@ -219,15 +219,9 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
         if (!ledgeDetected)
             exitLedgeGrab = false;
 
-        Vector2 origin = new(transform.position.x, ledgeGrabTransform.position.y - ledgeGrabRadius - 0.05f);
-        Vector2 direction = transform.right;
-        float distance = (ledgeGrabTransform.position.x - transform.position.x) + 0.15f;
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction, distance, ~LayerMask.GetMask(characterMask));
-        fixedOffset.x = hit.point.x;
-        fixedOffset.y = GetLedgeInfo().point.y;
+        fixedOffset.x = GetHorizontalLedgePosition();
+        fixedOffset.y = GetVerticalLedgePosition();
         fixedOffset.z = 0;
-        Debug.DrawRay(origin, direction * distance);
-        Debug.Log("Draw Ray");
         return ledgeDetected;
     }
     
@@ -248,7 +242,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
         float circleRadius = ledgeGrabRadius;
 
         float placeBoxAboveCircle = 1.5f;
-        Vector3 originOffset =  Vector3.up * circleRadius * placeBoxAboveCircle;
+        Vector3 originOffset = circleRadius * placeBoxAboveCircle * Vector3.up;
         Vector3 boxOrigin = circleOrigin + originOffset;
         float sizeX = circleRadius * 4;
         float sizeY = circleRadius;
@@ -272,19 +266,29 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
         return !boxCast && circleCast;
     }
 
-    private RaycastHit2D GetLedgeInfo() {
+    private float GetHorizontalLedgePosition() {
+        Vector2 origin = new(transform.position.x, ledgeGrabTransform.position.y - ledgeGrabRadius - 0.05f);
+        Vector2 direction = transform.right;
+        float distance = (ledgeGrabTransform.position.x - transform.position.x) + 0.15f;
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, distance, ~LayerMask.GetMask(characterMask));
+        return hit.point.x;
+    }
 
-        Vector3 originOffset = Vector3.up * ledgeGrabRadius * 2;
+    private float GetVerticalLedgePosition() {
+        Vector3 originOffset = ledgeGrabRadius * 2 * Vector3.up;
         Vector3 circleOrigin = ledgeGrabTransform.position + originOffset;
         Vector3 direction = Vector3.down;
         float circleRadius = ledgeGrabRadius;
         float maxDistance = circleRadius * 2.1f;
+        RaycastHit2D hit;
         if (excludeCharacter)
-            return Physics2D.CircleCast(circleOrigin, circleRadius, direction, maxDistance, ~LayerMask.GetMask(characterMask));
+            hit = Physics2D.CircleCast(circleOrigin, circleRadius, direction, maxDistance, ~LayerMask.GetMask(characterMask));
         else if (useSpecifiedLayer)
-            return Physics2D.CircleCast(circleOrigin, circleRadius, direction, maxDistance, specifiedLayer);
+            hit = Physics2D.CircleCast(circleOrigin, circleRadius, direction, maxDistance, specifiedLayer);
         else
-            return Physics2D.CircleCast(circleOrigin, circleRadius, direction, maxDistance);
+            hit = Physics2D.CircleCast(circleOrigin, circleRadius, direction, maxDistance);
+
+        return hit.point.y;
     }
     #endregion
 

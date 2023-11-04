@@ -68,7 +68,9 @@ public class PlayerController : HumanoidController {
     }
 
     private void Controller() {
-        FlipCharacter(input.GetMovementInput().x);
+        if (!IsLedgeClimbing) {
+            FlipCharacter(input.GetMovementInput().x);
+        }
         ChangeHorizontalVelocity(input.GetMovementInput());
         TryFloorSlide(input.OnSlideKeyContinuous());
         WallSlide(input.GetMovementInput().x * transform.right.x > 0);

@@ -131,7 +131,7 @@ public class CharacterAnimator : MonoBehaviour {
     /// <param name="percentage">Percentage to compare</param>
     /// <param name="lessThan">True to check for 'less than', False to check for 'more than'</param>
     /// <returns>True, once the animation clip has played more than the given percentage</returns>
-    public bool CheckStatePlayPercentage(HumanoidStateName stateName, float percentage, bool lessThan = false) {
+    public bool CheckStatePercentage(HumanoidStateName stateName, float percentage, bool lessThan = false) {
 
         string stateNameString = ConvertToAnimationClipName(stateName);
         bool stateIsPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(stateNameString);
@@ -143,11 +143,11 @@ public class CharacterAnimator : MonoBehaviour {
         return reachedPercentage;
     }
 
-    public bool IsClipPlaying(AnimationClip clip) {
+    public bool IsClipPlaying(AnimationClip clip, float percentage) {
         AnimatorClipInfo[] currentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
         foreach (var clipInfo in currentClipInfo) {
             if (clipInfo.clip == clip) {
-                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.95f)
+                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= percentage)
                 return true;
             }
         }

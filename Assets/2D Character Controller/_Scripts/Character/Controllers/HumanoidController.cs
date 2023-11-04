@@ -3,6 +3,7 @@ using UnityEngine;
 using CocaCopa;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CharacterMovement), typeof(CharacterEnvironmentalQuery), typeof(Rigidbody2D))]
 public abstract class HumanoidController : MonoBehaviour {
@@ -142,7 +143,7 @@ public abstract class HumanoidController : MonoBehaviour {
     protected virtual void Awake() {
         FindComponents();
         InitializeProperties();
-        Application.targetFrameRate = 120;
+        Application.targetFrameRate = 144;
     }
 
     protected virtual void Start() {
@@ -257,7 +258,7 @@ public abstract class HumanoidController : MonoBehaviour {
     }
     private IEnumerator CheckAttackAnimation() {
         yield return new WaitForEndOfFrame();
-        attackCompleted = !characterAnimator.IsClipPlaying(currentAttackClip);
+        attackCompleted = !characterAnimator.IsClipPlaying(currentAttackClip, 0.95f);
     }
     #endregion
     
@@ -340,7 +341,7 @@ public abstract class HumanoidController : MonoBehaviour {
             return false;
         }
 
-        bool desiredLedgePercentage = characterAnimator.CheckStatePlayPercentage(HumanoidStateName.LedgeGrabEnter, ledgeJumpThreshold);
+        bool desiredLedgePercentage = characterAnimator.CheckStatePercentage(HumanoidStateName.LedgeGrabEnter, ledgeJumpThreshold);
         bool ledgeLoopPlaying = characterAnimator.IsStateActive(HumanoidStateName.LedgeGrabLoop);
         bool canLedgeJump = IsLedgeGrabbing && (desiredLedgePercentage || ledgeLoopPlaying);
         bool bypassJumpCheck = IsWallSliding || canLedgeJump;
@@ -392,15 +393,15 @@ public abstract class HumanoidController : MonoBehaviour {
 
     #region --- Ledge Grab / Climb ---
 #if LEDGE_GRAB_COMPONENT
-    /*/// <summary>
+    /// <summary>
     /// Your character will enter ledge grab state, if a ledge is detected
     /// </summary>
-    /// <param name="canLedgeGrab">If true, your character will grab a ledge, when a ledge is detected</param>
-    protected void LedgeGrab(bool ledgeGrabInput = true) {
+    /// <param name="canLedgeGrab">Leave this parameter as is if you want your character to automatically grab the ledge when detected</param>
+    protected void LedgeGrab(bool canLedgeGrab = true) {
         if (!characterLedgeGrab || IsAttacking || IsDashing || IsFloorSliding || IsLedgeClimbing) {
             return;
         }
-        if (LedgeDetected && ledgeGrabInput) {
+        if (LedgeDetected && canLedgeGrab) {
             isLedgeGrabbing = true;
             characterLedgeGrab.EnterLedgeGrabState(ledgePosition);
         }
@@ -417,55 +418,11 @@ public abstract class HumanoidController : MonoBehaviour {
     /// <summary>
     /// If a ledge is detected, your character will climb it automatically
     /// </summary>
-    /// <param name="ledgeClimbInput">If true, your character will ledge climb, when a ledge is detected</param>
-    protected void LedgeClimb(bool ledgeClimbInput = true) {
-        if (!characterLedgeGrab || IsAttacking || IsDashing || IsFloorSliding) {
-            return;
-        }
-        if ((LedgeDetected && ledgeClimbInput) || IsLedgeClimbing) {
-            characterLedgeGrab.LedgeClimb(ledgePosition, out isLedgeClimbing, out Vector3 endPosition);
-            if (IsLedgeClimbing == false) {
-                StartCoroutine(TeleportToPosition(endPosition));
-            }
-        }
-    }
-
-    IEnumerator TeleportToPosition(Vector3 position) {
-        yield return new WaitForEndOfFrame();
-        characterRb.position = position;
-        characterLedgeGrab.ExitLedgeGrabState();
-    }*/
-    /// <summary>
-    /// Your character will enter ledge grab state, if a ledge is detected
-    /// </summary>
-    /// <param name="canLedgeGrab">Leave this parameter as is if you want your character to automatically grab the ledge when detected</param>
-    protected void LedgeGrab(bool canLedgeGrab = true) {
-        if (!characterLedgeGrab || IsAttacking || IsDashing || IsFloorSliding || IsLedgeClimbing) {
-            return;
-        }
-        if (LedgeDetected && canLedgeGrab) {
-            isLedgeGrabbing = true;
-            characterLedgeGrab.EnterLedgeGrabState(ledgePosition);
-        }
-        else {
-            isLedgeGrabbing = false;
-            if (!IsLedgeClimbing)
-                characterLedgeGrab.ExitLedgeGrabState();
-        }
-
-        if (ledgeGrabTimer <= 0) {
-            exitLedgeGrab = true;
-        }
-    }
-
-    /// <summary>
-    /// If a ledge is detected, your character will climb it automatically
-    /// </summary>
     protected void LedgeClimb(bool canLedgeClimb = true) {
         if (!characterLedgeGrab || IsAttacking || IsDashing || IsFloorSliding) {
             return;
         }
-        if (LedgeDetected && canLedgeClimb) {
+        if ((LedgeDetected && canLedgeClimb) || IsLedgeClimbing) {
             characterLedgeGrab.LedgeClimb(ledgePosition, out isLedgeClimbing, out Vector3 endPosition);
             if (IsLedgeClimbing == false) {
                 StartCoroutine(TeleportToPosition(endPosition));
@@ -476,9 +433,9 @@ public abstract class HumanoidController : MonoBehaviour {
         }
     }
 
-    IEnumerator TeleportToPosition(Vector3 position) {
+    IEnumerator TeleportToPosition(Vector3 endPosition) {
         yield return new WaitForEndOfFrame();
-        characterRb.position = position;
+        characterRb.position = endPosition;
     }
 #endif
     #endregion
@@ -678,7 +635,7 @@ public abstract class HumanoidController : MonoBehaviour {
         if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
             return;
         }
-        if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation)) {
+        if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation, 0.95f)) {
             isCharging = false;
         }
         if (IsAttacking) {
@@ -801,9 +758,4 @@ public abstract class HumanoidController : MonoBehaviour {
         airJumpCounter = numberOfAirJumps;
     }
     #endregion
-
-    private void OnDrawGizmos() {
-        Gizmos.DrawWireSphere(ledgePosition, 0.2f);
-        Debug.Log("Gizmos");
-    }
 }

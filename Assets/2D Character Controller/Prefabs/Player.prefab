@@ -260,6 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
+  targetFrameRate: 0
   horizontalCollider: {fileID: 2353421476987182311}
   verticalCollider: {fileID: 2353421477638374806}
   smoothMovement: 24
@@ -468,11 +469,8 @@ MonoBehaviour:
   ledgeClimbEndTransform: {fileID: 8940434408844919690}
   isAnimationStill: 0
   ledgeClimbSpeed: 0
-  offsetSprite: {x: -0.7801, y: -1.616}
-  offsetColliderHeight: -0.42
-  interpolateOffsets: 1
-  interpolateIn: 50
-  interpolateOut: 70000
+  offsetSprite: {x: -0.25, y: -1.62}
+  offsetColliderHeight: 0
 --- !u!114 &2353421476736477843
 MonoBehaviour:
   m_ObjectHideFlags: 0

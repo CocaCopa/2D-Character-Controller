@@ -118,8 +118,8 @@ public class CharacterDash : MonoBehaviour {
     /// Casts a check on the position the collider found, to get the platforms edge point
     /// </summary>
     /// <param name="refHit">Cast based on the given hit info and recalculate hit based on the casts results</param>
-    /// <param name="characterHeight">Size Y of the characyers collider</param>
-    /// <param name="downwardsCast">Should cast downwards or upwards</param>
+    /// <param name="characterHeight">Size Y of the character's collider</param>
+    /// <param name="downwardsCast">Should cast downward or upward</param>
     private void GetColliderHitPoint(ref RaycastHit2D refHit, float characterHeight, bool downwardsCast) {
 
         float offsetDefaultOrigin = transform.right.x == 1

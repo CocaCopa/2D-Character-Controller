@@ -64,6 +64,7 @@ public class CharacterAnimator : MonoBehaviour {
     }
 
     private void Controller_OnCharacterReleaseAttack(object sender, System.EventArgs e) {
+        animator.ResetTrigger(CANCEL_CHARGE_ATTACK);
         animator.SetTrigger(RELEASE_CHARGE_ATTACK);
     }
 

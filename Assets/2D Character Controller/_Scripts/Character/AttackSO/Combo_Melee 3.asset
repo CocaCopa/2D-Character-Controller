@@ -20,7 +20,7 @@ MonoBehaviour:
     m_Bits: 0
   resetVelocity: 1
   damageAmount: 0
-  cooldown: 5
+  cooldown: 0.2
   attackPushesCharacter: 1
   forceMode: 1
   force: {x: 500, y: 0}

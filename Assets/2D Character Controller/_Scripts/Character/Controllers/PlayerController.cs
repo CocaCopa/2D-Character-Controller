@@ -74,47 +74,10 @@ public class PlayerController : HumanoidController {
         ChangeHorizontalVelocity(input.GetMovementInput());
         TryFloorSlide(input.OnSlideKeyContinuous());
         WallSlide(input.GetMovementInput().x * transform.right.x > 0);
-        DebugLedgeClimb();
+        LedgeGrab(input.GetMovementInput().x * transform.right.x > 0);
+        LedgeClimb(canLedgeClimb);
         if (!IsLedgeClimbing && canLedgeClimb) {
             canLedgeClimb = false;
-        }
-    }
-
-    [HideInInspector] private enum DebugLedgeAction { Normal, NoInput, WithInput }
-    [HideInInspector] private DebugLedgeAction debugLedgeAction;
-    [HideInInspector] private TMPro.TextMeshProUGUI ledgeModeText;
-    private void DebugLedgeClimb() {
-
-        if (ledgeModeText == null) {
-            ledgeModeText = GameObject.Find("LedgeMode").GetComponent<TMPro.TextMeshProUGUI>();
-        }
-
-        switch (debugLedgeAction) {
-            case DebugLedgeAction.Normal:
-            LedgeGrab(/*input.GetMovementInput().x * transform.right.x > 0*/);
-            LedgeClimb(canLedgeClimb);
-            ledgeModeText.text = "Ledge grab + Ledge climb";
-            break;
-            case DebugLedgeAction.NoInput:
-            LedgeClimb();
-            ledgeModeText.text = "Ledge climb only - No input required";
-            break;
-            case DebugLedgeAction.WithInput:
-            LedgeClimb(input.GetMovementInput().x * transform.right.x > 0);
-            ledgeModeText.text = "Ledge climb only - Input required";
-            break;
-            default:
-            break;
-        }
-
-        if (Input.GetKey(KeyCode.Y)) {
-            debugLedgeAction = DebugLedgeAction.Normal;
-        }
-        if (Input.GetKey(KeyCode.U)) {
-            debugLedgeAction = DebugLedgeAction.NoInput;
-        }
-        if (Input.GetKey(KeyCode.I)) {
-            debugLedgeAction = DebugLedgeAction.WithInput;
         }
     }
 }

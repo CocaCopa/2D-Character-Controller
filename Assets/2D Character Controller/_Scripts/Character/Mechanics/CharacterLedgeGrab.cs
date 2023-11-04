@@ -31,6 +31,11 @@ public class CharacterLedgeGrab : MonoBehaviour {
     private void Awake() {
         playerRb = GetComponent<Rigidbody2D>();
         characterAnimator = GetComponentInChildren<CharacterAnimator>();
+        if (spriteHolderTransform.TryGetComponent<SpriteRenderer>(out _)) {
+            Debug.LogError("'spriteHolderTransform' should not have a sprite renderer attached. " +
+                "Please create a new gameObject and set it as the parent of the one with the Sprite Renderer component");
+        }
+        
     }
 
     /// <summary>

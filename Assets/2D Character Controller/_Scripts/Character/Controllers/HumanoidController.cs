@@ -174,7 +174,7 @@ public abstract class HumanoidController : MonoBehaviour {
     private void Debugging() {
 
         if (Input.GetKeyDown(KeyCode.G)) {
-            transform.position = new(13, -3);
+            transform.position += new Vector3(0, 10f, 0); 
             characterRb.position = transform.position;
         }
         Time.timeScale = timeScale;
@@ -601,7 +601,7 @@ public abstract class HumanoidController : MonoBehaviour {
     /// Your character will perform a charge attack if certain conditions are met
     /// </summary>
     /// <param name="attackData">Scriptable object that holds the data of the attack</param>
-    public void TryChargeAttack(AttackSO attackData) {
+    public void TryChargeAttack(AttackSO attackData, bool isPartOfCombo = true) {
         currentAttackData = attackData;
         if (!currentAttackData.IsChargeableAttack) {
             Debug.LogError("The attack is not set as chargeable. Call 'TryNormalAttack()' instead");
@@ -639,8 +639,8 @@ public abstract class HumanoidController : MonoBehaviour {
             isCharging = false;
         }
         if (IsAttacking) {
-            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
             isAttacking = true;
+            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
             currentAttackClip = currentAttackData.AttackAnimation;
             characterCombat.ReleaseChargedAttack();
             OnReleaseChargeAttack?.Invoke(this, EventArgs.Empty);

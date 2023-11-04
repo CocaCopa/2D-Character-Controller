@@ -21,7 +21,7 @@ MonoBehaviour:
   resetVelocity: 1
   damageAmount: 0
   cooldown: 0.2
-  attackPushesCharacter: 1
+  attackPushesCharacter: 0
   forceMode: 1
   force: {x: 800, y: 0}
   delayForceTime: 0

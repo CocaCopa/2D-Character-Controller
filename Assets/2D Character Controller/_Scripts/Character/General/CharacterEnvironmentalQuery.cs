@@ -401,7 +401,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
             activeCollider = GameObject.Find("Vertical")?.GetComponent<CapsuleCollider2D>();
             if (!activeCollider) {
                 debugMode = DebugMode.None;
-                Debug.LogWarning("PlayerEnvironmentalQuery: Please enter play mode in order to debug");
+                Debug.LogError("PlayerEnvironmentalQuery: Could not find character's collider. Please make sure that the 'Player' prefab was not changed");
                 return;
             }
         }

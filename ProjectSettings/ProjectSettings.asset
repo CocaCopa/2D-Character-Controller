@@ -667,7 +667,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: SLIDE_COMPONENT;LEDGE_GRAB_COMPONENT;COMBAT_COMPONENT;DASH_COMPONENT
+    Standalone: LEDGE_GRAB_COMPONENT;DASH_COMPONENT;SLIDE_COMPONENT;COMBAT_COMPONENT
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

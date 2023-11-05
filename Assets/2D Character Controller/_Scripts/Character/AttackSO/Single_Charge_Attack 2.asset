@@ -33,5 +33,6 @@ MonoBehaviour:
   chargeTime: 1
   holdChargeTime: 1
   canMoveWhileCharging: 0
+  moveSpeedPercentage: 0
   throwsProjectile: 0
   projectilePrefab: {fileID: 0}

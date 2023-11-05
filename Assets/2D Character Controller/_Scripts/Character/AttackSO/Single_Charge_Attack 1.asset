@@ -18,10 +18,11 @@ MonoBehaviour:
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
+  canMoveWhileAttacking: 1
   resetVelocity: 1
   damageAmount: 0
   cooldown: 0.2
-  attackPushesCharacter: 0
+  attackPushesCharacter: 1
   forceMode: 1
   force: {x: 800, y: 0}
   delayForceTime: 0
@@ -33,5 +34,6 @@ MonoBehaviour:
   chargeTime: 1
   holdChargeTime: 1
   canMoveWhileCharging: 0
+  moveSpeedPercentage: 0.4
   throwsProjectile: 0
   projectilePrefab: {fileID: 0}

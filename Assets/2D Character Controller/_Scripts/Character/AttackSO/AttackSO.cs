@@ -9,6 +9,8 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private AnimationClip attackAnimation;
     [Tooltip("Specify which layers can be damaged")]
     [SerializeField] private LayerMask whatIsDamageable;
+    [Tooltip("Determines if the character should be able to move while they cast an attack")]
+    [SerializeField] private bool canMoveWhileAttacking;
     [Tooltip("Set character velocity to Vector3.zero when the attack is initiated")]
     [SerializeField] private bool resetVelocity = true;
     [Tooltip("How much damage should be dealt by this attack")]
@@ -39,6 +41,8 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private float holdChargeTime;
     [Tooltip("If 'true', your character will be allowed to move while they charge the attack")]
     [SerializeField] private bool canMoveWhileCharging = false;
+    [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
+    [SerializeField, Range(0,1)] private float moveSpeedPercentage;
     [Tooltip("Does this attack throw a projectile?")]
     [SerializeField] private bool throwsProjectile = false;
     [Tooltip("Projectile to spawn")]
@@ -53,6 +57,7 @@ public class AttackSO : ScriptableObject {
     public Sprite Icon => icon;
     public AnimationClip AttackAnimation => attackAnimation;
     public LayerMask WhatIsDamageable => whatIsDamageable;
+    public bool CanMoveWhileAttacking => canMoveWhileAttacking;
     public bool AttackPushesCharacter => attackPushesCharacter;
     public bool ResetVelocity => resetVelocity;
     public float DamageAmount => damageAmount;
@@ -68,6 +73,7 @@ public class AttackSO : ScriptableObject {
     public float ChargeTime => chargeTime;
     public float HoldChargeTime => holdChargeTime;
     public bool CanMoveWhileCharging => canMoveWhileCharging;
+    public float MoveSpeedPercentage => moveSpeedPercentage;
     public bool ThrowsProjectile => throwsProjectile;
     public GameObject ProjectilePrefab => projectilePrefab;
 }

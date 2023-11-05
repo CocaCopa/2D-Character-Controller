@@ -70,6 +70,11 @@ public abstract class HumanoidController : MonoBehaviour {
 #endif
     #endregion
 
+    #region --- Constants ---
+    private const float ATTACK_CLIP_THRESHOLD = 0.95f;
+    private const int OPPOSITE_DIRECTION = 180;
+    #endregion
+
     #region --- Private Properties ---
     private Rigidbody2D characterRb;
     private CapsuleCollider2D activeCollider;
@@ -93,6 +98,7 @@ public abstract class HumanoidController : MonoBehaviour {
     private bool canWallSlide = false;
     private bool attackBufferButton = false;
     private bool attackCompleted = false;
+    private bool moveWhileChargingAttack = false;
 
     private int airJumpCounter = 0;
 
@@ -271,6 +277,10 @@ public abstract class HumanoidController : MonoBehaviour {
         if (jumpKeyPressed && VerticalVelocity < 0) {
             jumpKeyPressed = false;
         }
+
+        if (!IsAttacking && currentAttackData != null) {
+            currentAttackData = null;
+        }
     }
 
     private void SpeedCalculations() {
@@ -306,12 +316,14 @@ public abstract class HumanoidController : MonoBehaviour {
     /// <summary>
     /// Change your character's horizontal velocity, based on the given direction
     /// </summary>
-    /// <param name="moveDirection"></param>
+    /// <param name="moveDirection">Desired horizontal direction to move towards</param>
     protected void ChangeHorizontalVelocity(Vector2 moveDirection) {
         if (!characterMovement) {
             return;
         }
-        if (IsAttacking || IsFloorSliding || IsDashing || IsLedgeGrabbing || IsLedgeClimbing || IsWallSliding) {
+        bool restrictMovement = IsAttacking || IsFloorSliding || IsDashing || IsLedgeGrabbing || IsLedgeClimbing || IsWallSliding;
+        bool bypassRestriction = currentAttackData && currentAttackData.IsChargeableAttack && currentAttackData.CanMoveWhileCharging;
+        if (restrictMovement && !bypassRestriction) {
             isRunning = false;
             return;
         }
@@ -321,8 +333,13 @@ public abstract class HumanoidController : MonoBehaviour {
         Vector2 horizontalVelocity = IsGrounded
             ? characterMovement.OnGroundHorizontalVelocity(moveDirection, RunsIntoWall(false))
             : characterMovement.OnAirHorizontalVelocity(moveDirection, RunsIntoWall(false));
-        Vector2 verticalVelocity = new (0, characterRb.velocity.y);
-        Vector2 characterVelocity = horizontalVelocity + verticalVelocity;
+        if (moveWhileChargingAttack)
+            horizontalVelocity *= currentAttackData.MoveSpeedPercentage;
+        else if (!moveWhileChargingAttack && IsAttacking)
+            horizontalVelocity = Vector2.zero;
+
+        Vector2 currentVerticalVelocity = new (0, characterRb.velocity.y);
+        Vector2 characterVelocity = horizontalVelocity + currentVerticalVelocity;
 
         characterRb.velocity = Vector3.Lerp(characterRb.velocity, characterVelocity, smoothMovement * Time.deltaTime);
     }
@@ -610,24 +627,26 @@ public abstract class HumanoidController : MonoBehaviour {
 
         if (AllowAttack() && !IsCharging && !IsAttacking) {
             SetAttackInformation(chargeableAttack: true);
+            moveWhileChargingAttack = currentAttackData.CanMoveWhileCharging;
             isCharging = true;
             OnInitiateChargeAttack?.Invoke(this, new OnInitiateChargeAttackEventArgs {
                 chargeClip = attackData.ChargeAnimation
             });
         }
 
-        if (isCharging) {
+        if (IsCharging) {
             isAttacking = true;
             characterCombat.ChargeAttack(attackData, out bool chargeOvertime);
             if (chargeOvertime) {
                 currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.CooldownIfOvertime;
                 isCharging = false;
                 isAttacking = false;
+                moveWhileChargingAttack = false;
                 OnCancelChargeAttack?.Invoke(this, EventArgs.Empty);
             }
         }
     }
-
+    
     /// <summary>
     /// Releases a charge attack
     /// </summary>
@@ -635,10 +654,11 @@ public abstract class HumanoidController : MonoBehaviour {
         if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
             return;
         }
-        if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation, 0.95f)) {
+        if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation, ATTACK_CLIP_THRESHOLD)) {
             isCharging = false;
         }
         if (IsAttacking) {
+            moveWhileChargingAttack = false;
             isAttacking = true;
             currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
             currentAttackClip = currentAttackData.AttackAnimation;
@@ -695,7 +715,7 @@ public abstract class HumanoidController : MonoBehaviour {
         if (AllowAttack() && !IsAttacking) {
             return true;
         }
-        else if (AllowAttack()) {
+        else if (AllowAttack() && characterAnimator.IsClipPlaying(currentAttackClip, ATTACK_CLIP_THRESHOLD)) {
             attackBufferTimer = meleeAttackBufferTime;
         }
         return false;
@@ -720,7 +740,7 @@ public abstract class HumanoidController : MonoBehaviour {
     protected void FlipCharacter(float directionX) {
 
         Vector3 normalRotation = Vector3.zero;
-        Vector3 flipRotation = Vector3.up * 180;
+        Vector3 flipRotation = Vector3.up * OPPOSITE_DIRECTION;
 
         if (directionX > 0) {
 

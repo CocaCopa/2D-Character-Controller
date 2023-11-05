@@ -12,6 +12,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty cooldown;
     SerializedProperty resetVelocity;
     SerializedProperty canChangeDirections;
+    SerializedProperty adjustPositionOnAttackEnd;
     SerializedProperty canMoveWhileAttacking;
     SerializedProperty attackMoveSpeedPercentage;
     SerializedProperty attackPushesCharacter;
@@ -40,6 +41,7 @@ public class AttackSOEditor : Editor {
         cooldown = serializedObject.FindProperty(nameof(cooldown));
         resetVelocity = serializedObject.FindProperty(nameof(resetVelocity));
         canChangeDirections = serializedObject.FindProperty(nameof(canChangeDirections));
+        adjustPositionOnAttackEnd = serializedObject.FindProperty(nameof(adjustPositionOnAttackEnd));
         canMoveWhileAttacking = serializedObject.FindProperty(nameof(canMoveWhileAttacking));
         attackMoveSpeedPercentage = serializedObject.FindProperty(nameof(attackMoveSpeedPercentage));
         attackPushesCharacter = serializedObject.FindProperty(nameof(attackPushesCharacter));
@@ -65,12 +67,20 @@ public class AttackSOEditor : Editor {
 
     public override void OnInspectorGUI() {
         GetTargetComponent();
+        LogWarning();
         DrawCustomEditor();
     }
 
     private void GetTargetComponent() {
         if (attackSO == null)
             attackSO = target as AttackSO;
+    }
+
+    private void LogWarning() {
+        if (attackSO.AttackAnimation != null && attackSO.AttackAnimation.isLooping) {
+            UnityEngine.Debug.LogWarning("The provided animation is configured with 'isLooping' set to 'true' " +
+                "which might lead to potential visual issues when your character is attacking");
+        }
     }
 
     private void DrawCustomEditor() {
@@ -96,6 +106,7 @@ public class AttackSOEditor : Editor {
         EditorGUILayout.PropertyField(cooldown);
         EditorGUILayout.PropertyField(resetVelocity);
         EditorGUILayout.PropertyField(canChangeDirections);
+        EditorGUILayout.PropertyField(adjustPositionOnAttackEnd);
         if (!attackSO.IsChargeableAttack) {
             EditorGUILayout.PropertyField(canMoveWhileAttacking);
             if (attackSO.CanMoveWhileAttacking) {

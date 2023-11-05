@@ -889,10 +889,14 @@ PrefabInstance:
       propertyPath: targetFrameRate
       value: 144
       objectReference: {fileID: 0}
-    - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: debugMode
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.size
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: meleeCombo_1.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 47328ed80cfce0a41b27eb8654840846, type: 2}
     - target: {fileID: 8940434408844919690, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.681

@@ -18,6 +18,9 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool resetVelocity = true;
     [Tooltip("Determines wether or not your character can change directions while they're attacking")]
     [SerializeField] private bool canChangeDirections = false;
+    [Tooltip("If your animation offsets your character during the attack, you can adjust their position by setting an offset. " +
+        "After the attack, your character will teleport to that offseted position")]
+    [SerializeField] private Vector3 adjustPositionOnAttackEnd;
     [Tooltip("Determines if the character should be able to move while they cast an attack")]
     [SerializeField] private bool canMoveWhileAttacking;
     [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
@@ -68,6 +71,7 @@ public class AttackSO : ScriptableObject {
     public float Cooldown => cooldown;
     public bool ResetVelocity => resetVelocity;
     public bool CanChangeDirections => canChangeDirections;
+    public Vector3 AdjustPositionOnAttackEnd => adjustPositionOnAttackEnd;
     public bool CanMoveWhileAttacking => !IsChargeableAttack && canMoveWhileAttacking;
     public float AttackMoveSpeedPercentage => attackMoveSpeedPercentage;
     public bool AttackPushesCharacter => attackPushesCharacter;

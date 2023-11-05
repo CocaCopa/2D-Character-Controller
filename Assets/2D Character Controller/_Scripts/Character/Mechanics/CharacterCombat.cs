@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterCombat : MonoBehaviour {
@@ -58,10 +59,20 @@ public class CharacterCombat : MonoBehaviour {
     /// <summary>
     /// Unlocks your character after the attack is completed
     /// </summary>
-    public void ExitAttackState() {
+    public void ExitAttackState(AttackSO attackData, bool adjustPosition = true) {
         playerRb.drag = defaultLinearDrag;
         playerRb.gravityScale = defaultGravityScale;
         moveWhileCastingAttack = false;
+        if (adjustPosition && attackData.AdjustPositionOnAttackEnd != Vector3.zero) {
+            StartCoroutine(TeleportToPosition(attackData.AdjustPositionOnAttackEnd));
+            Vector3 position = attackData.AdjustPositionOnAttackEnd;
+        }
+    }
+
+    private System.Collections.IEnumerator TeleportToPosition(Vector3 position) {
+        yield return new WaitForEndOfFrame();
+        position.x *= transform.right.x;
+        transform.position += position;
     }
 
     /// <summary>
@@ -78,7 +89,6 @@ public class CharacterCombat : MonoBehaviour {
             if (CocaCopa.Utilities.TickTimer(ref holdAttackTimer, attackData.HoldChargeTime, false)) {
                 chargeOvertime = true;
                 attackCharged = false;
-                ExitAttackState();
             }
         }
     }

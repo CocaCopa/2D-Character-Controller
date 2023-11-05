@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: 
   icon: {fileID: 0}
-  attackAnimation: {fileID: 7400000, guid: 81a9c09a64d83904990631d9a38256ac, type: 2}
+  attackAnimation: {fileID: 7400000, guid: 12482399ed2e0d34188669fc946e0f8c, type: 2}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
@@ -22,6 +22,7 @@ MonoBehaviour:
   cooldown: 0
   resetVelocity: 1
   canChangeDirections: 0
+  adjustPositionOnAttackEnd: {x: 0.5, y: 0, z: 0}
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1

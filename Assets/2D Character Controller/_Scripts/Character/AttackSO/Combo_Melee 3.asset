@@ -14,16 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: 
   icon: {fileID: 0}
-  attackAnimation: {fileID: 7400000, guid: d98d9ab37d0a43c4cb0595b11c732d86, type: 2}
+  attackAnimation: {fileID: 7400000, guid: ba4b61139a72d844f8166d90bc40ed3e, type: 2}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
-  resetVelocity: 1
   damageAmount: 0
   cooldown: 0.2
+  resetVelocity: 1
+  canChangeDirections: 0
+  adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
+  canMoveWhileAttacking: 0
+  attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1
   forceMode: 1
-  force: {x: 500, y: 0}
+  force: {x: 2000, y: 0}
   delayForceTime: 0
   useGravity: 0
   dragCoeficient: 10
@@ -33,5 +37,7 @@ MonoBehaviour:
   chargeTime: 0
   holdChargeTime: 0
   canMoveWhileCharging: 0
+  chargeMoveSpeedPercentage: 0
+  canMoveOnReleaseAttack: 0
   throwsProjectile: 0
   projectilePrefab: {fileID: 0}

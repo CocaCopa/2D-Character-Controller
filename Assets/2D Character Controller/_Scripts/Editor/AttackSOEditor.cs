@@ -8,11 +8,13 @@ public class AttackSOEditor : Editor {
     SerializedProperty icon;
     SerializedProperty attackAnimation;
     SerializedProperty whatIsDamageable;
-    SerializedProperty canMoveWhileAttacking;
-    SerializedProperty attackPushesCharacter;
-    SerializedProperty resetVelocity;
     SerializedProperty damageAmount;
     SerializedProperty cooldown;
+    SerializedProperty resetVelocity;
+    SerializedProperty canChangeDirections;
+    SerializedProperty canMoveWhileAttacking;
+    SerializedProperty attackMoveSpeedPercentage;
+    SerializedProperty attackPushesCharacter;
     SerializedProperty forceMode;
     SerializedProperty force;
     SerializedProperty delayForceTime;
@@ -24,7 +26,8 @@ public class AttackSOEditor : Editor {
     SerializedProperty chargeTime;
     SerializedProperty holdChargeTime;
     SerializedProperty canMoveWhileCharging;
-    SerializedProperty moveSpeedPercentage;
+    SerializedProperty chargeMoveSpeedPercentage;
+    SerializedProperty canMoveOnReleaseAttack;
     SerializedProperty throwsProjectile;
     SerializedProperty projectilePrefab;
 
@@ -33,11 +36,13 @@ public class AttackSOEditor : Editor {
         icon = serializedObject.FindProperty(nameof(icon));
         attackAnimation = serializedObject.FindProperty(nameof(attackAnimation));
         whatIsDamageable = serializedObject.FindProperty(nameof(whatIsDamageable));
-        canMoveWhileAttacking = serializedObject.FindProperty(nameof(canMoveWhileAttacking));
-        attackPushesCharacter = serializedObject.FindProperty(nameof(attackPushesCharacter));
-        resetVelocity = serializedObject.FindProperty(nameof(resetVelocity));
         damageAmount = serializedObject.FindProperty(nameof(damageAmount));
         cooldown = serializedObject.FindProperty(nameof(cooldown));
+        resetVelocity = serializedObject.FindProperty(nameof(resetVelocity));
+        canChangeDirections = serializedObject.FindProperty(nameof(canChangeDirections));
+        canMoveWhileAttacking = serializedObject.FindProperty(nameof(canMoveWhileAttacking));
+        attackMoveSpeedPercentage = serializedObject.FindProperty(nameof(attackMoveSpeedPercentage));
+        attackPushesCharacter = serializedObject.FindProperty(nameof(attackPushesCharacter));
         forceMode = serializedObject.FindProperty(nameof(forceMode));
         force = serializedObject.FindProperty(nameof(force));
         delayForceTime = serializedObject.FindProperty(nameof(delayForceTime));
@@ -49,29 +54,62 @@ public class AttackSOEditor : Editor {
         chargeTime = serializedObject.FindProperty(nameof(chargeTime));
         holdChargeTime = serializedObject.FindProperty(nameof(holdChargeTime));
         canMoveWhileCharging = serializedObject.FindProperty(nameof(canMoveWhileCharging));
-        moveSpeedPercentage = serializedObject.FindProperty(nameof(moveSpeedPercentage));
+        chargeMoveSpeedPercentage = serializedObject.FindProperty(nameof(chargeMoveSpeedPercentage));
+        canMoveOnReleaseAttack = serializedObject.FindProperty(nameof(canMoveOnReleaseAttack));
         throwsProjectile = serializedObject.FindProperty(nameof(throwsProjectile));
         projectilePrefab = serializedObject.FindProperty(nameof(projectilePrefab));
     }
     #endregion
 
+    private AttackSO attackSO;
+
     public override void OnInspectorGUI() {
+        GetTargetComponent();
         DrawCustomEditor();
     }
 
+    private void GetTargetComponent() {
+        if (attackSO == null)
+            attackSO = target as AttackSO;
+    }
+
     private void DrawCustomEditor() {
-        AttackSO attackSO = target as AttackSO;
         serializedObject.Update();
+        CommonDetails();
+        CommonStats();
+        PushCharacter();
+        ChargeableAttack();
+        Projectile();
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    private void CommonDetails() {
         EditorGUILayout.PropertyField(attackName);
         EditorGUILayout.PropertyField(icon);
+        EditorGUILayout.Space(10);
+    }
+
+    private void CommonStats() {
         EditorGUILayout.PropertyField(attackAnimation);
         EditorGUILayout.PropertyField(whatIsDamageable);
-        EditorGUILayout.PropertyField(canMoveWhileAttacking);
-        EditorGUILayout.PropertyField(resetVelocity);
         EditorGUILayout.PropertyField(damageAmount);
         EditorGUILayout.PropertyField(cooldown);
+        EditorGUILayout.PropertyField(resetVelocity);
+        EditorGUILayout.PropertyField(canChangeDirections);
+        if (!attackSO.IsChargeableAttack) {
+            EditorGUILayout.PropertyField(canMoveWhileAttacking);
+            if (attackSO.CanMoveWhileAttacking) {
+                EditorGUILayout.PropertyField(attackMoveSpeedPercentage);
+            }
+        }
+    }
+
+    private void PushCharacter() {
         if (attackSO.AttackPushesCharacter) {
             EditorGUILayout.Space(10);
+        }
+        if (attackSO.CanMoveWhileCharging || attackSO.CanMoveWhileAttacking) {
+            EditorGUI.BeginDisabledGroup(true);
         }
         EditorGUILayout.PropertyField(attackPushesCharacter);
         if (attackSO.AttackPushesCharacter) {
@@ -82,9 +120,15 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.PropertyField(dragCoeficient);
             EditorGUILayout.Space(10);
         }
+        if (attackSO.CanMoveWhileCharging || attackSO.CanMoveWhileAttacking) {
+            EditorGUI.EndDisabledGroup();
+        }
         if (attackSO.IsChargeableAttack && !attackSO.AttackPushesCharacter) {
             EditorGUILayout.Space(10);
         }
+    }
+
+    private void ChargeableAttack() {
         EditorGUILayout.PropertyField(isChargeableAttack);
         if (attackSO.IsChargeableAttack) {
             EditorGUILayout.PropertyField(chargeAnimation);
@@ -93,10 +137,14 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.PropertyField(holdChargeTime);
             EditorGUILayout.PropertyField(canMoveWhileCharging);
             if (attackSO.CanMoveWhileCharging) {
-                EditorGUILayout.PropertyField(moveSpeedPercentage);
+                EditorGUILayout.PropertyField(chargeMoveSpeedPercentage);
+                EditorGUILayout.PropertyField(canMoveOnReleaseAttack);
             }
             EditorGUILayout.Space(10);
         }
+    }
+
+    private void Projectile() {
         if (attackSO.ThrowsProjectile && !attackSO.IsChargeableAttack) {
             EditorGUILayout.Space(10);
         }
@@ -105,6 +153,5 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.PropertyField(projectilePrefab);
             EditorGUILayout.Space(10);
         }
-        serializedObject.ApplyModifiedProperties();
     }
 }

@@ -43,19 +43,6 @@ public class HumanoidControllerEditor : Editor {
         DrawCustomInspector();
         EditorGUILayout.Space(1);
         DrawDefaultExcludingCustomFields();
-
-        HumanoidController playerController = target as HumanoidController;
-        Type attackSOType = typeof(AttackSO); // Change this to the actual type you're looking for.
-
-        // Get all fields in the playerController script.
-        FieldInfo[] fields = playerController.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        Debug.Log(fields.Length);
-        // Find and list fields of the desired type.
-        foreach (FieldInfo field in fields) {
-            if (field.FieldType == attackSOType) {
-                EditorGUILayout.LabelField(field.Name);
-            }
-        }
     }
 
     private void DisplayScriptReference() {

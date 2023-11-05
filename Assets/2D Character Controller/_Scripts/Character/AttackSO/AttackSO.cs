@@ -9,14 +9,19 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private AnimationClip attackAnimation;
     [Tooltip("Specify which layers can be damaged")]
     [SerializeField] private LayerMask whatIsDamageable;
-    [Tooltip("Determines if the character should be able to move while they cast an attack")]
-    [SerializeField] private bool canMoveWhileAttacking;
-    [Tooltip("Set character velocity to Vector3.zero when the attack is initiated")]
-    [SerializeField] private bool resetVelocity = true;
     [Tooltip("How much damage should be dealt by this attack")]
     [SerializeField] private float damageAmount;
     [Tooltip("Attack cooldown in seconds")]
     [SerializeField] private float cooldown;
+    [Tooltip("True, sets your character's velocity to Vector3.zero when the attack is initiated. " +
+        "False, your character will continue moving at a constant speed based on their velocity before the attack.")]
+    [SerializeField] private bool resetVelocity = true;
+    [Tooltip("Determines wether or not your character can change directions while they're attacking")]
+    [SerializeField] private bool canChangeDirections = false;
+    [Tooltip("Determines if the character should be able to move while they cast an attack")]
+    [SerializeField] private bool canMoveWhileAttacking;
+    [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
+    [SerializeField, Range(0,1)] private float attackMoveSpeedPercentage;
     [Tooltip("If 'true,' a force will be applied to the character in the direction they are facing when the attack is initiated")]
     [SerializeField] private bool attackPushesCharacter;
     [Tooltip("Choose which Rigidbody.AddForce() force mode should be applied")]
@@ -42,7 +47,9 @@ public class AttackSO : ScriptableObject {
     [Tooltip("If 'true', your character will be allowed to move while they charge the attack")]
     [SerializeField] private bool canMoveWhileCharging = false;
     [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
-    [SerializeField, Range(0,1)] private float moveSpeedPercentage;
+    [SerializeField, Range(0,1)] private float chargeMoveSpeedPercentage;
+    [Tooltip("True if you want your character to be allowed to move as soon as the attack is released")]
+    [SerializeField] private bool canMoveOnReleaseAttack;
     [Tooltip("Does this attack throw a projectile?")]
     [SerializeField] private bool throwsProjectile = false;
     [Tooltip("Projectile to spawn")]
@@ -57,11 +64,13 @@ public class AttackSO : ScriptableObject {
     public Sprite Icon => icon;
     public AnimationClip AttackAnimation => attackAnimation;
     public LayerMask WhatIsDamageable => whatIsDamageable;
-    public bool CanMoveWhileAttacking => canMoveWhileAttacking;
-    public bool AttackPushesCharacter => attackPushesCharacter;
-    public bool ResetVelocity => resetVelocity;
     public float DamageAmount => damageAmount;
     public float Cooldown => cooldown;
+    public bool ResetVelocity => resetVelocity;
+    public bool CanChangeDirections => canChangeDirections;
+    public bool CanMoveWhileAttacking => !IsChargeableAttack && canMoveWhileAttacking;
+    public float AttackMoveSpeedPercentage => attackMoveSpeedPercentage;
+    public bool AttackPushesCharacter => attackPushesCharacter;
     public ForceMode2D ForceMode => forceMode;
     public Vector3 Force => force;
     public float DelayForceTime => delayForceTime;
@@ -72,8 +81,9 @@ public class AttackSO : ScriptableObject {
     public AnimationClip ChargeAnimation => chargeAnimation;
     public float ChargeTime => chargeTime;
     public float HoldChargeTime => holdChargeTime;
-    public bool CanMoveWhileCharging => canMoveWhileCharging;
-    public float MoveSpeedPercentage => moveSpeedPercentage;
+    public bool CanMoveWhileCharging => IsChargeableAttack && canMoveWhileCharging;
+    public float ChargeMoveSpeedPercentage => chargeMoveSpeedPercentage;
+    public bool CanMoveOnReleaseAttack => canMoveOnReleaseAttack;
     public bool ThrowsProjectile => throwsProjectile;
     public GameObject ProjectilePrefab => projectilePrefab;
 }

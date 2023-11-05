@@ -7,10 +7,10 @@ public class CharacterCombat : MonoBehaviour {
         public Animation animationClip;
     }
 
-    private AttackSO attackData;
     private Rigidbody2D playerRb;
     private float defaultLinearDrag;
     private float defaultGravityScale;
+    private bool moveWhileCastingAttack;
     
     [SerializeField] private bool attackCharged = false;
     [SerializeField] private float chargeTimer;
@@ -25,14 +25,13 @@ public class CharacterCombat : MonoBehaviour {
     /// <summary>
     /// Locks your character into 'Attack State' based on the scriptable object data
     /// </summary>
-    /// <param name="attackData">The scriptable object holding the data of the attack</param>
+    /// <param name="attackData">The scriptable object that the data of the attack</param>
     public void EnterAttackState(AttackSO attackData) {
         if (!attackData.UseGravity) {
             playerRb.gravityScale = 0f;
         }
-        if (attackData.AttackPushesCharacter) {
+        if (attackData.AttackPushesCharacter && !attackData.CanMoveWhileAttacking && !attackData.CanMoveWhileCharging) {
             StartCoroutine(PushCharacter(attackData));
-            playerRb.drag = attackData.DragCoeficient;
         }
         if (attackData.ResetVelocity) {
             playerRb.velocity = Vector2.zero;
@@ -40,6 +39,10 @@ public class CharacterCombat : MonoBehaviour {
         if (attackData.IsChargeableAttack) {
             chargeTimer = attackData.ChargeTime;
             holdAttackTimer = attackData.HoldChargeTime;
+            moveWhileCastingAttack = attackData.CanMoveWhileCharging;
+        }
+        else {
+            moveWhileCastingAttack = attackData.CanMoveWhileAttacking;
         }
     }
 
@@ -49,6 +52,7 @@ public class CharacterCombat : MonoBehaviour {
         Vector3 force = attackData.Force;
         force.x *= direction.x;
         playerRb.AddForce(force, attackData.ForceMode);
+        playerRb.drag = attackData.DragCoeficient;
     }
 
     /// <summary>
@@ -57,12 +61,13 @@ public class CharacterCombat : MonoBehaviour {
     public void ExitAttackState() {
         playerRb.drag = defaultLinearDrag;
         playerRb.gravityScale = defaultGravityScale;
+        moveWhileCastingAttack = false;
     }
 
     /// <summary>
     /// Makes the character charge an attack
     /// </summary>
-    /// <param name="attackData">The scriptable object holding the data of the attack</param>
+    /// <param name="attackData">The scriptable object that the data of the attack</param>
     /// <param name="chargeOvertime">Indicates when the character holded the attack for more than the allowed time</param>
     public void ChargeAttack(AttackSO attackData, out bool chargeOvertime) {
         
@@ -79,9 +84,32 @@ public class CharacterCombat : MonoBehaviour {
     }
 
     /// <summary>
-    /// Releases a charged attack
+    /// Releases a charged attack. This function will not 'ExitAttackState()'
     /// </summary>
-    public void ReleaseChargedAttack() {
-        
+    /// <param name="attackData">The scriptable object that the data of the attack</param>
+    public void ReleaseChargedAttack(AttackSO attackData) {
+        moveWhileCastingAttack = attackData.CanMoveOnReleaseAttack;
+    }
+
+    /// <summary>
+    /// If your character can move during an attack, this function will adjust their horizontal velocity based on the provided attack data.
+    /// Should be called after your horizontal velocity calculation.
+    /// </summary>
+    /// <param name="attackData">The scriptable object that the data of the attack</param>
+    /// <param name="horizontalVelocity">Current horizontal velocity</param>
+    public void CanMoveWhileCastingAttack(AttackSO attackData, ref Vector2 horizontalVelocity) {
+        if (moveWhileCastingAttack) {
+            if (attackData.CanMoveWhileCharging) {
+                horizontalVelocity *= attackData.ChargeMoveSpeedPercentage;
+            }
+            else if (attackData.CanMoveWhileAttacking) {
+                horizontalVelocity *= attackData.AttackMoveSpeedPercentage;
+            }
+        }
+        else if (attackData != null && attackData.IsChargeableAttack) {
+            if (!moveWhileCastingAttack) {
+                horizontalVelocity = Vector2.zero;
+            }
+        }
     }
 }

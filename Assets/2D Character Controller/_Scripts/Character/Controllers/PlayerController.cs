@@ -31,7 +31,7 @@ public class PlayerController : HumanoidController {
         if (Input.GetKey(KeyCode.Z)) {
             TryChargeAttack(singleChargeAttack);
         }
-        else {
+        else if (Input.GetKeyUp(KeyCode.Z)) {
             ReleaseChargeAttack();
         }
     }
@@ -68,9 +68,7 @@ public class PlayerController : HumanoidController {
     }
 
     private void Controller() {
-        if (!IsLedgeClimbing) {
-            FlipCharacter(input.GetMovementInput().x);
-        }
+        FlipCharacter(input.GetMovementInput().x);
         ChangeHorizontalVelocity(input.GetMovementInput());
         TryFloorSlide(input.OnSlideKeyContinuous());
         WallSlide(input.GetMovementInput().x * transform.right.x > 0);

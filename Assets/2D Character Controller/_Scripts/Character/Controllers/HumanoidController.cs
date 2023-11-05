@@ -98,7 +98,6 @@ public abstract class HumanoidController : MonoBehaviour {
     private bool canWallSlide = false;
     private bool attackBufferButton = false;
     private bool attackCompleted = false;
-    private bool moveWhileChargingAttack = false;
 
     private int airJumpCounter = 0;
 
@@ -260,6 +259,10 @@ public abstract class HumanoidController : MonoBehaviour {
                     }
                 }
             }
+
+            if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation, ATTACK_CLIP_THRESHOLD)) {
+                isCharging = false;
+            }
         }
     }
     private IEnumerator CheckAttackAnimation() {
@@ -318,30 +321,28 @@ public abstract class HumanoidController : MonoBehaviour {
     /// </summary>
     /// <param name="moveDirection">Desired horizontal direction to move towards</param>
     protected void ChangeHorizontalVelocity(Vector2 moveDirection) {
-        if (!characterMovement) {
-            return;
-        }
-        bool restrictMovement = IsAttacking || IsFloorSliding || IsDashing || IsLedgeGrabbing || IsLedgeClimbing || IsWallSliding;
-        bool bypassRestriction = currentAttackData && currentAttackData.IsChargeableAttack && currentAttackData.CanMoveWhileCharging;
-        if (restrictMovement && !bypassRestriction) {
+        if (DontAllowMovement()) {
             isRunning = false;
             return;
         }
         if (moveDirection == Vector2.zero) {
             isRunning = false;
         }
+
         Vector2 horizontalVelocity = IsGrounded
             ? characterMovement.OnGroundHorizontalVelocity(moveDirection, RunsIntoWall(false))
             : characterMovement.OnAirHorizontalVelocity(moveDirection, RunsIntoWall(false));
-        if (moveWhileChargingAttack)
-            horizontalVelocity *= currentAttackData.MoveSpeedPercentage;
-        else if (!moveWhileChargingAttack && IsAttacking)
-            horizontalVelocity = Vector2.zero;
-
+        characterCombat.CanMoveWhileCastingAttack(currentAttackData, ref horizontalVelocity);
         Vector2 currentVerticalVelocity = new (0, characterRb.velocity.y);
         Vector2 characterVelocity = horizontalVelocity + currentVerticalVelocity;
 
         characterRb.velocity = Vector3.Lerp(characterRb.velocity, characterVelocity, smoothMovement * Time.deltaTime);
+    }
+
+    private bool DontAllowMovement() {
+        bool restrictMovement = IsAttacking || IsFloorSliding || IsDashing || IsLedgeGrabbing || IsLedgeClimbing || IsWallSliding;
+        bool bypassRestriction = currentAttackData && (currentAttackData.CanMoveWhileCharging || currentAttackData.CanMoveWhileAttacking);
+        return restrictMovement && !bypassRestriction;
     }
     #endregion
 
@@ -614,61 +615,9 @@ public abstract class HumanoidController : MonoBehaviour {
         }
     }
 
-    /// <summary>
-    /// Your character will perform a charge attack if certain conditions are met
-    /// </summary>
-    /// <param name="attackData">Scriptable object that holds the data of the attack</param>
-    public void TryChargeAttack(AttackSO attackData, bool isPartOfCombo = true) {
-        currentAttackData = attackData;
-        if (!currentAttackData.IsChargeableAttack) {
-            Debug.LogError("The attack is not set as chargeable. Call 'TryNormalAttack()' instead");
-            return;
-        }
-
-        if (AllowAttack() && !IsCharging && !IsAttacking) {
-            SetAttackInformation(chargeableAttack: true);
-            moveWhileChargingAttack = currentAttackData.CanMoveWhileCharging;
-            isCharging = true;
-            OnInitiateChargeAttack?.Invoke(this, new OnInitiateChargeAttackEventArgs {
-                chargeClip = attackData.ChargeAnimation
-            });
-        }
-
-        if (IsCharging) {
-            isAttacking = true;
-            characterCombat.ChargeAttack(attackData, out bool chargeOvertime);
-            if (chargeOvertime) {
-                currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.CooldownIfOvertime;
-                isCharging = false;
-                isAttacking = false;
-                moveWhileChargingAttack = false;
-                OnCancelChargeAttack?.Invoke(this, EventArgs.Empty);
-            }
-        }
-    }
-    
-    /// <summary>
-    /// Releases a charge attack
-    /// </summary>
-    public void ReleaseChargeAttack() {
-        if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
-            return;
-        }
-        if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation, ATTACK_CLIP_THRESHOLD)) {
-            isCharging = false;
-        }
-        if (IsAttacking) {
-            moveWhileChargingAttack = false;
-            isAttacking = true;
-            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
-            currentAttackClip = currentAttackData.AttackAnimation;
-            characterCombat.ReleaseChargedAttack();
-            OnReleaseChargeAttack?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
     private void NormalAttack(bool isPartOfCombo) {
         SetAttackInformation(chargeableAttack: false);
+        characterCombat.EnterAttackState(currentAttackData);
         if (isPartOfCombo) {
             currentComboData.Add(currentAttackData);
         }
@@ -679,18 +628,6 @@ public abstract class HumanoidController : MonoBehaviour {
             attackClip = currentAttackData.AttackAnimation
         });
         attackCounter++;
-    }
-
-    private void SetAttackInformation(bool chargeableAttack) {
-        characterCombat.EnterAttackState(currentAttackData);
-        characterMovement.CurrentSpeed = 0;
-        isAttacking = true;
-        attackCompleted = false;
-        if (chargeableAttack) {
-            currentAttackClip = currentAttackData.ChargeAnimation;
-        }
-        else
-            currentAttackClip = currentAttackData.AttackAnimation;
     }
 
     private void NormalAttackInputBuffer() {
@@ -721,6 +658,62 @@ public abstract class HumanoidController : MonoBehaviour {
         return false;
     }
 
+    /// <summary>
+    /// Your character will perform a charge attack if certain conditions are met
+    /// </summary>
+    /// <param name="attackData">Scriptable object that holds the data of the attack</param>
+    public void TryChargeAttack(AttackSO attackData) {
+        currentAttackData = attackData;
+        if (!currentAttackData.IsChargeableAttack) {
+            Debug.LogError("The attack is not set as chargeable. Call 'TryNormalAttack()' instead");
+            return;
+        }
+
+        if (AllowAttack() && !IsCharging && !IsAttacking) {
+            SetAttackInformation(chargeableAttack: true);
+            characterCombat.EnterAttackState(currentAttackData);
+            isCharging = true;
+            OnInitiateChargeAttack?.Invoke(this, new OnInitiateChargeAttackEventArgs {
+                chargeClip = attackData.ChargeAnimation
+            });
+        }
+
+        if (IsCharging) {
+            isAttacking = true;
+            characterCombat.ChargeAttack(attackData, out bool chargeOvertime);
+            if (chargeOvertime) {
+                currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.CooldownIfOvertime;
+                isCharging = false;
+                isAttacking = false;
+                OnCancelChargeAttack?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Releases a charge attack
+    /// </summary>
+    public void ReleaseChargeAttack() {
+        if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
+            return;
+        }
+        isAttacking = true;
+        currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
+        currentAttackClip = currentAttackData.AttackAnimation;
+        characterCombat.ReleaseChargedAttack(currentAttackData);
+        OnReleaseChargeAttack?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void SetAttackInformation(bool chargeableAttack) {
+        isAttacking = true;
+        attackCompleted = false;
+        if (chargeableAttack) {
+            currentAttackClip = currentAttackData.ChargeAnimation;
+        }
+        else
+            currentAttackClip = currentAttackData.AttackAnimation;
+    }
+
     private bool AllowAttack() {
         bool onCooldown = Time.time < currentAttackData.CurrentCooldownTime;
         return !onCooldown && IsGrounded && !IsFloorSliding && !IsLedgeClimbing;
@@ -734,10 +727,16 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     /// <summary>
-    /// Flips your character to look at the given direction
+    /// Flips your character towards the given direction
     /// </summary>
     /// <param name="directionX"></param>
     protected void FlipCharacter(float directionX) {
+        if (currentAttackData && !currentAttackData.CanChangeDirections) {
+            return;
+        }
+        if (IsLedgeClimbing || IsLedgeGrabbing) {
+            return;
+        }
 
         Vector3 normalRotation = Vector3.zero;
         Vector3 flipRotation = Vector3.up * OPPOSITE_DIRECTION;

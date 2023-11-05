@@ -122,7 +122,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1268485178401036947}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.89900017, y: 1.5489998, z: 1.4210855e-14}
+  m_LocalPosition: {x: 0.328, y: 1.598, z: 1.4210855e-14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -260,7 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  targetFrameRate: 0
+  targetFrameRate: 144
   horizontalCollider: {fileID: 2353421476987182311}
   verticalCollider: {fileID: 2353421477638374806}
   smoothMovement: 24
@@ -277,6 +277,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f45099718b4fe444184956f4b657cdda, type: 2}
   - {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
   - {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
+  - {fileID: 11400000, guid: 47328ed80cfce0a41b27eb8654840846, type: 2}
   singleChargeAttack: {fileID: 11400000, guid: 9f72d7046e614ea4da93f8c99b1e96b3, type: 2}
 --- !u!114 &2353421476736477845
 MonoBehaviour:
@@ -839,7 +840,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8695823242698127564}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.69, y: 1.822, z: 0}
+  m_LocalPosition: {x: 0.681, y: 2.122, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

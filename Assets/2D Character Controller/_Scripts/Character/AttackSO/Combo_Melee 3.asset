@@ -19,7 +19,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
-  cooldown: 0.2
+  cooldown: 0.5
   resetVelocity: 1
   canChangeDirections: 0
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}

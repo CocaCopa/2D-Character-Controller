@@ -19,7 +19,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
-  cooldown: 0.2
+  cooldown: 1.5
   resetVelocity: 1
   canChangeDirections: 0
   adjustPositionOnAttackEnd: {x: 0.74, y: 0, z: 0}
@@ -27,7 +27,7 @@ MonoBehaviour:
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1
   forceMode: 1
-  force: {x: 500, y: 0}
+  force: {x: 650, y: 0}
   delayForceTime: 0
   useGravity: 0
   dragCoeficient: 10

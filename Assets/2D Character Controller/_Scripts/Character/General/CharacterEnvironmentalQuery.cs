@@ -14,7 +14,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     #endregion
 #endif
 
-    [Header("--- Specific Cast Points ---")]
+    [Header("--- Cast Points References ---")]
     [Tooltip("Game object that specifies the transform of the ledge check GameObject")]
     [SerializeField] private Transform ledgeGrabTransform;
     [Tooltip("Game object that specifies the transform of the player's head")]
@@ -369,7 +369,8 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     private void Update() {
 
         if (!activeCollider) {
-            Debug.LogError("PlayerEnvironmentalQuery: No collider has been provided. Please make sure the script that calls the checks, also sets the 'activeCollider' variable.");
+            Debug.LogError("PlayerEnvironmentalQuery: No collider has been provided. " +
+                "Please make sure the script that calls the checks, also sets the 'activeCollider' variable.");
         }
     }
 

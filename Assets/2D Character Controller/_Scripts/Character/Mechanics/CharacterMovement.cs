@@ -11,7 +11,7 @@ public class CharacterMovement : MonoBehaviour {
     //------------------------------------------------------------------------------------//
     //------------------------------------------------------------------------------------//
 
-    [Header("--- Grounded ---")]
+    [Header("--- Ground Movement ---")]
     [Tooltip("Curve of the character's acceleration")]
     [SerializeField] private AnimationCurve accelerationCurve;
     [Tooltip("Curve of the character's desceleration")]
@@ -21,24 +21,26 @@ public class CharacterMovement : MonoBehaviour {
     [Tooltip("Character's top speed (m/s)")]
     [SerializeField] private float moveSpeed = 12f;
 
-    [Header("--- On Air ---")]
+    [Header("--- Aerial Movement ---")]
     [Tooltip("Curve of the character's on air acceleration")]
     [SerializeField] private AnimationCurve airAccelerationCurve;
     [Tooltip("Curve of the character's on air desceleration")]
     [SerializeField] private AnimationCurve airDescelerationCurve;
     [Tooltip("How fast should the acceleration curves be evaluated")]
     [SerializeField] private float onAirEvaluationSpeed = 2.2f;
+
+    [Header("--- Jump ---")]
     [Tooltip("Velocity change of the character, on the Y axis, when a jump is performed")]
     [SerializeField] private float jumpStrength = 19f;
     [Tooltip("Velocity change of the character, on the X and Y axis, when a jump is performed against the wall")]
     [SerializeField] private Vector2 wallJumpStrength = new (16.5f, 18f);
     [Tooltip("How fast should the character lose speed when no input is given, while on air")]
     [SerializeField] private float airDesceleration = 7.5f;
-    [Tooltip("The maximum speed of which the character is allowed to reach, from a stand still jump (percentage of 'moveSpeed' variable)")]
+    [Tooltip("The maximum speed the character is allowed to reach, from a stand still jump (percentage of 'moveSpeed' variable)")]
     [SerializeField, Range(0, 1)] private float maxStandStillSpeed = 50f / 100f;
 
     private Vector2 moveDirection;
-    private float currentSpeed = 0; // Grounded state calculates currentSpeed and Airborne state uses it as a base to calculate air movement.
+    private float currentSpeed = 0; // Grounded state calculates currentSpeed while Airborne state uses it as a base to calculate air movement.
     private float speedMultiplier = 0;
     private float airSpeedMultiplier = 0;
     private float onGroundAnimPoints = 0;
@@ -54,11 +56,9 @@ public class CharacterMovement : MonoBehaviour {
         if (currentSpeed == 0) {
             ResetOnGroundValues();
         }
-
         if (currentSpeed != 0 && speedMultiplier == 0) {
             speedMultiplier = currentSpeed / moveSpeed;
         }
-
         if (currentSpeed >= moveSpeed) {
             onGroundAnimPoints = 1;
         }

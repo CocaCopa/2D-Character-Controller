@@ -132,9 +132,7 @@ public class AttackSOEditor : Editor {
     }
 
     private void PushCharacter() {
-        if (attackSO.AttackPushesCharacter) {
-            EditorGUILayout.Space(10);
-        }
+        EditorGUILayout.Space(10);
         if (attackSO.CanMoveWhileCharging || attackSO.CanMoveWhileAttacking) {
             EditorGUI.BeginDisabledGroup(true);
         }

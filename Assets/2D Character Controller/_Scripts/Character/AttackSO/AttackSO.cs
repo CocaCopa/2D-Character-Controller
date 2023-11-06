@@ -13,6 +13,10 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private float damageAmount;
     [Tooltip("Attack cooldown in seconds")]
     [SerializeField] private float cooldown;
+    [Tooltip("Wether or not your character should be able to cast the attack, if a wall is detected in front of them")]
+    [SerializeField] private bool castIfWallInFront = false;
+    [Tooltip("Specify at what distance away from a wall your character must be, in order to allow them to cast the attack")]
+    [SerializeField] private float walldistance;
     [Tooltip("True, sets your character's velocity to Vector3.zero when the attack is initiated. " +
         "False, your character will continue moving at a constant speed based on their velocity before the attack.")]
     [SerializeField] private bool resetVelocity = true;

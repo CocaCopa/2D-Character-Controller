@@ -13,18 +13,20 @@ MonoBehaviour:
   m_Name: Combo_Melee 1
   m_EditorClassIdentifier: 
   attackName: 
-  icon: {fileID: 0}
+  attackIcon: {fileID: 0}
   attackAnimation: {fileID: 7400000, guid: 9723596acd0b2a34d9ce0c835ec80b66, type: 2}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
   cooldown: 0.5
+  disableCastOnWall: 0
+  wallCastDistance: 0
   resetVelocity: 1
   canChangeDirections: 0
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
   canMoveWhileAttacking: 0
-  attackMoveSpeedPercentage: 0.941
+  attackMoveSpeedPercentage: 1
   attackPushesCharacter: 1
   forceMode: 1
   force: {x: 500, y: 0}

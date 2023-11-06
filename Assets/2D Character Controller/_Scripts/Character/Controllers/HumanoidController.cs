@@ -26,7 +26,6 @@ public abstract class HumanoidController : MonoBehaviour {
 #if UNITY_EDITOR
     [Header("--- Debug ---")]
     [SerializeField, Range(0.05f, 1)] private float timeScale = 1f;
-    [SerializeField] private int targetFrameRate;
 #endif
     [Header("--- Colliders ---")]
     [Tooltip("Collider to use when sliding")]
@@ -148,7 +147,6 @@ public abstract class HumanoidController : MonoBehaviour {
     protected virtual void Awake() {
         FindComponents();
         InitializeProperties();
-        Application.targetFrameRate = 144;
     }
 
     protected virtual void Start() {
@@ -675,7 +673,7 @@ public abstract class HumanoidController : MonoBehaviour {
             return;
         }
 
-        if (AllowAttack() && !IsCharging && !IsAttacking && attackCompleted) {
+        if (attackCompleted && AllowAttack() && !IsCharging && !IsAttacking) {
             currentAttackData = attackData;
             SetAttackInformation(chargeableAttack: true);
             characterCombat.EnterAttackState(currentAttackData);
@@ -723,6 +721,11 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     private bool AllowAttack() {
+        if (receivedAttackData.DisableCastOnWall) {
+            if (envQuery.WallInFront(receivedAttackData.WallCastDistance)) {
+                return false;
+            }
+        }
         bool onCooldown = Time.time < receivedAttackData.CurrentCooldownTime;
         return !onCooldown && IsGrounded && !IsFloorSliding && !IsLedgeClimbing;
     }

@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: Combo_Melee 3
   m_EditorClassIdentifier: 
   attackName: 
-  icon: {fileID: 0}
+  attackIcon: {fileID: 0}
   attackAnimation: {fileID: 7400000, guid: ba4b61139a72d844f8166d90bc40ed3e, type: 2}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
   cooldown: 0.5
+  disableCastOnWall: 0
+  wallCastDistance: 0
   resetVelocity: 1
   canChangeDirections: 0
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}

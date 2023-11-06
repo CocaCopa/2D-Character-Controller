@@ -4,7 +4,7 @@ using UnityEngine;
 public class AttackSO : ScriptableObject {
 
     [SerializeField] private string attackName;
-    [SerializeField] private Sprite icon;
+    [SerializeField] private Sprite attackIcon;
     [Tooltip("The animation clip of the attack")]
     [SerializeField] private AnimationClip attackAnimation;
     [Tooltip("Specify which layers can be damaged")]
@@ -14,9 +14,9 @@ public class AttackSO : ScriptableObject {
     [Tooltip("Attack cooldown in seconds")]
     [SerializeField] private float cooldown;
     [Tooltip("Wether or not your character should be able to cast the attack, if a wall is detected in front of them")]
-    [SerializeField] private bool castIfWallInFront = false;
+    [SerializeField] private bool disableCastOnWall = false;
     [Tooltip("Specify at what distance away from a wall your character must be, in order to allow them to cast the attack")]
-    [SerializeField] private float walldistance;
+    [SerializeField] private float wallCastDistance;
     [Tooltip("True, sets your character's velocity to Vector3.zero when the attack is initiated. " +
         "False, your character will continue moving at a constant speed based on their velocity before the attack.")]
     [SerializeField] private bool resetVelocity = true;
@@ -68,11 +68,13 @@ public class AttackSO : ScriptableObject {
     public float CurrentCooldownTime { get; set; }
     public float ChargeTimer { get; set; }
     public string AttackName => attackName;
-    public Sprite Icon => icon;
+    public Sprite AttackIcon => attackIcon;
     public AnimationClip AttackAnimation => attackAnimation;
     public LayerMask WhatIsDamageable => whatIsDamageable;
     public float DamageAmount => damageAmount;
     public float Cooldown => cooldown;
+    public bool DisableCastOnWall => disableCastOnWall;
+    public float WallCastDistance => wallCastDistance;
     public bool ResetVelocity => resetVelocity;
     public bool CanChangeDirections => canChangeDirections;
     public Vector3 AdjustPositionOnAttackEnd => adjustPositionOnAttackEnd;

@@ -5,11 +5,13 @@ public class AttackSOEditor : Editor {
 
     #region --- Serialized Properties ---
     SerializedProperty attackName;
-    SerializedProperty icon;
+    SerializedProperty attackIcon;
     SerializedProperty attackAnimation;
     SerializedProperty whatIsDamageable;
     SerializedProperty damageAmount;
     SerializedProperty cooldown;
+    SerializedProperty disableCastOnWall;
+    SerializedProperty wallCastDistance;
     SerializedProperty resetVelocity;
     SerializedProperty canChangeDirections;
     SerializedProperty adjustPositionOnAttackEnd;
@@ -34,11 +36,13 @@ public class AttackSOEditor : Editor {
 
     private void OnEnable() {
         attackName = serializedObject.FindProperty(nameof(attackName));
-        icon = serializedObject.FindProperty(nameof(icon));
+        attackIcon = serializedObject.FindProperty(nameof(attackIcon));
         attackAnimation = serializedObject.FindProperty(nameof(attackAnimation));
         whatIsDamageable = serializedObject.FindProperty(nameof(whatIsDamageable));
         damageAmount = serializedObject.FindProperty(nameof(damageAmount));
         cooldown = serializedObject.FindProperty(nameof(cooldown));
+        disableCastOnWall = serializedObject.FindProperty(nameof(disableCastOnWall));
+        wallCastDistance = serializedObject.FindProperty(nameof(wallCastDistance));
         resetVelocity = serializedObject.FindProperty(nameof(resetVelocity));
         canChangeDirections = serializedObject.FindProperty(nameof(canChangeDirections));
         adjustPositionOnAttackEnd = serializedObject.FindProperty(nameof(adjustPositionOnAttackEnd));
@@ -95,7 +99,7 @@ public class AttackSOEditor : Editor {
 
     private void CommonDetails() {
         EditorGUILayout.PropertyField(attackName);
-        EditorGUILayout.PropertyField(icon);
+        EditorGUILayout.PropertyField(attackIcon);
         EditorGUILayout.Space(10);
     }
 
@@ -104,6 +108,11 @@ public class AttackSOEditor : Editor {
         EditorGUILayout.PropertyField(whatIsDamageable);
         EditorGUILayout.PropertyField(damageAmount);
         EditorGUILayout.PropertyField(cooldown);
+        EditorGUILayout.Space(10);
+        EditorGUILayout.PropertyField(disableCastOnWall);
+        if (attackSO.DisableCastOnWall) {
+            EditorGUILayout.PropertyField(wallCastDistance);
+        }
         EditorGUILayout.PropertyField(resetVelocity);
         EditorGUILayout.PropertyField(canChangeDirections);
         EditorGUILayout.PropertyField(adjustPositionOnAttackEnd);
@@ -111,6 +120,13 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.PropertyField(canMoveWhileAttacking);
             if (attackSO.CanMoveWhileAttacking) {
                 EditorGUILayout.PropertyField(attackMoveSpeedPercentage);
+            }
+        }
+        else {
+            EditorGUILayout.PropertyField(canMoveWhileCharging);
+            if (attackSO.CanMoveWhileCharging) {
+                EditorGUILayout.PropertyField(chargeMoveSpeedPercentage);
+                EditorGUILayout.PropertyField(canMoveOnReleaseAttack);
             }
         }
     }
@@ -146,11 +162,6 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.PropertyField(cooldownIfOvertime);
             EditorGUILayout.PropertyField(chargeTime);
             EditorGUILayout.PropertyField(holdChargeTime);
-            EditorGUILayout.PropertyField(canMoveWhileCharging);
-            if (attackSO.CanMoveWhileCharging) {
-                EditorGUILayout.PropertyField(chargeMoveSpeedPercentage);
-                EditorGUILayout.PropertyField(canMoveOnReleaseAttack);
-            }
             EditorGUILayout.Space(10);
         }
     }

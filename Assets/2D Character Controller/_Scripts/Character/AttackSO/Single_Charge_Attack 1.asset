@@ -13,15 +13,18 @@ MonoBehaviour:
   m_Name: Single_Charge_Attack 1
   m_EditorClassIdentifier: 
   attackName: 
-  icon: {fileID: 0}
+  attackIcon: {fileID: 0}
   attackAnimation: {fileID: 7400000, guid: 10573f78446dc8d48bdd19cad83f3ef0, type: 2}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
   cooldown: 0.2
+  disableCastOnWall: 0
+  wallCastDistance: 0
   resetVelocity: 1
   canChangeDirections: 1
+  adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1

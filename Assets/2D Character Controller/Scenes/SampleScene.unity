@@ -427,7 +427,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &535927053
 GameObject:
@@ -496,6 +496,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &589710327
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 589710328}
+  m_Layer: 0
+  m_Name: Projectiles Spawn Points
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &589710328
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589710327}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1204360030}
+  m_Father: {fileID: 1697739648}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &590003991
 GameObject:
@@ -999,6 +1031,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1204360029
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1204360030}
+  m_Layer: 0
+  m_Name: SingleChargeAttack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1204360030
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204360029}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.51, y: 1.066, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 589710328}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1499058623
 GameObject:
   m_ObjectHideFlags: 0
@@ -1123,7 +1186,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1165,8 +1228,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: chargeAttackProjTransform
+      value: 
+      objectReference: {fileID: 1204360030}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: chargeProjectileTransform
+      value: 
+      objectReference: {fileID: 1204360030}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+--- !u!4 &1697739648 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+  m_PrefabInstance: {fileID: 1614694581}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1739717495
 GameObject:
   m_ObjectHideFlags: 0

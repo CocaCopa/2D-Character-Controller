@@ -23,7 +23,7 @@ MonoBehaviour:
   disableCastOnWall: 1
   wallCastDistance: 1
   resetVelocity: 1
-  canChangeDirections: 0
+  canChangeDirections: 1
   adjustPositionOnAttackEnd: {x: 0.74, y: 0, z: 0}
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0

@@ -65,7 +65,6 @@ public class CharacterCombat : MonoBehaviour {
         moveWhileCastingAttack = false;
         if (adjustPosition && attackData.AdjustPositionOnAttackEnd != Vector3.zero) {
             StartCoroutine(TeleportToPosition(attackData.AdjustPositionOnAttackEnd));
-            Vector3 position = attackData.AdjustPositionOnAttackEnd;
         }
     }
 
@@ -97,8 +96,26 @@ public class CharacterCombat : MonoBehaviour {
     /// Releases a charged attack. This function will not 'ExitAttackState()'
     /// </summary>
     /// <param name="attackData">The scriptable object that the data of the attack</param>
-    public void ReleaseChargedAttack(AttackSO attackData) {
+    /// <param name="projectileSpawnTransform">The transform where the projectile will be spawned. If your attack does not involve throwing a projectile, you can leave this parameter as null</param>
+    public void ReleaseChargedAttack(AttackSO attackData, Transform projectileSpawnTransform = null) {
         moveWhileCastingAttack = attackData.CanMoveOnReleaseAttack;
+        if (attackData.ThrowsProjectile) {
+            if (!projectileSpawnTransform) {
+                Debug.LogError(attackData.name + ": Your attack is set to spawn a projectile, but a Transform has not been provided.");
+                return;
+            }
+            StartCoroutine(ThrowProjectile(attackData, projectileSpawnTransform));
+        }
+    }
+
+    private System.Collections.IEnumerator ThrowProjectile(AttackSO attackData, Transform spawnTransform) {
+        yield return new WaitForSeconds(attackData.DelayProjectileThrow);
+        GameObject projectile = Instantiate(attackData.ProjectilePrefab, spawnTransform.position, Quaternion.identity);
+        ArrowProjectile arrow = projectile.GetComponent<ArrowProjectile>();
+        Vector2 velocity = arrow.InitialVelocity;
+        velocity.x *= transform.right.x;
+        arrow.InitialVelocity = velocity;
+        arrow.enabled = true;
     }
 
     /// <summary>

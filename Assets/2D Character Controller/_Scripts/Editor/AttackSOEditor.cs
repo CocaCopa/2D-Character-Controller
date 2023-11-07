@@ -33,6 +33,8 @@ public class AttackSOEditor : Editor {
     SerializedProperty canMoveOnReleaseAttack;
     SerializedProperty throwsProjectile;
     SerializedProperty projectilePrefab;
+    SerializedProperty throwAtPercentage;
+    SerializedProperty delayProjectileThrow;
 
     private void OnEnable() {
         attackName = serializedObject.FindProperty(nameof(attackName));
@@ -64,6 +66,8 @@ public class AttackSOEditor : Editor {
         canMoveOnReleaseAttack = serializedObject.FindProperty(nameof(canMoveOnReleaseAttack));
         throwsProjectile = serializedObject.FindProperty(nameof(throwsProjectile));
         projectilePrefab = serializedObject.FindProperty(nameof(projectilePrefab));
+        throwAtPercentage = serializedObject.FindProperty(nameof(throwAtPercentage));
+        delayProjectileThrow = serializedObject.FindProperty(nameof(delayProjectileThrow));
     }
     #endregion
 
@@ -171,6 +175,8 @@ public class AttackSOEditor : Editor {
         EditorGUILayout.PropertyField(throwsProjectile);
         if (attackSO.ThrowsProjectile) {
             EditorGUILayout.PropertyField(projectilePrefab);
+            EditorGUILayout.PropertyField(throwAtPercentage);
+            EditorGUILayout.PropertyField(delayProjectileThrow);
             EditorGUILayout.Space(10);
         }
     }

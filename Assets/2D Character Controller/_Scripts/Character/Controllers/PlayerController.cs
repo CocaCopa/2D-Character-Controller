@@ -5,6 +5,7 @@ public class PlayerController : HumanoidController {
 
     [SerializeField] private List<AttackSO> meleeCombo_1 = new();
     [SerializeField] private AttackSO singleChargeAttack;
+    [SerializeField] private Transform chargeProjectileTransform;
 
     private PlayerInput input;
     private bool canLedgeClimb = false;
@@ -32,7 +33,7 @@ public class PlayerController : HumanoidController {
             TryChargeAttack(singleChargeAttack);
         }
         else if (Input.GetKeyUp(KeyCode.Z)) {
-            ReleaseChargeAttack();
+            ReleaseChargeAttack(chargeProjectileTransform);
         }
     }
 

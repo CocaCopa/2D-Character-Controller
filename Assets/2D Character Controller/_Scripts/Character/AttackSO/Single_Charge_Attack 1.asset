@@ -19,7 +19,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
-  cooldown: 0.2
+  cooldown: 1
   disableCastOnWall: 0
   wallCastDistance: 0
   resetVelocity: 1
@@ -38,8 +38,10 @@ MonoBehaviour:
   cooldownIfOvertime: 0.2
   chargeTime: 1
   holdChargeTime: 1
-  canMoveWhileCharging: 0
+  canMoveWhileCharging: 1
   chargeMoveSpeedPercentage: 0.337
   canMoveOnReleaseAttack: 0
-  throwsProjectile: 0
-  projectilePrefab: {fileID: 0}
+  throwsProjectile: 1
+  projectilePrefab: {fileID: 846552828456564998, guid: 337d447b9eee1ad4882c234b345c64d1, type: 3}
+  throwAtPercentage: 0.35
+  delayProjectileThrow: 0

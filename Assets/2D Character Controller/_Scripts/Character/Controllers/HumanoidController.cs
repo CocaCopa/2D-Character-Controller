@@ -83,8 +83,8 @@ public abstract class HumanoidController : MonoBehaviour {
     private CharacterDash characterDash;
     private CharacterLedgeGrab characterLedgeGrab;
     private CharacterCombat characterCombat;
-    private AttackSO receivedAttackData;
-    private AttackSO currentAttackData;
+    private AttackSO receivedAttackData;    // The attack in queque to play
+    private AttackSO currentAttackData;     // Current attack playing
     private List<AttackSO> currentComboData = new();
     private AnimationClip currentAttackClip;
 
@@ -617,16 +617,16 @@ public abstract class HumanoidController : MonoBehaviour {
     private void NormalAttack(bool isPartOfCombo) {
         currentAttackData = receivedAttackData;
         SetAttackInformation(chargeableAttack: false);
-        characterCombat.EnterAttackState(receivedAttackData);
+        characterCombat.EnterAttackState(currentAttackData);
         if (isPartOfCombo) {
             // On a combo attack this will help to set the whole combo on cooldown based on the cooldown of the last performed attack
-            currentComboData.Add(receivedAttackData);
+            currentComboData.Add(currentAttackData);
         }
         else {
-            receivedAttackData.CurrentCooldownTime = Time.time + receivedAttackData.Cooldown;
+            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
         }
         OnInitiateNormalAttack?.Invoke(this, new OnInitiateNormalAttackEventArgs {
-            attackClip = receivedAttackData.AttackAnimation
+            attackClip = currentAttackData.AttackAnimation
         });
         attackCounter++;
     }
@@ -691,6 +691,7 @@ public abstract class HumanoidController : MonoBehaviour {
                 currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.CooldownIfOvertime;
                 isCharging = false;
                 isAttacking = false;
+                attackCompleted = true;
                 OnCancelChargeAttack?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -699,23 +700,44 @@ public abstract class HumanoidController : MonoBehaviour {
     /// <summary>
     /// Releases a charge attack
     /// </summary>
-    public void ReleaseChargeAttack() {
+    /// <param name="projectileSpawnTransform">The transform where the projectile will be spawned. If your attack does not involve throwing a projectile, you can leave this parameter as null</param>
+    public void ReleaseChargeAttack(Transform projectileSpawnTransform = null) {
         if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
             return;
         }
-        isAttacking = true;
-        currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
-        currentAttackClip = currentAttackData.AttackAnimation;
-        characterCombat.ReleaseChargedAttack(currentAttackData);
-        OnReleaseChargeAttack?.Invoke(this, EventArgs.Empty);
+        if (AllowAttack()) {
+            isAttacking = true;
+            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
+            currentAttackClip = currentAttackData.AttackAnimation;
+            OnReleaseChargeAttack?.Invoke(this, EventArgs.Empty);
+            if (currentAttackData.ThrowsProjectile) {
+                characterCombat.ReleaseChargedAttack(currentAttackData);
+                StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
+            }
+        }
     }
 
+    private IEnumerator WaitAnimationBeforeReleasing(Transform projectileSpawnTransform = null) {
+        // Wait until the animation has finished
+        AttackSO attackData = currentAttackData;
+        yield return new WaitForEndOfFrame();
+        while (characterAnimator.IsClipPlaying(attackData.ChargeAnimation, 1f)) {
+            yield return null;
+        }
+        yield return new WaitForEndOfFrame();
+        while (characterAnimator.IsClipPlaying(attackData.AttackAnimation, attackData.ThrowAtPercentage)) {
+            yield return null;
+        }
+        
+        characterCombat.ReleaseChargedAttack(attackData, projectileSpawnTransform);
+
+        // Add your code to execute after the animation here
+    }
     private void SetAttackInformation(bool chargeableAttack) {
         isAttacking = true;
         attackCompleted = false;
-        if (chargeableAttack) {
+        if (chargeableAttack)
             currentAttackClip = currentAttackData.ChargeAnimation;
-        }
         else
             currentAttackClip = currentAttackData.AttackAnimation;
     }
@@ -742,7 +764,7 @@ public abstract class HumanoidController : MonoBehaviour {
     /// </summary>
     /// <param name="directionX"></param>
     protected void FlipCharacter(float directionX) {
-        if (receivedAttackData && !receivedAttackData.CanChangeDirections) {
+        if (currentAttackData && !currentAttackData.CanChangeDirections) {
             return;
         }
         if (IsLedgeClimbing || IsLedgeGrabbing) {
@@ -753,11 +775,9 @@ public abstract class HumanoidController : MonoBehaviour {
         Vector3 flipRotation = Vector3.up * OPPOSITE_DIRECTION;
 
         if (directionX > 0) {
-
             transform.eulerAngles = normalRotation;
         }
         else if (directionX < 0) {
-
             transform.eulerAngles = flipRotation;
         }
     }

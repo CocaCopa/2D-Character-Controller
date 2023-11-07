@@ -41,7 +41,7 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool useGravity;
     [Tooltip("Change the drag coeficient of the Rigidbody2D for the duration of the attack")]
     [SerializeField] private float dragCoeficient;
-    [Tooltip("Can this attack be charged?")]
+    [Tooltip("Wether or not this attack can be charged")]
     [SerializeField] private bool isChargeableAttack = false;
     [Tooltip("Animation to play when the charge attack is initiated")]
     [SerializeField] private AnimationClip chargeAnimation;
@@ -61,6 +61,10 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool throwsProjectile = false;
     [Tooltip("Projectile to spawn")]
     [SerializeField] private GameObject projectilePrefab;
+    [Tooltip("The projectile will be thrown when the 'AttackAnimation' has played the specified percentage")]
+    [SerializeField, Range(0, 1)] private float throwAtPercentage;
+    [Tooltip("Specifies the delay, in seconds, before the projectile is thrown.")]
+    [SerializeField] private float delayProjectileThrow;
 
     private void OnEnable() {
         CurrentCooldownTime = 0;
@@ -96,4 +100,6 @@ public class AttackSO : ScriptableObject {
     public bool CanMoveOnReleaseAttack => canMoveOnReleaseAttack;
     public bool ThrowsProjectile => throwsProjectile;
     public GameObject ProjectilePrefab => projectilePrefab;
+    public float ThrowAtPercentage => throwAtPercentage;
+    public float DelayProjectileThrow => delayProjectileThrow;
 }

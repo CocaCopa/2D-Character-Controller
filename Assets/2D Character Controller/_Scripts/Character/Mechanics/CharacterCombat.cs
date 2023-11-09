@@ -46,11 +46,13 @@ public class CharacterCombat : MonoBehaviour {
     private bool attackCompleted = true;
     private bool isAttacking = false;
     private bool isCharging = false;
+    private bool canReleaseChargedAttack = false;
 
+    public int AttackCounter => attackCounter;
     public bool IsAttacking => isAttacking;
     public bool IsCharging => isCharging;
     public bool CanMoveWhileAttacking => currentAttackData != null && (currentAttackData.CanMoveWhileAttacking || currentAttackData.CanMoveWhileCharging);
-    public int AttackCounter => attackCounter;
+    public bool CanChangeDirections => currentAttackData == null || currentAttackData.CanChangeDirections;
 
     private void Awake() {
         InitializeComponents();
@@ -185,6 +187,7 @@ public class CharacterCombat : MonoBehaviour {
             return;
         }
         if (attackCompleted && AttackIsReady() && !IsCharging && !IsAttacking) {
+            canReleaseChargedAttack = true;
             currentAttackData = attackData;
             UpdateAttackInformation(false);
             EnterAttackState(currentAttackData);
@@ -208,13 +211,15 @@ public class CharacterCombat : MonoBehaviour {
 
         attackCharged = Utilities.TickTimer(ref chargeTimer, attackData.ChargeTime, false);
 
-        if (attackCharged) {
+        if (canReleaseChargedAttack && attackCharged) {
             if (Utilities.TickTimer(ref holdAttackTimer, attackData.HoldChargeTime, false)) {
                 attackCharged = false;
                 if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceRelease) {
+                    canReleaseChargedAttack = false;
                     ReleaseChargedAttack(projectileSpawnPoint);
                 }
                 else if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceCancel) {
+                    canReleaseChargedAttack = false;
                     CancelChargedAttack();
                 }
             }
@@ -244,7 +249,7 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
-    private void CancelChargedAttack() {
+    public void CancelChargedAttack() {
         ExitAttackState(currentAttackData, false);
         currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.CooldownIfOvertime;
         isCharging = false;

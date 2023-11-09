@@ -38,7 +38,7 @@ MonoBehaviour:
   cooldownIfOvertime: 0.8
   chargeTime: 1
   holdChargeTime: 1
-  chargeOverTime: 1
+  chargeOverTime: 0
   canMoveWhileCharging: 0
   chargeMoveSpeedPercentage: 0.337
   canMoveOnReleaseAttack: 0

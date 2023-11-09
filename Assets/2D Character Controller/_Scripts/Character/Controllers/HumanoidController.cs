@@ -545,7 +545,7 @@ public abstract class HumanoidController : MonoBehaviour {
     /// </summary>
     /// <param name="directionX"></param>
     protected void FlipCharacter(float directionX) {
-        if (IsLedgeClimbing || IsLedgeGrabbing) {
+        if (IsLedgeClimbing || IsLedgeGrabbing || !characterCombat.CanChangeDirections) {
             return;
         }
 

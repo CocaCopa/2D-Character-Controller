@@ -33,6 +33,9 @@ public class PlayerController : HumanoidController {
     }
 
     private void Input_OnComboNomalAttacksPerformed(object sender, System.EventArgs _) {
+        if (!IsGrounded || IsFloorSliding || IsLedgeClimbing || IsLedgeGrabbing || IsDashing || IsWallSliding) {
+            return;
+        }
         if (characterCombat.AttackCounter < meleeCombo_1.Count) {
             characterCombat.PerformNormalAttack(meleeCombo_1[characterCombat.AttackCounter], true);
         }
@@ -40,7 +43,15 @@ public class PlayerController : HumanoidController {
 
     private void PerformingChargedAttacks() {
         if (input.OnChargedAttackContinuous()) {
-            characterCombat.PerformChargedAttack(singleChargeAttack, chargeProjectileTransform);
+            if (IsFloorSliding || IsLedgeClimbing || IsLedgeGrabbing || IsDashing || IsWallSliding) {
+                return;
+            }
+            if (IsGrounded) {
+                characterCombat.PerformChargedAttack(singleChargeAttack, chargeProjectileTransform);
+            }
+            else {
+                characterCombat.CancelChargedAttack();
+            }
         }
     }
 

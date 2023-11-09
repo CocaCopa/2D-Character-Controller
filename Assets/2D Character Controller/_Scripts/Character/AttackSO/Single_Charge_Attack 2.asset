@@ -13,14 +13,20 @@ MonoBehaviour:
   m_Name: Single_Charge_Attack 2
   m_EditorClassIdentifier: 
   attackName: 
-  icon: {fileID: 0}
+  attackIcon: {fileID: 0}
   attackAnimation: {fileID: 7400000, guid: 10573f78446dc8d48bdd19cad83f3ef0, type: 2}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
-  resetVelocity: 1
   damageAmount: 0
   cooldown: 0.2
+  disableCastOnWall: 0
+  wallCastDistance: 0
+  resetVelocity: 1
+  canChangeDirections: 0
+  adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
+  canMoveWhileAttacking: 0
+  attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1
   forceMode: 1
   force: {x: 800, y: 0}
@@ -32,7 +38,11 @@ MonoBehaviour:
   cooldownIfOvertime: 0.2
   chargeTime: 1
   holdChargeTime: 1
+  chargeOverTime: 1
   canMoveWhileCharging: 0
-  moveSpeedPercentage: 0
-  throwsProjectile: 0
-  projectilePrefab: {fileID: 0}
+  chargeMoveSpeedPercentage: 0
+  canMoveOnReleaseAttack: 0
+  throwsProjectile: 1
+  projectilePrefab: {fileID: 846552828456564998, guid: 337d447b9eee1ad4882c234b345c64d1, type: 3}
+  throwAtPercentage: 0.35
+  delayProjectileThrow: 0

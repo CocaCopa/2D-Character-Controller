@@ -14,7 +14,6 @@ public class HumanoidControllerEditor : Editor {
     SerializedProperty coyoteTime;
     SerializedProperty numberOfAirJumps;
     SerializedProperty alwaysDecreaseJumpCounter;
-    SerializedProperty meleeAttackBufferTime;
     SerializedProperty dashCooldown;
     SerializedProperty minimumDashDistance;
     SerializedProperty minimumFloorSlideSpeed;
@@ -29,7 +28,6 @@ public class HumanoidControllerEditor : Editor {
         coyoteTime = serializedObject.FindProperty(nameof(coyoteTime));
         numberOfAirJumps = serializedObject.FindProperty(nameof(numberOfAirJumps));
         alwaysDecreaseJumpCounter = serializedObject.FindProperty(nameof(alwaysDecreaseJumpCounter));
-        meleeAttackBufferTime = serializedObject.FindProperty(nameof(meleeAttackBufferTime));
         dashCooldown = serializedObject.FindProperty(nameof(dashCooldown));
         minimumDashDistance = serializedObject.FindProperty(nameof(minimumDashDistance));
         minimumFloorSlideSpeed = serializedObject.FindProperty(nameof(minimumFloorSlideSpeed));
@@ -76,14 +74,11 @@ public class HumanoidControllerEditor : Editor {
             EditorGUILayout.PropertyField(ledgeJumpThreshold);
             EditorGUILayout.PropertyField(maxLedgeGrabTime);
         }
-        if (controller.TryGetComponent<CharacterCombat>(out _)) {
-            EditorGUILayout.PropertyField(meleeAttackBufferTime);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 
     private void DrawDefaultExcludingCustomFields() {
-        string[] excludeFields = new string[14];
+        string[] excludeFields = new string[13];
         excludeFields[0] = "m_Script";
         excludeFields[1] = nameof(timeScale);
         excludeFields[2] = nameof(horizontalCollider);
@@ -92,12 +87,11 @@ public class HumanoidControllerEditor : Editor {
         excludeFields[5] = nameof(coyoteTime);
         excludeFields[6] = nameof(numberOfAirJumps);
         excludeFields[7] = nameof(alwaysDecreaseJumpCounter);
-        excludeFields[8] = nameof(meleeAttackBufferTime);
-        excludeFields[9] = nameof(dashCooldown);
-        excludeFields[10] = nameof(minimumDashDistance);
-        excludeFields[11] = nameof(minimumFloorSlideSpeed);
-        excludeFields[12] = nameof(ledgeJumpThreshold);
-        excludeFields[13] = nameof(maxLedgeGrabTime);
+        excludeFields[8] = nameof(dashCooldown);
+        excludeFields[9] = nameof(minimumDashDistance);
+        excludeFields[10] = nameof(minimumFloorSlideSpeed);
+        excludeFields[11] = nameof(ledgeJumpThreshold);
+        excludeFields[12] = nameof(maxLedgeGrabTime);
         DrawPropertiesExcluding(serializedObject, excludeFields);
         serializedObject.ApplyModifiedProperties();
     }

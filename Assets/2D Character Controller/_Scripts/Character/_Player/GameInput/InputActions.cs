@@ -64,9 +64,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Attack"",
+                    ""name"": ""ComboNormalAttacks"",
                     ""type"": ""Button"",
                     ""id"": ""a3c0e926-61ab-4c9f-a849-15f101dbb454"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChargedAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""accdfcc2-6744-4785-b6a3-9c7ddf332460"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -235,7 +244,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Attack"",
+                    ""action"": ""ComboNormalAttacks"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d730967-17f3-4884-887f-ca4d3b013e69"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChargedAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -250,7 +270,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Slide = m_Player.FindAction("Slide", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
-        m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
+        m_Player_ComboNormalAttacks = m_Player.FindAction("ComboNormalAttacks", throwIfNotFound: true);
+        m_Player_ChargedAttack = m_Player.FindAction("ChargedAttack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -316,7 +337,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Slide;
     private readonly InputAction m_Player_Dash;
-    private readonly InputAction m_Player_Attack;
+    private readonly InputAction m_Player_ComboNormalAttacks;
+    private readonly InputAction m_Player_ChargedAttack;
     public struct PlayerActions
     {
         private @InputActions m_Wrapper;
@@ -325,7 +347,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Slide => m_Wrapper.m_Player_Slide;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
-        public InputAction @Attack => m_Wrapper.m_Player_Attack;
+        public InputAction @ComboNormalAttacks => m_Wrapper.m_Player_ComboNormalAttacks;
+        public InputAction @ChargedAttack => m_Wrapper.m_Player_ChargedAttack;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -347,9 +370,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
-            @Attack.started += instance.OnAttack;
-            @Attack.performed += instance.OnAttack;
-            @Attack.canceled += instance.OnAttack;
+            @ComboNormalAttacks.started += instance.OnComboNormalAttacks;
+            @ComboNormalAttacks.performed += instance.OnComboNormalAttacks;
+            @ComboNormalAttacks.canceled += instance.OnComboNormalAttacks;
+            @ChargedAttack.started += instance.OnChargedAttack;
+            @ChargedAttack.performed += instance.OnChargedAttack;
+            @ChargedAttack.canceled += instance.OnChargedAttack;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -366,9 +392,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
-            @Attack.started -= instance.OnAttack;
-            @Attack.performed -= instance.OnAttack;
-            @Attack.canceled -= instance.OnAttack;
+            @ComboNormalAttacks.started -= instance.OnComboNormalAttacks;
+            @ComboNormalAttacks.performed -= instance.OnComboNormalAttacks;
+            @ComboNormalAttacks.canceled -= instance.OnComboNormalAttacks;
+            @ChargedAttack.started -= instance.OnChargedAttack;
+            @ChargedAttack.performed -= instance.OnChargedAttack;
+            @ChargedAttack.canceled -= instance.OnChargedAttack;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -392,6 +421,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnSlide(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
-        void OnAttack(InputAction.CallbackContext context);
+        void OnComboNormalAttacks(InputAction.CallbackContext context);
+        void OnChargedAttack(InputAction.CallbackContext context);
     }
 }

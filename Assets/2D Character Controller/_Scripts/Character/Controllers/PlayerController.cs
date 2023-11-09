@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerController : HumanoidController {
 
+    [Header("--- Attack ---")]
     [SerializeField] private List<AttackSO> meleeCombo_1 = new();
     [SerializeField] private AttackSO singleChargeAttack;
     [SerializeField] private Transform chargeProjectileTransform;
@@ -28,38 +29,30 @@ public class PlayerController : HumanoidController {
     protected override void Update() {
         base.Update();
         Controller();
-
-        if (Input.GetKey(KeyCode.Z)) {
-            TryChargeAttack(singleChargeAttack);
-        }
-        else if (Input.GetKeyUp(KeyCode.Z)) {
-            ReleaseChargeAttack(chargeProjectileTransform);
-        }
+        PerformingChargedAttacks();
     }
 
-    private void SubscribeToEvents() {
-        input.OnJumpPerformed += Input_OnJumpPerformed;
-        input.OnDashPerformed += Input_OnDashPerformed;
-        input.OnAttackPerformed += Input_OnAttackPerformed;
-    }
-
-    private void UnsubscribeFromEvents() {
-        input.OnJumpPerformed -= Input_OnJumpPerformed;
-        input.OnDashPerformed -= Input_OnDashPerformed;
-        input.OnAttackPerformed -= Input_OnAttackPerformed;
-    }
-
-    private void Input_OnAttackPerformed(object sender, System.EventArgs e) {
-        if (AttackCounter < meleeCombo_1.Count) {
-            TryNormalAttack(meleeCombo_1[AttackCounter], true);
+    private void Input_OnComboNomalAttacksPerformed(object sender, System.EventArgs _) {
+        if (characterCombat.AttackCounter < meleeCombo_1.Count) {
+            characterCombat.PerformNormalAttack(meleeCombo_1[characterCombat.AttackCounter], true);
         }
     }
 
-    private void Input_OnDashPerformed(object sender, System.EventArgs e) {
+    private void PerformingChargedAttacks() {
+        if (input.OnChargedAttackContinuous()) {
+            characterCombat.PerformChargedAttack(singleChargeAttack, chargeProjectileTransform);
+        }
+    }
+
+    private void Input_OnChargedAttackReleased(object sender, System.EventArgs _) {
+        characterCombat.ReleaseChargedAttack(chargeProjectileTransform);
+    }
+
+    private void Input_OnDashPerformed(object sender, System.EventArgs _) {
         TryDashing();
     }
 
-    private void Input_OnJumpPerformed(object sender, System.EventArgs e) {
+    private void Input_OnJumpPerformed(object sender, System.EventArgs _) {
         if (IsLedgeGrabbing) {
             canLedgeClimb = true;
         }
@@ -78,5 +71,19 @@ public class PlayerController : HumanoidController {
         if (!IsLedgeClimbing && canLedgeClimb) {
             canLedgeClimb = false;
         }
+    }
+
+    private void SubscribeToEvents() {
+        input.OnJumpPerformed += Input_OnJumpPerformed;
+        input.OnDashPerformed += Input_OnDashPerformed;
+        input.OnCombatNormalAttacks += Input_OnComboNomalAttacksPerformed;
+        input.OnChargedAttackReleased += Input_OnChargedAttackReleased;
+    }
+
+    private void UnsubscribeFromEvents() {
+        input.OnJumpPerformed -= Input_OnJumpPerformed;
+        input.OnDashPerformed -= Input_OnDashPerformed;
+        input.OnCombatNormalAttacks -= Input_OnComboNomalAttacksPerformed;
+        input.OnChargedAttackReleased -= Input_OnChargedAttackReleased;
     }
 }

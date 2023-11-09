@@ -260,7 +260,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  targetFrameRate: 144
   horizontalCollider: {fileID: 2353421476987182311}
   verticalCollider: {fileID: 2353421477638374806}
   smoothMovement: 24
@@ -272,13 +271,13 @@ MonoBehaviour:
   minimumFloorSlideSpeed: 6
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
-  meleeAttackBufferTime: 0.4
   meleeCombo_1:
   - {fileID: 11400000, guid: f45099718b4fe444184956f4b657cdda, type: 2}
   - {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
   - {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
   - {fileID: 11400000, guid: 47328ed80cfce0a41b27eb8654840846, type: 2}
   singleChargeAttack: {fileID: 11400000, guid: 9f72d7046e614ea4da93f8c99b1e96b3, type: 2}
+  chargeProjectileTransform: {fileID: 0}
 --- !u!114 &2353421476736477845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -502,6 +501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 432607aa3de8ec9498aefff568171bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackBufferTime: 0.4
   attackCharged: 0
   chargeTimer: 0
   holdAttackTimer: 0

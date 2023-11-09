@@ -26,7 +26,7 @@ MonoBehaviour:
   canChangeDirections: 0
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
   canMoveWhileAttacking: 0
-  attackMoveSpeedPercentage: 1
+  attackMoveSpeedPercentage: 0.224
   attackPushesCharacter: 1
   forceMode: 1
   force: {x: 500, y: 0}
@@ -38,8 +38,11 @@ MonoBehaviour:
   cooldownIfOvertime: 0
   chargeTime: 0
   holdChargeTime: 0
+  chargeOverTime: 1
   canMoveWhileCharging: 0
   chargeMoveSpeedPercentage: 1
   canMoveOnReleaseAttack: 0
   throwsProjectile: 0
   projectilePrefab: {fileID: 0}
+  throwAtPercentage: 0
+  delayProjectileThrow: 0

@@ -7,8 +7,8 @@ public class PlayerInput : MonoBehaviour
     public event EventHandler OnSlideKeyUp;
     public event EventHandler OnSlideKeyDown;
     public event EventHandler OnDashPerformed;
-    public event EventHandler OnAttackPerformed;
-    public event EventHandler OnAttackKeyUp;
+    public event EventHandler OnCombatNormalAttacks;
+    public event EventHandler OnChargedAttackReleased;
     private InputActions inputActions;
 
     private void Awake() {
@@ -19,7 +19,7 @@ public class PlayerInput : MonoBehaviour
         inputActions.Player.Jump.performed += Jump_performed;
         inputActions.Player.Slide.performed += Slide_performed;
         inputActions.Player.Dash.performed += Dash_performed;
-        inputActions.Player.Attack.performed += Attack_performed;
+        inputActions.Player.ComboNormalAttacks.performed += ComboNormalAttacks_performed;
     }
 
     private void OnDisable() {
@@ -27,15 +27,15 @@ public class PlayerInput : MonoBehaviour
         inputActions.Player.Jump.performed -= Jump_performed;
         inputActions.Player.Slide.performed -= Slide_performed;
         inputActions.Player.Dash.performed -= Dash_performed;
-        inputActions.Player.Attack.performed -= Attack_performed;
+        inputActions.Player.ComboNormalAttacks.performed -= ComboNormalAttacks_performed;
     }
 
     private void Update() {
         if (inputActions.FindAction("Slide").WasReleasedThisFrame()) {
             OnSlideKeyUp?.Invoke(this, EventArgs.Empty);
         }
-        if (inputActions.FindAction("Attack").WasReleasedThisFrame()) {
-            OnAttackKeyUp?.Invoke(this, EventArgs.Empty);
+        if (inputActions.FindAction("ChargedAttack").WasReleasedThisFrame()) {
+            OnChargedAttackReleased?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -51,10 +51,10 @@ public class PlayerInput : MonoBehaviour
         OnDashPerformed?.Invoke(this, EventArgs.Empty);
     }
 
-    private void Attack_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
-        OnAttackPerformed?.Invoke(this, EventArgs.Empty);
+    private void ComboNormalAttacks_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnCombatNormalAttacks?.Invoke(this, EventArgs.Empty);
     }
-    public bool OnAttackKeyContinuous() => inputActions.Player.Attack.ReadValue<float>() > 0f;
+    public bool OnChargedAttackContinuous() => inputActions.Player.ChargedAttack.ReadValue<float>() > 0f;
 
     public Vector2 GetMovementInput() => inputActions.Player.Movement.ReadValue<Vector2>();
 

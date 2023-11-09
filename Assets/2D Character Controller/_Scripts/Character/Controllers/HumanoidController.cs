@@ -1,25 +1,13 @@
 using System;
 using UnityEngine;
-using CocaCopa;
 using System.Collections;
-using System.Collections.Generic;
 
 [RequireComponent(typeof(CharacterMovement), typeof(CharacterEnvironmentalQuery), typeof(Rigidbody2D))]
 public abstract class HumanoidController : MonoBehaviour {
 
     #region --- Events ---
-    public class OnInitiateNormalAttackEventArgs {
-        public AnimationClip attackClip;
-    }
-    public class OnInitiateChargeAttackEventArgs {
-        public AnimationClip chargeClip;
-    }
     public event EventHandler OnCharacterJump;
     public event EventHandler OnCharacterDash;
-    public event EventHandler<OnInitiateNormalAttackEventArgs> OnInitiateNormalAttack;
-    public event EventHandler<OnInitiateChargeAttackEventArgs> OnInitiateChargeAttack;
-    public event EventHandler OnReleaseChargeAttack;
-    public event EventHandler OnCancelChargeAttack;
     #endregion
 
     #region --- Serializable Variables ---
@@ -61,11 +49,6 @@ public abstract class HumanoidController : MonoBehaviour {
     [Tooltip("For how long should the character be able to hang from a ledge, before falling")]
     [SerializeField] private float maxLedgeGrabTime = 4f;
 #endif
-#if COMBAT_COMPONENT
-    [Header("--- Attack ---")]
-    [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack")]
-    [SerializeField] private float meleeAttackBufferTime = 0.4f;
-#endif
     #endregion
 
     #region --- Constants ---
@@ -82,11 +65,7 @@ public abstract class HumanoidController : MonoBehaviour {
     private CharacterSlide characterSlide;
     private CharacterDash characterDash;
     private CharacterLedgeGrab characterLedgeGrab;
-    private CharacterCombat characterCombat;
-    private AttackSO receivedAttackData;    // The attack in queque to play
-    private AttackSO currentAttackData;     // Current attack playing
-    private List<AttackSO> currentComboData = new();
-    private AnimationClip currentAttackClip;
+    protected CharacterCombat characterCombat;
 
     private bool floorSlideInputHold = false;
     private bool jumpKeyPressed = false;
@@ -95,15 +74,12 @@ public abstract class HumanoidController : MonoBehaviour {
     private bool wallAboveWhenSliding = false;
     private bool exitLedgeGrab = false;
     private bool canWallSlide = false;
-    private bool attackBufferButton = false;
-    private bool attackCompleted = true;
 
     private int airJumpCounter = 0;
 
     private float dashCooldownTimer = 0;
     private float ledgeGrabTimer = 0;
     private float coyoteTimer = 0;
-    private float attackBufferTimer;
 
     private Vector3 ledgePosition;
 #endregion
@@ -122,8 +98,6 @@ public abstract class HumanoidController : MonoBehaviour {
     private bool isFloorSliding = false;
     private bool isWallSliding = false;
     private bool isDashing = false;
-    private bool isAttacking = false;
-    private bool isCharging = false;
 
     public float VerticalVelocity => verticalVelocity;
     public float HorizontalVelocity => horizontalVelocity;
@@ -138,8 +112,6 @@ public abstract class HumanoidController : MonoBehaviour {
     public bool IsDashing => isDashing;
     public bool IsLedgeGrabbing => isLedgeGrabbing;
     public bool IsLedgeClimbing => isLedgeClimbing;
-    public bool IsAttacking => isAttacking;
-    public bool IsCharging => isCharging;
     #endregion
 
     #region --- Callbacks ---
@@ -167,7 +139,6 @@ public abstract class HumanoidController : MonoBehaviour {
         AdjustProperties();
         SpeedCalculations();
         ManageTimers();
-        NormalAttackInputBuffer();
         UpdatePlayerState();
     }
     #endregion
@@ -203,7 +174,6 @@ public abstract class HumanoidController : MonoBehaviour {
         isRunning = Run();
         isWallSliding = WallSlide();
         isFloorSliding = FloorSlide();
-        HandleAttackState();
 
         bool LedgeDetected() {
             bool canLedgeGrab = envQuery.LedgeGrabCheck(ref exitLedgeGrab, out ledgePosition) && !exitLedgeGrab;
@@ -218,10 +188,11 @@ public abstract class HumanoidController : MonoBehaviour {
             return canBeGrounded && groundCheck;
         }
         bool Run() {
-            return !IsAttacking && IsGrounded && !RunsIntoWall(wallSlideCheck: false);
+            return !characterCombat.IsAttacking && IsGrounded && !RunsIntoWall(wallSlideCheck: false);
         }
         bool WallSlide() {
-            bool canWallSlide = this.canWallSlide && envQuery.WallInFront() && !IsGrounded && !IsLedgeClimbing && !IsLedgeGrabbing && !IsFloorSliding && !IsDashing && !IsAttacking;
+            bool canWallSlide = this.canWallSlide && envQuery.WallInFront()
+                && !IsGrounded && !IsLedgeClimbing && !IsLedgeGrabbing && !IsFloorSliding && !IsDashing && !characterCombat.IsAttacking;
             bool wallSlideCondition = IsLedgeGrabbing == false && RunsIntoWall(wallSlideCheck: true);
             return characterSlide
                 ? canWallSlide && wallSlideCondition
@@ -236,36 +207,6 @@ public abstract class HumanoidController : MonoBehaviour {
                 ? playerFloorSlides || keepSliding
                 : false;
         }
-        void HandleAttackState() {
-            if (!characterCombat) {
-                isAttacking = false;
-                return;
-            }
-
-            if (IsAttacking && !IsCharging) {
-                StartCoroutine(CheckAttackAnimation());
-                if (attackCompleted && !attackBufferButton) {
-                    attackCompleted = false;
-                    isAttacking = false;
-                    attackCounter = 0;
-                    if (currentComboData.Count > 0) {
-                        currentComboData[0].CurrentCooldownTime = Time.time + currentComboData[^1].Cooldown;
-                        currentComboData.Clear();
-                    }
-                }
-            }
-
-            if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation, ATTACK_CLIP_THRESHOLD)) {
-                isCharging = false;
-            }
-        }
-    }
-    private IEnumerator CheckAttackAnimation() {
-        yield return new WaitForEndOfFrame();
-        attackCompleted = !characterAnimator.IsClipPlaying(currentAttackClip, ATTACK_CLIP_THRESHOLD);
-        if (attackCompleted && IsAttacking) {
-            characterCombat.ExitAttackState(currentAttackData);
-        }
     }
     #endregion
     
@@ -277,11 +218,6 @@ public abstract class HumanoidController : MonoBehaviour {
 
         if (jumpKeyPressed && VerticalVelocity < 0) {
             jumpKeyPressed = false;
-        }
-
-        if (!IsAttacking && receivedAttackData != null) {
-            receivedAttackData = null;
-            currentAttackData = null;
         }
     }
 
@@ -331,7 +267,7 @@ public abstract class HumanoidController : MonoBehaviour {
         Vector2 horizontalVelocity = IsGrounded
             ? characterMovement.OnGroundHorizontalVelocity(moveDirection, RunsIntoWall(false))
             : characterMovement.OnAirHorizontalVelocity(moveDirection, RunsIntoWall(false));
-        characterCombat.CanMoveWhileCastingAttack(receivedAttackData, ref horizontalVelocity);
+        characterCombat.CanMoveWhileCastingAttack(ref horizontalVelocity);
         Vector2 currentVerticalVelocity = new (0, characterRb.velocity.y);
         Vector2 characterVelocity = horizontalVelocity + currentVerticalVelocity;
 
@@ -339,8 +275,8 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     private bool DontAllowMovement() {
-        bool restrictMovement = IsAttacking || IsFloorSliding || IsDashing || IsLedgeGrabbing || IsLedgeClimbing || IsWallSliding;
-        bool bypassRestriction = receivedAttackData && (receivedAttackData.CanMoveWhileCharging || receivedAttackData.CanMoveWhileAttacking);
+        bool restrictMovement = characterCombat.IsAttacking || IsFloorSliding || IsDashing || IsLedgeGrabbing || IsLedgeClimbing || IsWallSliding;
+        bool bypassRestriction = characterCombat.CanMoveWhileAttacking;
         return restrictMovement && !bypassRestriction;
     }
     #endregion
@@ -373,7 +309,7 @@ public abstract class HumanoidController : MonoBehaviour {
             // On ground jump
             coyoteTimer = 0;
             airJumpCounter = numberOfAirJumps;
-            bool canJump = !IsAttacking && !IsFloorSliding;
+            bool canJump = !characterCombat.IsAttacking && !IsFloorSliding;
             return canJump;
         }
         else if (airJumpCounter > 0 && !IsLedgeGrabbing) {
@@ -415,7 +351,7 @@ public abstract class HumanoidController : MonoBehaviour {
     /// </summary>
     /// <param name="canLedgeGrab">Leave this parameter as is if you want your character to automatically grab the ledge when detected</param>
     protected void LedgeGrab(bool canLedgeGrab = true) {
-        if (!characterLedgeGrab || IsAttacking || IsDashing || IsFloorSliding || IsLedgeClimbing) {
+        if (!characterLedgeGrab || characterCombat.IsAttacking || IsDashing || IsFloorSliding || IsLedgeClimbing) {
             return;
         }
         if (LedgeDetected && canLedgeGrab) {
@@ -436,7 +372,7 @@ public abstract class HumanoidController : MonoBehaviour {
     /// If a ledge is detected, your character will climb it automatically
     /// </summary>
     protected void LedgeClimb(bool canLedgeClimb = true) {
-        if (!characterLedgeGrab || IsAttacking || IsDashing || IsFloorSliding) {
+        if (!characterLedgeGrab || characterCombat.IsAttacking || IsDashing || IsFloorSliding) {
             return;
         }
         if ((LedgeDetected && canLedgeClimb) || IsLedgeClimbing) {
@@ -472,7 +408,7 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     private bool CanDash() {
-        bool canDash = !IsWallSliding && !IsFloorSliding && !IsAttacking;
+        bool canDash = !IsWallSliding && !IsFloorSliding && !characterCombat.IsAttacking;
         bool allowDash = !envQuery.WallInFront(minimumDashDistance) && Time.time >= dashCooldownTimer;
 
         return canDash && allowDash;
@@ -598,161 +534,6 @@ public abstract class HumanoidController : MonoBehaviour {
 #endif
 #endregion
 
-    #region --- Attack ---
-    
-    /// <summary>
-    /// An attack will be initiated, if certain conditions are met
-    /// </summary>
-    protected void TryNormalAttack(AttackSO attackData, bool isPartOfCombo) {
-        receivedAttackData = attackData;
-        if (receivedAttackData.IsChargeableAttack) {
-            Debug.LogError("The attack is set as chargeable. Call 'TryChargeAttack()' instead");
-            return;
-        }
-        if (CanNormalAttack()) {
-            NormalAttack(isPartOfCombo);
-        }
-    }
-
-    private void NormalAttack(bool isPartOfCombo) {
-        currentAttackData = receivedAttackData;
-        SetAttackInformation(chargeableAttack: false);
-        characterCombat.EnterAttackState(currentAttackData);
-        if (isPartOfCombo) {
-            // On a combo attack this will help to set the whole combo on cooldown based on the cooldown of the last performed attack
-            currentComboData.Add(currentAttackData);
-        }
-        else {
-            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
-        }
-        OnInitiateNormalAttack?.Invoke(this, new OnInitiateNormalAttackEventArgs {
-            attackClip = currentAttackData.AttackAnimation
-        });
-        attackCounter++;
-    }
-
-    private void NormalAttackInputBuffer() {
-        Utilities.TickTimer(ref attackBufferTimer, meleeAttackBufferTime, false);
-        if (attackBufferTimer == 0) {
-            attackBufferButton = false;
-        }
-        if (attackCompleted && attackBufferButton) {
-            attackBufferTimer = 0;
-            isAttacking = true;
-            NormalAttack(currentComboData.Count > 0);
-        }
-    }
-
-    private bool CanNormalAttack() {
-        if (!characterCombat) {
-            return false;
-        }
-
-        attackBufferButton = true;
-
-        if (AllowAttack() && !IsAttacking) {
-            return true;
-        }
-        else if (AllowAttack() && characterAnimator.IsClipPlaying(currentAttackClip, ATTACK_CLIP_THRESHOLD)) {
-            attackBufferTimer = meleeAttackBufferTime;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Your character will perform a charge attack if certain conditions are met
-    /// </summary>
-    /// <param name="attackData">Scriptable object that holds the data of the attack</param>
-    public void TryChargeAttack(AttackSO attackData) {
-        if (IsAttacking && !IsCharging) {
-            return;
-        }
-        receivedAttackData = attackData;
-        if (!receivedAttackData.IsChargeableAttack) {
-            Debug.LogError("The attack is not set as chargeable. Call 'TryNormalAttack()' instead");
-            return;
-        }
-
-        if (attackCompleted && AllowAttack() && !IsCharging && !IsAttacking) {
-            currentAttackData = attackData;
-            SetAttackInformation(chargeableAttack: true);
-            characterCombat.EnterAttackState(currentAttackData);
-            isCharging = true;
-            OnInitiateChargeAttack?.Invoke(this, new OnInitiateChargeAttackEventArgs {
-                chargeClip = attackData.ChargeAnimation
-            });
-        }
-
-        if (IsCharging) {
-            isAttacking = true;
-            characterCombat.ChargeAttack(attackData, out bool chargeOvertime);
-            if (chargeOvertime) {
-                characterCombat.ExitAttackState(currentAttackData, false);
-                currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.CooldownIfOvertime;
-                isCharging = false;
-                isAttacking = false;
-                attackCompleted = true;
-                OnCancelChargeAttack?.Invoke(this, EventArgs.Empty);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Releases a charge attack
-    /// </summary>
-    /// <param name="projectileSpawnTransform">The transform where the projectile will be spawned. If your attack does not involve throwing a projectile, you can leave this parameter as null</param>
-    public void ReleaseChargeAttack(Transform projectileSpawnTransform = null) {
-        if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
-            return;
-        }
-        if (AllowAttack()) {
-            isAttacking = true;
-            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
-            currentAttackClip = currentAttackData.AttackAnimation;
-            OnReleaseChargeAttack?.Invoke(this, EventArgs.Empty);
-            if (currentAttackData.ThrowsProjectile) {
-                characterCombat.ReleaseChargedAttack(currentAttackData);
-                StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
-            }
-        }
-    }
-
-    private IEnumerator WaitAnimationBeforeReleasing(Transform projectileSpawnTransform = null) {
-        // Wait until the animation has finished
-        AttackSO attackData = currentAttackData;
-        yield return new WaitForEndOfFrame();
-        while (characterAnimator.IsClipPlaying(attackData.ChargeAnimation, 1f)) {
-            yield return null;
-        }
-        yield return new WaitForEndOfFrame();
-        while (characterAnimator.IsClipPlaying(attackData.AttackAnimation, attackData.ThrowAtPercentage)) {
-            yield return null;
-        }
-        
-        characterCombat.ReleaseChargedAttack(attackData, projectileSpawnTransform);
-
-        // Add your code to execute after the animation here
-    }
-    private void SetAttackInformation(bool chargeableAttack) {
-        isAttacking = true;
-        attackCompleted = false;
-        if (chargeableAttack)
-            currentAttackClip = currentAttackData.ChargeAnimation;
-        else
-            currentAttackClip = currentAttackData.AttackAnimation;
-    }
-
-    private bool AllowAttack() {
-        if (receivedAttackData.DisableCastOnWall) {
-            if (envQuery.WallInFront(receivedAttackData.WallCastDistance)) {
-                return false;
-            }
-        }
-        bool onCooldown = Time.time < receivedAttackData.CurrentCooldownTime;
-        return !onCooldown && IsGrounded && !IsFloorSliding && !IsLedgeClimbing;
-    }
-    #endregion
-
     #region --- Utilities ---
     private void ToggleColliders(bool sliding) {
         verticalCollider.enabled = !sliding;
@@ -764,9 +545,6 @@ public abstract class HumanoidController : MonoBehaviour {
     /// </summary>
     /// <param name="directionX"></param>
     protected void FlipCharacter(float directionX) {
-        if (currentAttackData && !currentAttackData.CanChangeDirections) {
-            return;
-        }
         if (IsLedgeClimbing || IsLedgeGrabbing) {
             return;
         }

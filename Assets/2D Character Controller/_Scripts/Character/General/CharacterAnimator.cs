@@ -13,6 +13,7 @@ public class CharacterAnimator : MonoBehaviour {
 
     private Animator animator;
     private HumanoidController humanoidController;
+    private CharacterCombat characterCombat;
 
     #region Animator Constants
     // Animation - Variables
@@ -43,21 +44,22 @@ public class CharacterAnimator : MonoBehaviour {
     private void Awake() {
         animator = GetComponent<Animator>();
         humanoidController = GetComponentInParent<HumanoidController>();
+        characterCombat = GetComponentInParent<CharacterCombat>();
     }
 
     private void Start() {
         humanoidController.OnCharacterJump += Controller_OnCharacterJump;
-        humanoidController.OnInitiateNormalAttack += Controller_OnCharacterNormalAttack;
-        humanoidController.OnInitiateChargeAttack += Controller_OnCharacterChargeAttack;
-        humanoidController.OnReleaseChargeAttack += Controller_OnCharacterReleaseAttack;
-        humanoidController.OnCancelChargeAttack += Controller_OnCharacterCancelAttack;
+        characterCombat.OnInitiateNormalAttack += Controller_OnCharacterNormalAttack;
+        characterCombat.OnInitiateChargeAttack += Controller_OnCharacterChargeAttack;
+        characterCombat.OnReleaseChargeAttack += Controller_OnCharacterReleaseAttack;
+        characterCombat.OnCancelChargeAttack += Controller_OnCharacterCancelAttack;
     }
 
-    private void Controller_OnCharacterNormalAttack(object sender, HumanoidController.OnInitiateNormalAttackEventArgs e) {
+    private void Controller_OnCharacterNormalAttack(object sender, CharacterCombat.OnInitiateNormalAttackEventArgs e) {
         animator.Play(e.attackClip.name);
     }
 
-    private void Controller_OnCharacterChargeAttack(object sender, HumanoidController.OnInitiateChargeAttackEventArgs e) {
+    private void Controller_OnCharacterChargeAttack(object sender, CharacterCombat.OnInitiateChargeAttackEventArgs e) {
         animator.ResetTrigger(CANCEL_CHARGE_ATTACK);
         animator.ResetTrigger(RELEASE_CHARGE_ATTACK);
         animator.Play(e.chargeClip.name);
@@ -86,9 +88,10 @@ public class CharacterAnimator : MonoBehaviour {
         bool isWallSliding = humanoidController.IsWallSliding;
         bool isGrounded = humanoidController.IsGrounded;
         bool isDashing = humanoidController.IsDashing;
-        bool isAttacking = humanoidController.IsAttacking;
-        bool isCharging = humanoidController.IsCharging;
         bool isLedgeGrabbing = humanoidController.IsLedgeClimbing;
+
+        bool isAttacking = characterCombat.IsAttacking;
+        bool isCharging = characterCombat.IsCharging;
 
         animator.SetFloat(VERTICAL_VELOCITY, verticalVelocity);
         animator.SetBool(IS_RUNNING, isRunning);
@@ -96,9 +99,10 @@ public class CharacterAnimator : MonoBehaviour {
         animator.SetBool(IS_WALL_SLIDING, isWallSliding);
         animator.SetBool(IS_GROUNDED, isGrounded);
         animator.SetBool(IS_DASHING, isDashing);
+        animator.SetBool(LEDGE_CLIMB, isLedgeGrabbing);
+
         animator.SetBool(IS_ATTACKING, isAttacking);
         animator.SetBool(IS_CHARGING, isCharging);
-        animator.SetBool(LEDGE_CLIMB, isLedgeGrabbing);
 
         LedgeGrabLogic();
     }

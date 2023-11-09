@@ -28,6 +28,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty cooldownIfOvertime;
     SerializedProperty chargeTime;
     SerializedProperty holdChargeTime;
+    SerializedProperty chargeOverTime;
     SerializedProperty canMoveWhileCharging;
     SerializedProperty chargeMoveSpeedPercentage;
     SerializedProperty canMoveOnReleaseAttack;
@@ -61,6 +62,7 @@ public class AttackSOEditor : Editor {
         cooldownIfOvertime = serializedObject.FindProperty(nameof(cooldownIfOvertime));
         chargeTime = serializedObject.FindProperty(nameof(chargeTime));
         holdChargeTime = serializedObject.FindProperty(nameof(holdChargeTime));
+        chargeOverTime = serializedObject.FindProperty(nameof(chargeOverTime));
         canMoveWhileCharging = serializedObject.FindProperty(nameof(canMoveWhileCharging));
         chargeMoveSpeedPercentage = serializedObject.FindProperty(nameof(chargeMoveSpeedPercentage));
         canMoveOnReleaseAttack = serializedObject.FindProperty(nameof(canMoveOnReleaseAttack));
@@ -164,6 +166,7 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.PropertyField(cooldownIfOvertime);
             EditorGUILayout.PropertyField(chargeTime);
             EditorGUILayout.PropertyField(holdChargeTime);
+            EditorGUILayout.PropertyField(chargeOverTime);
             EditorGUILayout.Space(10);
         }
     }

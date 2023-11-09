@@ -1,5 +1,10 @@
 using UnityEngine;
 
+public enum ChargeOverTime {
+    ForceCancel,
+    ForceRelease
+}
+
 [CreateAssetMenu(fileName = "NewAttack", menuName = "Create New Attack", order = 0)]
 public class AttackSO : ScriptableObject {
 
@@ -51,6 +56,8 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private float chargeTime;
     [Tooltip("For how long should your character be able to hold their charged attack in seconds, before being forced to cancel it")]
     [SerializeField] private float holdChargeTime;
+    [Tooltip("Specify the action to be taken when the attack is held for longer than the designated hold charge time")]
+    [SerializeField] private ChargeOverTime chargeOverTime = ChargeOverTime.ForceRelease;
     [Tooltip("If 'true', your character will be allowed to move while they charge the attack")]
     [SerializeField] private bool canMoveWhileCharging = false;
     [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
@@ -95,6 +102,7 @@ public class AttackSO : ScriptableObject {
     public AnimationClip ChargeAnimation => chargeAnimation;
     public float ChargeTime => chargeTime;
     public float HoldChargeTime => holdChargeTime;
+    public ChargeOverTime ChargeOverTime => chargeOverTime;
     public bool CanMoveWhileCharging => IsChargeableAttack && canMoveWhileCharging;
     public float ChargeMoveSpeedPercentage => chargeMoveSpeedPercentage;
     public bool CanMoveOnReleaseAttack => canMoveOnReleaseAttack;

@@ -8,7 +8,7 @@ public class PlayerInput : MonoBehaviour
     public event EventHandler OnSlideKeyDown;
     public event EventHandler OnDashPerformed;
     public event EventHandler OnCombatNormalAttacks;
-    public event EventHandler OnChargedAttackReleased;
+    public event EventHandler OnBowReleased;
     private InputActions inputActions;
 
     private void Awake() {
@@ -31,11 +31,11 @@ public class PlayerInput : MonoBehaviour
     }
 
     private void Update() {
-        if (inputActions.FindAction("Slide").WasReleasedThisFrame()) {
+        if (inputActions.FindAction(nameof(inputActions.Player.Slide)).WasReleasedThisFrame()) {
             OnSlideKeyUp?.Invoke(this, EventArgs.Empty);
         }
-        if (inputActions.FindAction("ChargedAttack").WasReleasedThisFrame()) {
-            OnChargedAttackReleased?.Invoke(this, EventArgs.Empty);
+        if (inputActions.FindAction(nameof(inputActions.Player.BowChargedAttack)).WasReleasedThisFrame()) {
+            OnBowReleased?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -54,7 +54,8 @@ public class PlayerInput : MonoBehaviour
     private void ComboNormalAttacks_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
         OnCombatNormalAttacks?.Invoke(this, EventArgs.Empty);
     }
-    public bool OnChargedAttackContinuous() => inputActions.Player.ChargedAttack.ReadValue<float>() > 0f;
+    public bool OnGunContinuous() => inputActions.Player.GunNormalAttack.ReadValue<float>() > 0f;
+    public bool OnBowContinuous() => inputActions.Player.BowChargedAttack.ReadValue<float>() > 0f;
 
     public Vector2 GetMovementInput() => inputActions.Player.Movement.ReadValue<Vector2>();
 

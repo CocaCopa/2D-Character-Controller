@@ -50,14 +50,14 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool isChargeableAttack = false;
     [Tooltip("Animation to play when the charge attack is initiated")]
     [SerializeField] private AnimationClip chargeAnimation;
-    [Tooltip("Cooldown to set the attack on, if is held more than 'holdChargeTime'")]
-    [SerializeField] private float cooldownIfOvertime;
     [Tooltip("How much time should it take for the attack to be charged in seconds")]
     [SerializeField] private float chargeTime;
     [Tooltip("For how long should your character be able to hold their charged attack in seconds, before being forced to cancel it")]
     [SerializeField] private float holdChargeTime;
     [Tooltip("Specify the action to be taken when the attack is held for longer than the designated hold charge time")]
     [SerializeField] private ChargeOverTime chargeOverTime = ChargeOverTime.ForceRelease;
+    [Tooltip("Cooldown to set the attack on, if is held more than 'holdChargeTime' or if the attack is canceled")]
+    [SerializeField] private float cooldownIfCanceled;
     [Tooltip("If 'true', your character will be allowed to move while they charge the attack")]
     [SerializeField] private bool canMoveWhileCharging = false;
     [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
@@ -73,9 +73,8 @@ public class AttackSO : ScriptableObject {
     [Tooltip("Specifies the delay, in seconds, before the projectile is thrown.")]
     [SerializeField] private float delayProjectileThrow;
 
-    private void OnEnable() {
-        CurrentCooldownTime = 0;
-    }
+    private void OnEnable() => CurrentCooldownTime = 0;
+
     public float CurrentCooldownTime { get; set; }
     public float ChargeTimer { get; set; }
     public string AttackName => attackName;
@@ -98,11 +97,11 @@ public class AttackSO : ScriptableObject {
     public bool UseGravity => useGravity;
     public float DragCoeficient => dragCoeficient;
     public bool IsChargeableAttack => isChargeableAttack;
-    public float CooldownIfOvertime => cooldownIfOvertime;
     public AnimationClip ChargeAnimation => chargeAnimation;
     public float ChargeTime => chargeTime;
     public float HoldChargeTime => holdChargeTime;
     public ChargeOverTime ChargeOverTime => chargeOverTime;
+    public float CooldownIfCanceled => cooldownIfCanceled;
     public bool CanMoveWhileCharging => IsChargeableAttack && canMoveWhileCharging;
     public float ChargeMoveSpeedPercentage => chargeMoveSpeedPercentage;
     public bool CanMoveOnReleaseAttack => canMoveOnReleaseAttack;

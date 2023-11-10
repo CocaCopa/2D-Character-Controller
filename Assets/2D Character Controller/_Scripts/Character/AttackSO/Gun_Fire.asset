@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 748551abfae5915438534e35c217d069, type: 3}
-  m_Name: Combo_Melee 2
+  m_Name: Gun_Fire
   m_EditorClassIdentifier: 
   attackName: 
   attackIcon: {fileID: 0}
-  attackAnimation: {fileID: 7400000, guid: 12482399ed2e0d34188669fc946e0f8c, type: 2}
+  attackAnimation: {fileID: 7400000, guid: 725f2bcdba0d61b4ab2b87af4fe7666d, type: 2}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
-  cooldown: 0.5
+  cooldown: 0.25
   disableCastOnWall: 1
   wallCastDistance: 1
   resetVelocity: 1
-  canChangeDirections: 0
-  adjustPositionOnAttackEnd: {x: 0.5, y: 0, z: 0}
+  canChangeDirections: 1
+  adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1
   forceMode: 1
-  force: {x: 500, y: 0}
-  delayForceTime: 0
+  force: {x: -150, y: 0}
+  delayForceTime: 0.05
   useGravity: 0
   dragCoeficient: 10
   isChargeableAttack: 0
@@ -42,7 +42,7 @@ MonoBehaviour:
   canMoveWhileCharging: 0
   chargeMoveSpeedPercentage: 0
   canMoveOnReleaseAttack: 0
-  throwsProjectile: 0
-  projectilePrefab: {fileID: 0}
-  throwAtPercentage: 0
+  throwsProjectile: 1
+  projectilePrefab: {fileID: 3690905825076657289, guid: 5be39f81d0a6af74da2eaae4673c3a3c, type: 3}
+  throwAtPercentage: 0.25
   delayProjectileThrow: 0

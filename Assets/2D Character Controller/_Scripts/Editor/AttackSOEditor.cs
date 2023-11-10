@@ -25,10 +25,10 @@ public class AttackSOEditor : Editor {
     SerializedProperty dragCoeficient;
     SerializedProperty isChargeableAttack;
     SerializedProperty chargeAnimation;
-    SerializedProperty cooldownIfOvertime;
     SerializedProperty chargeTime;
     SerializedProperty holdChargeTime;
     SerializedProperty chargeOverTime;
+    SerializedProperty cooldownIfCanceled;
     SerializedProperty canMoveWhileCharging;
     SerializedProperty chargeMoveSpeedPercentage;
     SerializedProperty canMoveOnReleaseAttack;
@@ -59,10 +59,10 @@ public class AttackSOEditor : Editor {
         dragCoeficient = serializedObject.FindProperty(nameof(dragCoeficient));
         isChargeableAttack = serializedObject.FindProperty(nameof(isChargeableAttack));
         chargeAnimation = serializedObject.FindProperty(nameof(chargeAnimation));
-        cooldownIfOvertime = serializedObject.FindProperty(nameof(cooldownIfOvertime));
         chargeTime = serializedObject.FindProperty(nameof(chargeTime));
         holdChargeTime = serializedObject.FindProperty(nameof(holdChargeTime));
         chargeOverTime = serializedObject.FindProperty(nameof(chargeOverTime));
+        cooldownIfCanceled = serializedObject.FindProperty(nameof(cooldownIfCanceled));
         canMoveWhileCharging = serializedObject.FindProperty(nameof(canMoveWhileCharging));
         chargeMoveSpeedPercentage = serializedObject.FindProperty(nameof(chargeMoveSpeedPercentage));
         canMoveOnReleaseAttack = serializedObject.FindProperty(nameof(canMoveOnReleaseAttack));
@@ -163,10 +163,10 @@ public class AttackSOEditor : Editor {
         EditorGUILayout.PropertyField(isChargeableAttack);
         if (attackSO.IsChargeableAttack) {
             EditorGUILayout.PropertyField(chargeAnimation);
-            EditorGUILayout.PropertyField(cooldownIfOvertime);
             EditorGUILayout.PropertyField(chargeTime);
             EditorGUILayout.PropertyField(holdChargeTime);
             EditorGUILayout.PropertyField(chargeOverTime);
+            EditorGUILayout.PropertyField(cooldownIfCanceled);
             EditorGUILayout.Space(10);
         }
     }

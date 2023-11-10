@@ -35,10 +35,10 @@ MonoBehaviour:
   dragCoeficient: 10
   isChargeableAttack: 0
   chargeAnimation: {fileID: 0}
-  cooldownIfOvertime: 0
   chargeTime: 0
   holdChargeTime: 0
   chargeOverTime: 1
+  cooldownIfCanceled: 0
   canMoveWhileCharging: 0
   chargeMoveSpeedPercentage: 1
   canMoveOnReleaseAttack: 0

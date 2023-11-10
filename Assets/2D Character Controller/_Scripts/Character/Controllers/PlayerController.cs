@@ -6,7 +6,9 @@ public class PlayerController : HumanoidController {
     [Header("--- Attack ---")]
     [SerializeField] private List<AttackSO> meleeCombo_1 = new();
     [SerializeField] private AttackSO singleChargeAttack;
+    [SerializeField] private AttackSO gunFireAttack;
     [SerializeField] private Transform chargeProjectileTransform;
+    [SerializeField] private Transform gunProjectileTransform;
 
     private PlayerInput input;
     private bool canLedgeClimb = false;
@@ -30,32 +32,31 @@ public class PlayerController : HumanoidController {
         base.Update();
         Controller();
         PerformingChargedAttacks();
+        if (input.OnGunContinuous() && CanGunAttack()) {
+            characterCombat.PerformNormalAttack(gunFireAttack, false, gunProjectileTransform);
+        }
     }
 
     private void Input_OnComboNomalAttacksPerformed(object sender, System.EventArgs _) {
-        if (!IsGrounded || IsFloorSliding || IsLedgeClimbing || IsLedgeGrabbing || IsDashing || IsWallSliding) {
-            return;
-        }
-        if (characterCombat.AttackCounter < meleeCombo_1.Count) {
-            characterCombat.PerformNormalAttack(meleeCombo_1[characterCombat.AttackCounter], true);
+        if (CanComboAttack()) {
+            if (characterCombat.AttackCounter < meleeCombo_1.Count) {
+                characterCombat.PerformNormalAttack(meleeCombo_1[characterCombat.AttackCounter], true);
+            }
         }
     }
 
     private void PerformingChargedAttacks() {
-        if (input.OnChargedAttackContinuous()) {
-            if (IsFloorSliding || IsLedgeClimbing || IsLedgeGrabbing || IsDashing || IsWallSliding) {
-                return;
-            }
+        if (input.OnBowContinuous() && CanBowAttack()) {
             if (IsGrounded) {
                 characterCombat.PerformChargedAttack(singleChargeAttack, chargeProjectileTransform);
             }
             else {
-                characterCombat.CancelChargedAttack();
+                characterCombat.CancelChargedAttack(singleChargeAttack);
             }
         }
     }
 
-    private void Input_OnChargedAttackReleased(object sender, System.EventArgs _) {
+    private void Input_OnBowReleased(object sender, System.EventArgs _) {
         characterCombat.ReleaseChargedAttack(chargeProjectileTransform);
     }
 
@@ -88,13 +89,25 @@ public class PlayerController : HumanoidController {
         input.OnJumpPerformed += Input_OnJumpPerformed;
         input.OnDashPerformed += Input_OnDashPerformed;
         input.OnCombatNormalAttacks += Input_OnComboNomalAttacksPerformed;
-        input.OnChargedAttackReleased += Input_OnChargedAttackReleased;
+        input.OnBowReleased += Input_OnBowReleased;
     }
 
     private void UnsubscribeFromEvents() {
         input.OnJumpPerformed -= Input_OnJumpPerformed;
         input.OnDashPerformed -= Input_OnDashPerformed;
         input.OnCombatNormalAttacks -= Input_OnComboNomalAttacksPerformed;
-        input.OnChargedAttackReleased -= Input_OnChargedAttackReleased;
+        input.OnBowReleased -= Input_OnBowReleased;
+    }
+
+    private bool CanBowAttack() {
+        return !IsFloorSliding && !IsLedgeClimbing && !IsLedgeGrabbing && !IsDashing && !IsWallSliding;
+    }
+
+    private bool CanComboAttack() {
+        return IsGrounded && !IsFloorSliding && !IsLedgeClimbing && !IsLedgeGrabbing && !IsDashing && !IsWallSliding;
+    }
+
+    private bool CanGunAttack() {
+        return IsGrounded && !IsFloorSliding && !IsLedgeClimbing && !IsLedgeGrabbing && !IsDashing && !IsWallSliding;
     }
 }

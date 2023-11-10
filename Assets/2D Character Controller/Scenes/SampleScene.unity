@@ -526,6 +526,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1204360030}
+  - {fileID: 1926688877}
   m_Father: {fileID: 1697739648}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1055,7 +1056,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1204360029}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.51, y: 1.066, z: 0}
+  m_LocalPosition: {x: 1.03, y: 1.066, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1229,6 +1230,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: timeScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: gunFireAttack
+      value: 
+      objectReference: {fileID: 11400000, guid: c5064e87c0fba58438f04a647698bc6b, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: singleChargeAttack
+      value: 
+      objectReference: {fileID: 11400000, guid: 9f72d7046e614ea4da93f8c99b1e96b3, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: gunProjectileTransform
+      value: 
+      objectReference: {fileID: 1926688877}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: chargeAttackProjTransform
       value: 
       objectReference: {fileID: 1204360030}
@@ -1278,6 +1295,37 @@ Transform:
   - {fileID: 1499058624}
   m_Father: {fileID: 0}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1926688876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1926688877}
+  m_Layer: 0
+  m_Name: GunFire
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1926688877
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1926688876}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.57, y: 1.102, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 589710328}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1985833644
 GameObject:

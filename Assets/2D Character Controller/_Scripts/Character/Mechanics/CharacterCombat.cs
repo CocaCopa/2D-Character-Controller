@@ -25,7 +25,7 @@ public class CharacterCombat : MonoBehaviour {
     [SerializeField] private float chargeTimer;
     [SerializeField] private float holdAttackTimer;
 
-    private const float ATTACK_CLIP_THRESHOLD = 0.95f;
+    private const float ATTACK_CLIP_THRESHOLD = 1f;
 
     private Rigidbody2D playerRb;
     private CharacterEnvironmentalQuery envQuery;
@@ -34,6 +34,7 @@ public class CharacterCombat : MonoBehaviour {
     private AttackSO receivedAttackData;    // The attack in queque to play
     private AttackSO currentAttackData;     // Current attack playing
     private List<AttackSO> currentComboData = new();
+    private Transform projectileSpawnTransform;
 
     private float defaultLinearDrag = 0f;
     private float defaultGravityScale = 0f;
@@ -111,10 +112,11 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
-    public void PerformNormalAttack(AttackSO attackData, bool isPartOfCombo) {
+    public void PerformNormalAttack(AttackSO attackData, bool isPartOfCombo, Transform projectileSpawnTransform = null) {
         receivedAttackData = attackData;
+        this.projectileSpawnTransform = projectileSpawnTransform;
         if (receivedAttackData.IsChargeableAttack) {
-            Debug.LogError("The attack is set as chargeable. Call 'TryChargeAttack()' instead");
+            Debug.LogError("The attack is set as chargeable. Call 'PerformChargedAttack()' instead");
             return;
         }
 
@@ -130,6 +132,9 @@ public class CharacterCombat : MonoBehaviour {
         OnInitiateNormalAttack?.Invoke(this, new OnInitiateNormalAttackEventArgs {
             attackClip = currentAttackData.AttackAnimation
         });
+        if (currentAttackData.ThrowsProjectile) {
+            StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
+        }
         attackCounter++;
     }
 
@@ -138,7 +143,7 @@ public class CharacterCombat : MonoBehaviour {
         if (attackBufferTimer == 0) {
             attackBufferButton = false;
         }
-        if (attackCompleted && attackBufferButton) {
+        if (AttackIsReady() && attackCompleted && attackBufferButton) {
             attackBufferTimer = 0;
             NormalAttack(currentComboData.Count > 0);
         }
@@ -149,15 +154,15 @@ public class CharacterCombat : MonoBehaviour {
         if (AttackIsReady() && !IsAttacking) {
             return true;
         }
-        else if (AttackIsReady() && characterAnimator.IsClipPlaying(currentAttackClip, ATTACK_CLIP_THRESHOLD)) {
+        if (IsAttacking && AttackIsReady()) {
             attackBufferTimer = attackBufferTime;
         }
         return false;
     }
 
     private bool AttackIsReady() {
-        bool blockAttack = receivedAttackData.DisableCastOnWall && envQuery.WallInFront(receivedAttackData.WallCastDistance);
-        bool onCooldown = Time.time < receivedAttackData.CurrentCooldownTime;
+        bool blockAttack = receivedAttackData != null && receivedAttackData.DisableCastOnWall && envQuery.WallInFront(receivedAttackData.WallCastDistance);
+        bool onCooldown = receivedAttackData != null && Time.time < receivedAttackData.CurrentCooldownTime;
         return !blockAttack && !onCooldown;
     }
 
@@ -172,6 +177,7 @@ public class CharacterCombat : MonoBehaviour {
         }
         else {
             if (!currentAttackData.IsChargeableAttack) {
+                // Chargeable attack sets its cooldown when the attack is released or canceled
                 currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
             }
         }
@@ -183,7 +189,7 @@ public class CharacterCombat : MonoBehaviour {
         }
         receivedAttackData = attackData;
         if (!receivedAttackData.IsChargeableAttack) {
-            Debug.LogError("The attack is not set as chargeable. Call 'TryNormalAttack()' instead");
+            Debug.LogError("The attack is not set as chargeable. Call 'PerformNormalAttack()' instead");
             return;
         }
         if (attackCompleted && AttackIsReady() && !IsCharging && !IsAttacking) {
@@ -207,7 +213,7 @@ public class CharacterCombat : MonoBehaviour {
     /// </summary>
     /// <param name="attackData">The scriptable object that the data of the attack</param>
     /// <param name="chargeOvertime">Indicates when the character holded the attack for more than the allowed time</param>
-    public void ChargeAttack(AttackSO attackData, Transform projectileSpawnPoint) {
+    private void ChargeAttack(AttackSO attackData, Transform projectileSpawnPoint) {
 
         attackCharged = Utilities.TickTimer(ref chargeTimer, attackData.ChargeTime, false);
 
@@ -215,12 +221,10 @@ public class CharacterCombat : MonoBehaviour {
             if (Utilities.TickTimer(ref holdAttackTimer, attackData.HoldChargeTime, false)) {
                 attackCharged = false;
                 if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceRelease) {
-                    canReleaseChargedAttack = false;
                     ReleaseChargedAttack(projectileSpawnPoint);
                 }
                 else if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceCancel) {
-                    canReleaseChargedAttack = false;
-                    CancelChargedAttack();
+                    CancelChargedAttack(currentAttackData);
                 }
             }
         }
@@ -231,6 +235,7 @@ public class CharacterCombat : MonoBehaviour {
             return;
         }
         if (AttackIsReady()) {
+            canReleaseChargedAttack = false;
             isAttacking = true;
             currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
             currentAttackClip = currentAttackData.AttackAnimation;
@@ -249,20 +254,25 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
-    public void CancelChargedAttack() {
-        ExitAttackState(currentAttackData, false);
-        currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.CooldownIfOvertime;
+    public void CancelChargedAttack(AttackSO attackData) {
+        if (canReleaseChargedAttack) {
+            attackData.CurrentCooldownTime = Time.time + attackData.CooldownIfCanceled;
+        }
+        canReleaseChargedAttack = false;
         isCharging = false;
         isAttacking = false;
         attackCompleted = true;
+        ExitAttackState(attackData, false);
         OnCancelChargeAttack?.Invoke(this, EventArgs.Empty);
     }
 
     private IEnumerator WaitAnimationBeforeReleasing(Transform spawnPoint) {
         AttackSO attackData = currentAttackData;
-        yield return new WaitForEndOfFrame();
-        while (characterAnimator.IsClipPlaying(attackData.ChargeAnimation, 1f)) {
-            yield return null;
+        if (attackData.IsChargeableAttack) {
+            yield return new WaitForEndOfFrame();
+            while (characterAnimator.IsClipPlaying(attackData.ChargeAnimation, 1f)) {
+                yield return null;
+            }
         }
         yield return new WaitForEndOfFrame();
         while (characterAnimator.IsClipPlaying(attackData.AttackAnimation, attackData.ThrowAtPercentage)) {
@@ -273,20 +283,31 @@ public class CharacterCombat : MonoBehaviour {
 
     private IEnumerator ThrowProjectile(AttackSO attackData, Transform spawnTransform) {
         yield return new WaitForSeconds(attackData.DelayProjectileThrow);
-        GameObject projectile = Instantiate(attackData.ProjectilePrefab, spawnTransform.position, Quaternion.identity);
+        GameObject spawnedProjectile = Instantiate(attackData.ProjectilePrefab, spawnTransform.position, Quaternion.Euler(transform.eulerAngles));
         OnProjectileThrown?.Invoke(this, EventArgs.Empty);
-        ArrowProjectile arrow = projectile.GetComponent<ArrowProjectile>();
-        Vector2 velocity = arrow.InitialVelocity;
-        velocity.x *= transform.right.x;
-        arrow.InitialVelocity = velocity;
-        arrow.enabled = true;
+        if (attackData.IsChargeableAttack) {
+            if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
+                float speedMultiplier = chargeTimer / attackData.ChargeTime;
+                projectile.Velocity *= (1 - speedMultiplier) * transform.right.x;
+                projectile.enabled = true;
+            }
+            else {
+                Debug.LogError(attackData.name + ": The projectile prefab provided, is missing the 'CombatSystemProjectile' component.");
+            }
+        }
+        else {
+            if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
+                projectile.Velocity *= transform.right.x;
+                projectile.enabled = true;
+            }
+        }
     }
 
     /// <summary>
     /// Locks your character into 'Attack State' based on the scriptable object data
     /// </summary>
     /// <param name="attackData">The scriptable object that the data of the attack</param>
-    public void EnterAttackState(AttackSO attackData) {
+    private void EnterAttackState(AttackSO attackData) {
         if (!attackData.UseGravity) {
             playerRb.gravityScale = 0f;
         }
@@ -318,7 +339,7 @@ public class CharacterCombat : MonoBehaviour {
     /// <summary>
     /// Unlocks your character after the attack is completed
     /// </summary>
-    public void ExitAttackState(AttackSO attackData, bool adjustPosition = true) {
+    private void ExitAttackState(AttackSO attackData, bool adjustPosition = true) {
         playerRb.drag = defaultLinearDrag;
         playerRb.gravityScale = defaultGravityScale;
         moveWhileCastingAttack = false;

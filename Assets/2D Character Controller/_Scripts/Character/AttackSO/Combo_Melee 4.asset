@@ -23,7 +23,7 @@ MonoBehaviour:
   disableCastOnWall: 1
   wallCastDistance: 1
   resetVelocity: 1
-  canChangeDirections: 1
+  canChangeDirections: 0
   adjustPositionOnAttackEnd: {x: 0.74, y: 0, z: 0}
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
@@ -35,11 +35,14 @@ MonoBehaviour:
   dragCoeficient: 10
   isChargeableAttack: 0
   chargeAnimation: {fileID: 0}
-  cooldownIfOvertime: 0
   chargeTime: 0
   holdChargeTime: 0
+  chargeOverTime: 1
+  cooldownIfCanceled: 0
   canMoveWhileCharging: 0
   chargeMoveSpeedPercentage: 0
   canMoveOnReleaseAttack: 0
   throwsProjectile: 0
   projectilePrefab: {fileID: 0}
+  throwAtPercentage: 0
+  delayProjectileThrow: 0

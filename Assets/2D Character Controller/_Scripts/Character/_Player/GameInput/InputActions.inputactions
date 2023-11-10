@@ -51,9 +51,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChargedAttack",
+                    "name": "BowChargedAttack",
                     "type": "Button",
                     "id": "accdfcc2-6744-4785-b6a3-9c7ddf332460",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GunNormalAttack",
+                    "type": "Button",
+                    "id": "43cc5fa4-c010-4786-8054-6425e8ebd598",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -184,17 +193,6 @@
                 },
                 {
                     "name": "",
-                    "id": "320dc950-8129-4eee-b425-2af166a293bd",
-                    "path": "<Keyboard>/c",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b57d19e5-306c-47e7-b378-f60da1f0d3a8",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
@@ -218,7 +216,7 @@
                 {
                     "name": "",
                     "id": "dc69a1c1-694f-4f8b-8649-08ca7f9970b6",
-                    "path": "<Keyboard>/x",
+                    "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -229,11 +227,22 @@
                 {
                     "name": "",
                     "id": "3d730967-17f3-4884-887f-ca4d3b013e69",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BowChargedAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5df831ce-3ef7-4c04-9d63-0d3f77921917",
                     "path": "<Keyboard>/z",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ChargedAttack",
+                    "action": "GunNormalAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

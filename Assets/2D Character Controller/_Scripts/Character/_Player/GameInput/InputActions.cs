@@ -73,9 +73,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ChargedAttack"",
+                    ""name"": ""BowChargedAttack"",
                     ""type"": ""Button"",
                     ""id"": ""accdfcc2-6744-4785-b6a3-9c7ddf332460"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GunNormalAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""43cc5fa4-c010-4786-8054-6425e8ebd598"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -206,17 +215,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""320dc950-8129-4eee-b425-2af166a293bd"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""b57d19e5-306c-47e7-b378-f60da1f0d3a8"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
@@ -240,7 +238,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""dc69a1c1-694f-4f8b-8649-08ca7f9970b6"",
-                    ""path"": ""<Keyboard>/x"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -251,11 +249,22 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3d730967-17f3-4884-887f-ca4d3b013e69"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BowChargedAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5df831ce-3ef7-4c04-9d63-0d3f77921917"",
                     ""path"": ""<Keyboard>/z"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ChargedAttack"",
+                    ""action"": ""GunNormalAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -271,7 +280,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Player_Slide = m_Player.FindAction("Slide", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_ComboNormalAttacks = m_Player.FindAction("ComboNormalAttacks", throwIfNotFound: true);
-        m_Player_ChargedAttack = m_Player.FindAction("ChargedAttack", throwIfNotFound: true);
+        m_Player_BowChargedAttack = m_Player.FindAction("BowChargedAttack", throwIfNotFound: true);
+        m_Player_GunNormalAttack = m_Player.FindAction("GunNormalAttack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -338,7 +348,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Slide;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_ComboNormalAttacks;
-    private readonly InputAction m_Player_ChargedAttack;
+    private readonly InputAction m_Player_BowChargedAttack;
+    private readonly InputAction m_Player_GunNormalAttack;
     public struct PlayerActions
     {
         private @InputActions m_Wrapper;
@@ -348,7 +359,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         public InputAction @Slide => m_Wrapper.m_Player_Slide;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @ComboNormalAttacks => m_Wrapper.m_Player_ComboNormalAttacks;
-        public InputAction @ChargedAttack => m_Wrapper.m_Player_ChargedAttack;
+        public InputAction @BowChargedAttack => m_Wrapper.m_Player_BowChargedAttack;
+        public InputAction @GunNormalAttack => m_Wrapper.m_Player_GunNormalAttack;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -373,9 +385,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @ComboNormalAttacks.started += instance.OnComboNormalAttacks;
             @ComboNormalAttacks.performed += instance.OnComboNormalAttacks;
             @ComboNormalAttacks.canceled += instance.OnComboNormalAttacks;
-            @ChargedAttack.started += instance.OnChargedAttack;
-            @ChargedAttack.performed += instance.OnChargedAttack;
-            @ChargedAttack.canceled += instance.OnChargedAttack;
+            @BowChargedAttack.started += instance.OnBowChargedAttack;
+            @BowChargedAttack.performed += instance.OnBowChargedAttack;
+            @BowChargedAttack.canceled += instance.OnBowChargedAttack;
+            @GunNormalAttack.started += instance.OnGunNormalAttack;
+            @GunNormalAttack.performed += instance.OnGunNormalAttack;
+            @GunNormalAttack.canceled += instance.OnGunNormalAttack;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -395,9 +410,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @ComboNormalAttacks.started -= instance.OnComboNormalAttacks;
             @ComboNormalAttacks.performed -= instance.OnComboNormalAttacks;
             @ComboNormalAttacks.canceled -= instance.OnComboNormalAttacks;
-            @ChargedAttack.started -= instance.OnChargedAttack;
-            @ChargedAttack.performed -= instance.OnChargedAttack;
-            @ChargedAttack.canceled -= instance.OnChargedAttack;
+            @BowChargedAttack.started -= instance.OnBowChargedAttack;
+            @BowChargedAttack.performed -= instance.OnBowChargedAttack;
+            @BowChargedAttack.canceled -= instance.OnBowChargedAttack;
+            @GunNormalAttack.started -= instance.OnGunNormalAttack;
+            @GunNormalAttack.performed -= instance.OnGunNormalAttack;
+            @GunNormalAttack.canceled -= instance.OnGunNormalAttack;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -422,6 +440,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         void OnSlide(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnComboNormalAttacks(InputAction.CallbackContext context);
-        void OnChargedAttack(InputAction.CallbackContext context);
+        void OnBowChargedAttack(InputAction.CallbackContext context);
+        void OnGunNormalAttack(InputAction.CallbackContext context);
     }
 }

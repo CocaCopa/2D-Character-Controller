@@ -56,7 +56,7 @@ public class CharacterAnimator : MonoBehaviour {
     }
 
     private void Controller_OnCharacterNormalAttack(object sender, CharacterCombat.OnInitiateNormalAttackEventArgs e) {
-        animator.Play(e.attackClip.name);
+        animator.Play(e.attackClip.name, 0, 0);
     }
 
     private void Controller_OnCharacterChargeAttack(object sender, CharacterCombat.OnInitiateChargeAttackEventArgs e) {

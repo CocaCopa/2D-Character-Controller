@@ -119,7 +119,7 @@ public class CharacterCombat : MonoBehaviour {
         receivedAttackData = attackData;
         this.projectileSpawnTransform = projectileSpawnTransform;
         if (receivedAttackData.IsChargeableAttack) {
-            Debug.LogError("The attack is set as chargeable. Call 'PerformChargedAttack()' instead");
+            Debug.LogError("The attack is configured as chargeable. Call 'PerformChargedAttack()' instead.");
             return;
         }
 
@@ -192,7 +192,7 @@ public class CharacterCombat : MonoBehaviour {
         }
         receivedAttackData = attackData;
         if (!receivedAttackData.IsChargeableAttack) {
-            Debug.LogError("The attack is not set as chargeable. Call 'PerformNormalAttack()' instead");
+            Debug.LogError("The attack is not configured as chargeable. Call 'PerformNormalAttack()' instead.");
             return;
         }
         if (attackCompleted && AttackIsReady() && !IsCharging && !IsAttacking) {
@@ -281,12 +281,24 @@ public class CharacterCombat : MonoBehaviour {
         while (characterAnimator.IsClipPlaying(attackData.AttackAnimation, attackData.ThrowAtPercentage)) {
             yield return null;
         }
-        StartCoroutine(ThrowProjectile(currentAttackData, spawnPoint));
+        if (currentAttackData.ThrowsProjectile && (currentAttackData.ProjectilePrefab != null || currentAttackData.ProjectilePrefabs.Length > 0)) {
+            StartCoroutine(ThrowProjectile(currentAttackData, spawnPoint));
+        }
+        else {
+            Debug.LogError(currentAttackData.name + ": The attack is configured to launch a projectile, but no prefab(s) have been assigned.");
+        }
     }
 
     private IEnumerator ThrowProjectile(AttackSO attackData, Transform spawnTransform) {
         yield return new WaitForSeconds(attackData.DelayProjectileThrow);
-        GameObject spawnedProjectile = Instantiate(attackData.ProjectilePrefab, spawnTransform.position, Quaternion.Euler(transform.eulerAngles));
+        GameObject spawnedProjectile;
+        if (attackData.ChooseRandomFromList) {
+            int randomIndex = UnityEngine.Random.Range(0, attackData.ProjectilePrefabs.Length);
+            spawnedProjectile = Instantiate(attackData.ProjectilePrefabs[randomIndex], spawnTransform.position, Quaternion.Euler(transform.eulerAngles));
+        }
+        else {
+            spawnedProjectile = Instantiate(attackData.ProjectilePrefab, spawnTransform.position, Quaternion.Euler(transform.eulerAngles));
+        }
         OnProjectileThrown?.Invoke(this, new OnProjectileThrownEventArgs {
             projectile = spawnedProjectile
         });
@@ -303,7 +315,12 @@ public class CharacterCombat : MonoBehaviour {
             }
         }
         else {
-            Debug.LogError(attackData.name + ": The projectile prefab provided, is missing the 'CombatSystemProjectile' component.");
+            string projectileName = spawnedProjectile.name;
+            if (spawnedProjectile.name.Contains("(Clone)")) {
+                projectileName = projectileName.Replace("(Clone)", "");
+            }
+            Debug.LogError(attackData.name + ": The projectile prefab provided (prefab: " + projectileName + "), " +
+                "is missing the 'CombatSystemProjectile' component.");
         }
     }
 

@@ -7,6 +7,7 @@ public class CombatSystemProjectileEditor : Editor {
     #region --- Properties ---
     SerializedProperty initialVelocity;
     SerializedProperty minimumInitialVelocity;
+    SerializedProperty useCustomBehaviour;
     SerializedProperty lookAtOnGoingDirection;
     SerializedProperty OnCollisionEnter;
     SerializedProperty reactOnLayers;
@@ -19,6 +20,7 @@ public class CombatSystemProjectileEditor : Editor {
     private void OnEnable() {
         initialVelocity = serializedObject.FindProperty(nameof(initialVelocity));
         minimumInitialVelocity = serializedObject.FindProperty(nameof(minimumInitialVelocity));
+        useCustomBehaviour = serializedObject.FindProperty(nameof(useCustomBehaviour));
         lookAtOnGoingDirection = serializedObject.FindProperty(nameof(lookAtOnGoingDirection));
         OnCollisionEnter = serializedObject.FindProperty(nameof(OnCollisionEnter));
         reactOnLayers = serializedObject.FindProperty(nameof(reactOnLayers));
@@ -48,15 +50,20 @@ public class CombatSystemProjectileEditor : Editor {
         serializedObject.Update();
         EditorGUILayout.PropertyField(initialVelocity);
         EditorGUILayout.PropertyField(minimumInitialVelocity);
-        EditorGUILayout.PropertyField(lookAtOnGoingDirection);
-        EditorGUILayout.PropertyField(OnCollisionEnter);
-        EditorGUILayout.PropertyField(reactOnLayers);
-        EditorGUILayout.PropertyField(onFirstContact);
-        if (projectile.OnFirstContact == ProjectileContact.Ricochet) {
-            EditorGUILayout.PropertyField(constantMultiplier);
-            EditorGUILayout.PropertyField(speedMultiplier);
-            EditorGUILayout.PropertyField(allowBounces);
-            EditorGUILayout.PropertyField(onRicochetEnd);
+        EditorGUILayout.Space(10);
+        EditorGUILayout.PropertyField(useCustomBehaviour);
+        EditorGUILayout.Space(10);
+        if (!projectile.UseCustomBehaviour) {
+            EditorGUILayout.PropertyField(lookAtOnGoingDirection);
+            EditorGUILayout.PropertyField(OnCollisionEnter);
+            EditorGUILayout.PropertyField(reactOnLayers);
+            EditorGUILayout.PropertyField(onFirstContact);
+            if (projectile.OnFirstContact == ProjectileContact.Ricochet) {
+                EditorGUILayout.PropertyField(constantMultiplier);
+                EditorGUILayout.PropertyField(speedMultiplier);
+                EditorGUILayout.PropertyField(allowBounces);
+                EditorGUILayout.PropertyField(onRicochetEnd);
+            }
         }
         serializedObject.ApplyModifiedProperties();
     }

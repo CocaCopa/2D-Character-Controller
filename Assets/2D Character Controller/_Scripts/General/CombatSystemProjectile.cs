@@ -15,6 +15,8 @@ public class CombatSystemProjectile : MonoBehaviour {
     [Tooltip("If the projectile is spawned by a chargeable attack, this is the minimum initial velocity, the projectile's velocity " +
         "can be set to, based on the amount of charge")]
     [SerializeField] private Vector2 minimumInitialVelocity;
+    [Tooltip("Enable to create custom behavior entirely from scratch.")]
+    [SerializeField] private bool useCustomBehaviour = false;
     [Tooltip("Determines whether the projectile object should continuously orient itself along its ongoing direction.")]
     [SerializeField] private bool lookAtOnGoingDirection = true;
     [Tooltip("Event that can be used to trigger actions upon collision. It's serialized to allow external configuration in the Unity Editor.")]
@@ -32,8 +34,6 @@ public class CombatSystemProjectile : MonoBehaviour {
     [Tooltip("Defines the action to be taken when the projectile reaches the maximum allowed bounces during ricochet.")]
     [SerializeField] private ProjectileContact onRicochetEnd;
 
-
-
     private Rigidbody2D projectileRb;
     private bool objectCollided = false;
     private int numberOfBounces = 0;
@@ -48,6 +48,7 @@ public class CombatSystemProjectile : MonoBehaviour {
         }
     }
     public ProjectileContact OnFirstContact => onFirstContact;
+    public bool UseCustomBehaviour => useCustomBehaviour;
 
     private void Awake() {
         projectileRb = GetComponent<Rigidbody2D>();
@@ -59,6 +60,9 @@ public class CombatSystemProjectile : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
+        if (useCustomBehaviour) {
+            return;
+        }
         objectCollided = true;
         HandleCollision(collision, onFirstContact);
     }
@@ -82,6 +86,9 @@ public class CombatSystemProjectile : MonoBehaviour {
     }
 
     private void Update() {
+        if (useCustomBehaviour) {
+            enabled = false;
+        }
         if (lookAtOnGoingDirection && !objectCollided) {
             LookAtOnGoingDirection();
         }

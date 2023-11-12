@@ -10,39 +10,41 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 748551abfae5915438534e35c217d069, type: 3}
-  m_Name: Single_Charge_Attack 2
+  m_Name: Combo_Melee 1
   m_EditorClassIdentifier: 
   attackName: 
   attackIcon: {fileID: 0}
-  attackAnimation: {fileID: 7400000, guid: 725f2bcdba0d61b4ab2b87af4fe7666d, type: 2}
+  attackAnimation: {fileID: 7400000, guid: 9723596acd0b2a34d9ce0c835ec80b66, type: 2}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
-  cooldown: 0.3
+  cooldown: 0.5
   disableCastOnWall: 0
   wallCastDistance: 0
   resetVelocity: 1
   canChangeDirections: 0
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
   canMoveWhileAttacking: 0
-  attackMoveSpeedPercentage: 0
+  attackMoveSpeedPercentage: 0.224
   attackPushesCharacter: 1
   forceMode: 1
-  force: {x: -100, y: 0}
-  delayForceTime: 0.05
-  useGravity: 1
+  force: {x: 500, y: 0}
+  delayForceTime: 0
+  useGravity: 0
   dragCoeficient: 10
-  isChargeableAttack: 1
-  chargeAnimation: {fileID: 7400000, guid: 0551425c6222ed945aa956d67ea687f4, type: 2}
+  isChargeableAttack: 0
+  chargeAnimation: {fileID: 0}
   chargeTime: 0
   holdChargeTime: 0
   chargeOverTime: 1
   cooldownIfCanceled: 0
   canMoveWhileCharging: 0
-  chargeMoveSpeedPercentage: 0
+  chargeMoveSpeedPercentage: 1
   canMoveOnReleaseAttack: 0
-  throwsProjectile: 1
-  projectilePrefab: {fileID: 3690905825076657289, guid: 5be39f81d0a6af74da2eaae4673c3a3c, type: 3}
-  throwAtPercentage: 0.25
+  throwsProjectile: 0
+  chooseRandomFromList: 0
+  projectilePrefab: {fileID: 0}
+  projectilePrefabs: []
+  throwAtPercentage: 0
   delayProjectileThrow: 0

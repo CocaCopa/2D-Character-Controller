@@ -59,7 +59,11 @@ public class PlayerController : HumanoidController {
     }
 
     private void Input_OnBowReleased(object sender, System.EventArgs _) {
-        characterCombat.ReleaseChargedAttack(arrowSpawnTransform);
+        if (IsGrounded)
+            characterCombat.ReleaseChargedAttack(arrowSpawnTransform);
+        else {
+            characterCombat.CancelChargedAttack(bowChargeAttack);
+        }
     }
 
     private void Input_OnDashPerformed(object sender, System.EventArgs _) {

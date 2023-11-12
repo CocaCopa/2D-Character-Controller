@@ -69,8 +69,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.3941984, y: -0.0022881057}
-  m_Size: {x: 0.8699381, y: 0.19000763}
+  m_Offset: {x: 0, y: 0.002801937}
+  m_Size: {x: 0.8271832, y: 0.17983273}
   m_Direction: 1
 --- !u!114 &4222821136634696927
 MonoBehaviour:
@@ -86,6 +86,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialVelocity: {x: 60, y: 0}
   minimumInitialVelocity: {x: 0, y: 0}
+  useCustomBehaviour: 0
   lookAtOnGoingDirection: 1
   OnCollisionEnter:
     m_PersistentCalls:
@@ -93,7 +94,7 @@ MonoBehaviour:
   reactOnLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  onFirstContact: 3
+  onFirstContact: 2
   constantMultiplier: 0
   speedMultiplier: 0.5
   allowBounces: 8
@@ -123,7 +124,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2463437648392533879}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.396, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

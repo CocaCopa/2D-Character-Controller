@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEngine;
 
 [CustomEditor(typeof(AttackSO))]
 public class AttackSOEditor : Editor {
@@ -33,7 +34,9 @@ public class AttackSOEditor : Editor {
     SerializedProperty chargeMoveSpeedPercentage;
     SerializedProperty canMoveOnReleaseAttack;
     SerializedProperty throwsProjectile;
+    SerializedProperty chooseRandomFromList;
     SerializedProperty projectilePrefab;
+    SerializedProperty projectilePrefabs;
     SerializedProperty throwAtPercentage;
     SerializedProperty delayProjectileThrow;
 
@@ -67,7 +70,9 @@ public class AttackSOEditor : Editor {
         chargeMoveSpeedPercentage = serializedObject.FindProperty(nameof(chargeMoveSpeedPercentage));
         canMoveOnReleaseAttack = serializedObject.FindProperty(nameof(canMoveOnReleaseAttack));
         throwsProjectile = serializedObject.FindProperty(nameof(throwsProjectile));
+        chooseRandomFromList = serializedObject.FindProperty(nameof(chooseRandomFromList));
         projectilePrefab = serializedObject.FindProperty(nameof(projectilePrefab));
+        projectilePrefabs = serializedObject.FindProperty(nameof(projectilePrefabs));
         throwAtPercentage = serializedObject.FindProperty(nameof(throwAtPercentage));
         delayProjectileThrow = serializedObject.FindProperty(nameof(delayProjectileThrow));
     }
@@ -95,6 +100,7 @@ public class AttackSOEditor : Editor {
 
     private void DrawCustomEditor() {
         serializedObject.Update();
+        DisplayScriptReference();
         CommonDetails();
         CommonStats();
         PushCharacter();
@@ -177,10 +183,26 @@ public class AttackSOEditor : Editor {
         }
         EditorGUILayout.PropertyField(throwsProjectile);
         if (attackSO.ThrowsProjectile) {
-            EditorGUILayout.PropertyField(projectilePrefab);
+            EditorGUILayout.PropertyField(chooseRandomFromList);
+            if (attackSO.ChooseRandomFromList) {
+                EditorGUILayout.PropertyField(projectilePrefabs);
+            }
+            else {
+                EditorGUILayout.PropertyField(projectilePrefab);
+            }
             EditorGUILayout.PropertyField(throwAtPercentage);
             EditorGUILayout.PropertyField(delayProjectileThrow);
             EditorGUILayout.Space(10);
         }
+    }
+
+    private void DisplayScriptReference() {
+        ScriptableObject scriptComponent = (ScriptableObject)target;
+        SerializedObject m_serializedObject = new(scriptComponent);
+        SerializedProperty scriptProperty = m_serializedObject.FindProperty("m_Script");
+        EditorGUI.BeginDisabledGroup(true);
+        EditorGUILayout.PropertyField(scriptProperty, true, new GUILayoutOption[0]);
+        EditorGUI.EndDisabledGroup();
+        serializedObject.ApplyModifiedProperties();
     }
 }

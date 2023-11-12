@@ -66,9 +66,13 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool canMoveOnReleaseAttack;
     [Tooltip("Does this attack throw a projectile?")]
     [SerializeField] private bool throwsProjectile = false;
+    [Tooltip("Enabling this option allows multiple prefabs to be assigned as projectiles. Upon attacking, a random prefab will be chosen.")]
+    [SerializeField] private bool chooseRandomFromList = false;
     [Tooltip("Projectile to spawn")]
     [SerializeField] private GameObject projectilePrefab;
-    [Tooltip("The projectile will be thrown when the 'AttackAnimation' has played the specified percentage")]
+    [Tooltip("Projectile to spawn")]
+    [SerializeField] private GameObject[] projectilePrefabs;
+    [Tooltip("Indicates the exact timing for launching the projectile during the 'AttackAnimation', based on a specified percentage.")]
     [SerializeField, Range(0, 1)] private float throwAtPercentage;
     [Tooltip("Specifies the delay, in seconds, before the projectile is thrown.")]
     [SerializeField] private float delayProjectileThrow;
@@ -106,7 +110,9 @@ public class AttackSO : ScriptableObject {
     public float ChargeMoveSpeedPercentage => chargeMoveSpeedPercentage;
     public bool CanMoveOnReleaseAttack => canMoveOnReleaseAttack;
     public bool ThrowsProjectile => throwsProjectile;
+    public bool ChooseRandomFromList => chooseRandomFromList;
     public GameObject ProjectilePrefab => projectilePrefab;
+    public GameObject[] ProjectilePrefabs => projectilePrefabs;
     public float ThrowAtPercentage => throwAtPercentage;
     public float DelayProjectileThrow => delayProjectileThrow;
 }

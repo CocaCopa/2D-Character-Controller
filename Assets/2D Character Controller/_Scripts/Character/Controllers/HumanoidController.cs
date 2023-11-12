@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using CocaCopa;
 
 [RequireComponent(typeof(CharacterMovement), typeof(CharacterEnvironmentalQuery), typeof(Rigidbody2D))]
 public abstract class HumanoidController : MonoBehaviour {
@@ -8,6 +9,9 @@ public abstract class HumanoidController : MonoBehaviour {
     #region --- Events ---
     public event EventHandler OnCharacterJump;
     public event EventHandler OnCharacterDash;
+    public event EventHandler OnLedgeGrabEnter;
+    public event EventHandler OnLedgeClimbEnter;
+    public event EventHandler OnLedgeExit;
     #endregion
 
     #region --- Serializable Variables ---
@@ -74,6 +78,10 @@ public abstract class HumanoidController : MonoBehaviour {
     private bool wallAboveWhenSliding = false;
     private bool exitLedgeGrab = false;
     private bool canWallSlide = false;
+    private bool canFireLedgeGrabEnterEvent = true;
+    private bool canFireLedgeClimbEnterEvent = true;
+    private bool canFireLedgeExitEvent = false;
+    private bool ledgeClimbActive = false;
 
     private int airJumpCounter = 0;
 
@@ -82,7 +90,7 @@ public abstract class HumanoidController : MonoBehaviour {
     private float coyoteTimer = 0;
 
     private Vector3 ledgePosition;
-#endregion
+    #endregion
 
     #region --- Public Properties ---
     private float verticalVelocity = 0f;
@@ -148,13 +156,13 @@ public abstract class HumanoidController : MonoBehaviour {
     private void Debugging() {
 
         if (Input.GetKeyDown(KeyCode.G)) {
-            transform.position += new Vector3(0, 10f, 0); 
+            transform.position += new Vector3(0, 10f, 0);
             characterRb.position = transform.position;
         }
         Time.timeScale = timeScale;
     }
 #endif
-#endregion
+    #endregion
 
     #region --- Character State ---
     private void UpdatePlayerState() {
@@ -209,14 +217,14 @@ public abstract class HumanoidController : MonoBehaviour {
         }
     }
     #endregion
-    
+
     #region --- General Every Frame Adjustments ---
     private void AdjustProperties() {
 
         activeCollider = verticalCollider.enabled ? verticalCollider : horizontalCollider;
         envQuery.SetActiveCollider(activeCollider);
 
-        if (jumpKeyPressed && VerticalVelocity < 0) {
+        if ((jumpKeyPressed && VerticalVelocity < 0) || IsLedgeGrabbing || IsLedgeClimbing) {
             jumpKeyPressed = false;
         }
     }
@@ -239,13 +247,6 @@ public abstract class HumanoidController : MonoBehaviour {
         else {
             coyoteTimer -= Time.deltaTime;
             coyoteTimer = Mathf.Clamp(coyoteTimer, 0, coyoteTime);
-        }
-
-        if (IsLedgeGrabbing) {
-            ledgeGrabTimer -= Time.deltaTime;
-        }
-        else {
-            ledgeGrabTimer = maxLedgeGrabTime;
         }
     }
     #endregion
@@ -354,20 +355,36 @@ public abstract class HumanoidController : MonoBehaviour {
         if (!characterLedgeGrab || characterCombat.IsAttacking || IsDashing || IsFloorSliding || IsLedgeClimbing) {
             return;
         }
+        // LedgeDetected will be forced to return false if 'exitLedgeGrab' is true.
+        // Thus, if the character 'IsLedgeGrabbing' and not 'IsLedgeClimbing' they will be forced to exit 'LedgeGrab' state.
+        // If the character 'IsLedgeClimbing' they will exit 'LedgeGrab' state, once ledge climb is completed.
         if (LedgeDetected && canLedgeGrab) {
             isLedgeGrabbing = true;
             characterLedgeGrab.EnterLedgeGrabState(ledgePosition);
+            if (Utilities.TickTimer(ref ledgeGrabTimer, maxLedgeGrabTime, false)) {
+                exitLedgeGrab = true;
+                canFireLedgeExitEvent = true;
+            }
         }
         else if (IsLedgeGrabbing && !IsLedgeClimbing) {
+            ledgeGrabTimer = maxLedgeGrabTime;
             isLedgeGrabbing = false;
+            exitLedgeGrab = true;
             characterLedgeGrab.ExitLedgeGrabState();
+            canFireLedgeGrabEnterEvent = true;
+            canFireLedgeExitEvent = true;
         }
 
-        if (ledgeGrabTimer <= 0) {
-            exitLedgeGrab = true;
+        if (IsLedgeGrabbing && canFireLedgeGrabEnterEvent) {
+            canFireLedgeGrabEnterEvent = false;
+            OnLedgeGrabEnter?.Invoke(this, EventArgs.Empty);
+        }
+        if (!IsLedgeGrabbing && canFireLedgeExitEvent) {
+            canFireLedgeExitEvent = false;
+            OnLedgeExit?.Invoke(this, EventArgs.Empty);
         }
     }
-
+    
     /// <summary>
     /// If a ledge is detected, your character will climb it automatically
     /// </summary>
@@ -376,16 +393,25 @@ public abstract class HumanoidController : MonoBehaviour {
             return;
         }
         if ((LedgeDetected && canLedgeClimb) || IsLedgeClimbing) {
+            ledgeClimbActive = true;
             characterLedgeGrab.LedgeClimb(ledgePosition, out isLedgeClimbing, out Vector3 endPosition);
             if (IsLedgeClimbing == false) {
                 StartCoroutine(TeleportToPosition(endPosition));
             }
         }
-        else if (!IsLedgeGrabbing && !IsLedgeClimbing) {
+        else if (!IsLedgeGrabbing && !IsLedgeClimbing && ledgeClimbActive) {
+            canFireLedgeClimbEnterEvent = true;
+            ledgeClimbActive = false;
             characterLedgeGrab.ExitLedgeGrabState();
+            OnLedgeExit?.Invoke(this, EventArgs.Empty);
+        }
+
+        if (IsLedgeClimbing && canFireLedgeClimbEnterEvent) {
+            canFireLedgeClimbEnterEvent = false;
+            OnLedgeClimbEnter?.Invoke(this, EventArgs.Empty);
         }
     }
-
+    
     IEnumerator TeleportToPosition(Vector3 endPosition) {
         yield return new WaitForEndOfFrame();
         characterRb.position = endPosition;
@@ -584,6 +610,7 @@ public abstract class HumanoidController : MonoBehaviour {
         activeCollider = verticalCollider.enabled ? verticalCollider : horizontalCollider;
         envQuery.SetActiveCollider(activeCollider);
         airJumpCounter = numberOfAirJumps;
+        ledgeGrabTimer = maxLedgeGrabTime;
     }
     #endregion
 }

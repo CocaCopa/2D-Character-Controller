@@ -21,7 +21,7 @@ MonoBehaviour:
   damageAmount: 0
   cooldown: 0.25
   disableCastOnWall: 1
-  wallCastDistance: 1
+  wallCastDistance: 0.5
   resetVelocity: 1
   canChangeDirections: 1
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
@@ -29,7 +29,7 @@ MonoBehaviour:
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1
   forceMode: 1
-  force: {x: -150, y: 0}
+  force: {x: -75, y: 0}
   delayForceTime: 0.05
   useGravity: 0
   dragCoeficient: 10

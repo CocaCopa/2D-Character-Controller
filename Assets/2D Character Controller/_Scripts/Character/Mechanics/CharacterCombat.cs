@@ -13,9 +13,12 @@ public class CharacterCombat : MonoBehaviour {
     public class OnInitiateChargeAttackEventArgs {
         public AnimationClip chargeClip;
     }
+    public class OnProjectileThrownEventArgs {
+        public GameObject projectile;
+    }
     public event EventHandler<OnInitiateNormalAttackEventArgs> OnInitiateNormalAttack;
     public event EventHandler<OnInitiateChargeAttackEventArgs> OnInitiateChargeAttack;
-    public event EventHandler OnProjectileThrown;
+    public event EventHandler<OnProjectileThrownEventArgs> OnProjectileThrown;
     public event EventHandler OnReleaseChargeAttack;
     public event EventHandler OnCancelChargeAttack;
 
@@ -284,22 +287,23 @@ public class CharacterCombat : MonoBehaviour {
     private IEnumerator ThrowProjectile(AttackSO attackData, Transform spawnTransform) {
         yield return new WaitForSeconds(attackData.DelayProjectileThrow);
         GameObject spawnedProjectile = Instantiate(attackData.ProjectilePrefab, spawnTransform.position, Quaternion.Euler(transform.eulerAngles));
-        OnProjectileThrown?.Invoke(this, EventArgs.Empty);
-        if (attackData.IsChargeableAttack) {
-            if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
+        OnProjectileThrown?.Invoke(this, new OnProjectileThrownEventArgs {
+            projectile = spawnedProjectile
+        });
+        if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
+            if (attackData.IsChargeableAttack) {
                 float speedMultiplier = chargeTimer / attackData.ChargeTime;
-                projectile.Velocity *= (1 - speedMultiplier) * transform.right.x;
-                projectile.enabled = true;
-            }
-            else {
-                Debug.LogError(attackData.name + ": The projectile prefab provided, is missing the 'CombatSystemProjectile' component.");
-            }
-        }
-        else {
-            if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
+                projectile.Velocity *= 1 - speedMultiplier;
                 projectile.Velocity *= transform.right.x;
                 projectile.enabled = true;
             }
+            else {
+                projectile.Velocity *= transform.right.x;
+                projectile.enabled = true;
+            }
+        }
+        else {
+            Debug.LogError(attackData.name + ": The projectile prefab provided, is missing the 'CombatSystemProjectile' component.");
         }
     }
 

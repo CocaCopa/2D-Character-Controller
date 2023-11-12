@@ -276,8 +276,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
   - {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
   - {fileID: 11400000, guid: 47328ed80cfce0a41b27eb8654840846, type: 2}
-  singleChargeAttack: {fileID: 11400000, guid: 9f72d7046e614ea4da93f8c99b1e96b3, type: 2}
-  chargeProjectileTransform: {fileID: 0}
+  bowChargeAttack: {fileID: 11400000, guid: 9f72d7046e614ea4da93f8c99b1e96b3, type: 2}
+  arrowSpawnTransform: {fileID: 0}
+  gunFireAttack: {fileID: 11400000, guid: c5064e87c0fba58438f04a647698bc6b, type: 2}
+  bulletSpawnTransform: {fileID: 0}
 --- !u!114 &2353421476736477845
 MonoBehaviour:
   m_ObjectHideFlags: 0

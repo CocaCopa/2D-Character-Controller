@@ -1042,7 +1042,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1204360030}
   m_Layer: 0
-  m_Name: SingleChargeAttack
+  m_Name: ArrowSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1230,17 +1230,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: timeScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: gunFireAttack
-      value: 
-      objectReference: {fileID: 11400000, guid: c5064e87c0fba58438f04a647698bc6b, type: 2}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: singleChargeAttack
       value: 
       objectReference: {fileID: 11400000, guid: 9f72d7046e614ea4da93f8c99b1e96b3, type: 2}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: arrowSpawnTransform
+      value: 
+      objectReference: {fileID: 1204360030}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: bulletSpawnTransform
+      value: 
+      objectReference: {fileID: 1926688877}
     - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: gunProjectileTransform
       value: 
@@ -1306,7 +1306,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1926688877}
   m_Layer: 0
-  m_Name: GunFire
+  m_Name: BulletSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -3,12 +3,14 @@ using UnityEngine;
 
 public class PlayerController : HumanoidController {
 
-    [Header("--- Attack ---")]
+    [Header("--- Combo Attack ---")]
     [SerializeField] private List<AttackSO> meleeCombo_1 = new();
-    [SerializeField] private AttackSO singleChargeAttack;
+    [Header("--- Bow Charge Attack ---")]
+    [SerializeField] private AttackSO bowChargeAttack;
+    [SerializeField] private Transform arrowSpawnTransform;
+    [Header("--- Gun Normal Attack ---")]
     [SerializeField] private AttackSO gunFireAttack;
-    [SerializeField] private Transform chargeProjectileTransform;
-    [SerializeField] private Transform gunProjectileTransform;
+    [SerializeField] private Transform bulletSpawnTransform;
 
     private PlayerInput input;
     private bool canLedgeClimb = false;
@@ -33,7 +35,7 @@ public class PlayerController : HumanoidController {
         Controller();
         PerformingChargedAttacks();
         if (input.OnGunContinuous() && CanGunAttack()) {
-            characterCombat.PerformNormalAttack(gunFireAttack, false, gunProjectileTransform);
+            characterCombat.PerformNormalAttack(gunFireAttack, false, bulletSpawnTransform);
         }
     }
 
@@ -48,16 +50,16 @@ public class PlayerController : HumanoidController {
     private void PerformingChargedAttacks() {
         if (input.OnBowContinuous() && CanBowAttack()) {
             if (IsGrounded) {
-                characterCombat.PerformChargedAttack(singleChargeAttack, chargeProjectileTransform);
+                characterCombat.PerformChargedAttack(bowChargeAttack, arrowSpawnTransform);
             }
             else {
-                characterCombat.CancelChargedAttack(singleChargeAttack);
+                characterCombat.CancelChargedAttack(bowChargeAttack);
             }
         }
     }
 
     private void Input_OnBowReleased(object sender, System.EventArgs _) {
-        characterCombat.ReleaseChargedAttack(chargeProjectileTransform);
+        characterCombat.ReleaseChargedAttack(arrowSpawnTransform);
     }
 
     private void Input_OnDashPerformed(object sender, System.EventArgs _) {

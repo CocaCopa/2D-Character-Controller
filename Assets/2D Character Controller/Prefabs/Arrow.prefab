@@ -84,13 +84,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cba9726e2c3e3b34587041d7a5adc6bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 60, y: 0}
-  minimumVelocity: {x: 0, y: 0}
+  initialVelocity: {x: 60, y: 0}
+  minimumInitialVelocity: {x: 0, y: 0}
   lookAtOnGoingDirection: 1
-  allowedLayers:
+  OnCollisionEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  reactOnLayers:
     serializedVersion: 2
-    m_Bits: 1
-  onContact: 2
+    m_Bits: 4294967295
+  onFirstContact: 3
+  constantMultiplier: 0
+  speedMultiplier: 0.5
+  allowBounces: 8
+  onRicochetEnd: 0
 --- !u!1 &2463437648392533879
 GameObject:
   m_ObjectHideFlags: 0

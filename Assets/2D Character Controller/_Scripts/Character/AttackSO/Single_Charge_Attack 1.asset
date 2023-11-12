@@ -27,7 +27,7 @@ MonoBehaviour:
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
-  attackPushesCharacter: 1
+  attackPushesCharacter: 0
   forceMode: 1
   force: {x: 500, y: 0}
   delayForceTime: 0

@@ -123,7 +123,6 @@ public abstract class HumanoidController : MonoBehaviour {
     #endregion
 
     #region --- Callbacks ---
-
     protected virtual void Awake() {
         FindComponents();
         InitializeProperties();
@@ -196,7 +195,7 @@ public abstract class HumanoidController : MonoBehaviour {
             return canBeGrounded && groundCheck;
         }
         bool Run() {
-            return !characterCombat.IsAttacking && IsGrounded && !RunsIntoWall(wallSlideCheck: false);
+            return !characterCombat.IsAttacking && IsGrounded && HorizontalVelocity != 0 && !RunsIntoWall(wallSlideCheck: false);
         }
         bool WallSlide() {
             bool canWallSlide = this.canWallSlide && envQuery.WallInFront()

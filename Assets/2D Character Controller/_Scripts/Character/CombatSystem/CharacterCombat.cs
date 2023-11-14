@@ -22,10 +22,22 @@ public class CharacterCombat : MonoBehaviour {
     public event EventHandler OnReleaseChargeAttack;
     public event EventHandler OnCancelChargeAttack;
 
-    [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack")]
+#if UNITY_EDITOR
+    [Tooltip("Set to true, if to visualize the hitbox of your current attack")]
+    [SerializeField] private bool visualizeAttackHitbox = true;
+    [Tooltip("Choose the shape of the hitbox that is configured in the attack you are visualizing")]
+    [SerializeField] HitboxShape shape;
+    [SerializeField] private Color gizmosColor = Color.green;
+#endif
+    [Tooltip("The transform of the attack hitbox")]
+    [SerializeField] private Transform attackHitboxTransform;
+    [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack.")]
     [SerializeField] private float attackBufferTime;
+    [Tooltip("If a charged attack is being casted, this value will be set to true once the attack is fully charged.")]
     [SerializeField] private bool attackCharged = false;
+    [Tooltip("Defines the duration required to fully charge an attack, based on the attack configuration.")]
     [SerializeField] private float chargeTimer;
+    [Tooltip("Specifies the maximum duration an attack can be held before the character is compelled to release or cancel it, as per the attack configuration.")]
     [SerializeField] private float holdAttackTimer;
 
     private const float ATTACK_CLIP_THRESHOLD = 1f;
@@ -45,8 +57,9 @@ public class CharacterCombat : MonoBehaviour {
 
     private int attackCounter;
 
-    private bool moveWhileCastingAttack = false;
+    private bool canDamage = true;
     private bool attackBufferButton = false;
+    private bool moveWhileCastingAttack = false;
     private bool attackCompleted = true;
     private bool isAttacking = false;
     private bool isCharging = false;
@@ -57,6 +70,37 @@ public class CharacterCombat : MonoBehaviour {
     public bool IsCharging => isCharging;
     public bool CanMoveWhileAttacking => currentAttackData != null && (currentAttackData.CanMoveWhileAttacking || currentAttackData.CanMoveWhileCharging);
     public bool CanChangeDirections => currentAttackData == null || currentAttackData.CanChangeDirections;
+#if UNITY_EDITOR
+    public bool VisualizeAttackHitbox => visualizeAttackHitbox;
+#endif
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos() {
+        if (visualizeAttackHitbox) {
+            Gizmos.color = gizmosColor;
+            if (shape == HitboxShape.Circle) {
+                Vector3 center = attackHitboxTransform.position;
+                float radius = (attackHitboxTransform.lossyScale.x / 2 + attackHitboxTransform.lossyScale.y / 2) / 2;
+                if (attackHitboxTransform.gameObject.activeInHierarchy) {
+                    Gizmos.DrawSphere(center, radius);
+                }
+                else {
+                    Gizmos.DrawWireSphere(center, radius);
+                }
+            }
+            else if (shape == HitboxShape.Box) {
+                Vector3 center = attackHitboxTransform.position;
+                Vector3 size = attackHitboxTransform.lossyScale;
+                if (attackHitboxTransform.gameObject.activeInHierarchy) {
+                    Gizmos.DrawCube(center, size);
+                }
+                else {
+                    Gizmos.DrawWireCube(center, size);
+                }
+            }
+        }
+    }
+#endif
 
     private void Awake() {
         InitializeComponents();
@@ -66,6 +110,7 @@ public class CharacterCombat : MonoBehaviour {
     private void Update() {
         NormalAttackInputBuffer();
         HandleAttackState();
+        HandleAttackHitbox();
         ResetAttackData();
     }
 
@@ -75,17 +120,21 @@ public class CharacterCombat : MonoBehaviour {
         characterAnimator = GetComponentInChildren<CharacterAnimator>();
     }
 
-    private void ResetAttackData() {
-        if (!IsAttacking && receivedAttackData != null) {
-            receivedAttackData = null;
-            currentAttackData = null;
-            currentAttackClip = null;
-        }
-    }
-
     private void InitializeProperties() {
         defaultLinearDrag = playerRb.drag;
         defaultGravityScale = playerRb.gravityScale;
+        attackHitboxTransform.gameObject.SetActive(false);
+    }
+
+    private void NormalAttackInputBuffer() {
+        Utilities.TickTimer(ref attackBufferTimer, attackBufferTime, autoReset: false);
+        if (attackBufferTimer == 0) {
+            attackBufferButton = false;
+        }
+        if (AttackIsReady() && attackCompleted && attackBufferButton) {
+            attackBufferTimer = 0;
+            NormalAttack(currentComboData.Count > 0);
+        }
     }
 
     private void HandleAttackState() {
@@ -106,12 +155,49 @@ public class CharacterCombat : MonoBehaviour {
             isCharging = false;
         }
     }
+    
+    private void HandleAttackHitbox() {
+        if (!IsAttacking) {
+            canDamage = true;
+            return;
+        }
+
+        if (canDamage && attackHitboxTransform.gameObject.activeInHierarchy) {
+            Collider2D collidersHit = null;
+            if (currentAttackData.HitboxShape == HitboxShape.Circle) {
+                Vector2 point = attackHitboxTransform.position;
+                float radius = (attackHitboxTransform.lossyScale.x / 2 + attackHitboxTransform.lossyScale.y / 2) / 2;
+                int layerMask = currentAttackData.WhatIsDamageable;
+                collidersHit = Physics2D.OverlapCircle(point, radius, layerMask);
+            }
+            else if (currentAttackData.HitboxShape == HitboxShape.Box) {
+                Vector2 point = attackHitboxTransform.position;
+                Vector2 size = attackHitboxTransform.lossyScale;
+                int layerMask = currentAttackData.WhatIsDamageable;
+                collidersHit = Physics2D.OverlapBox(point, size, 0, layerMask);
+            }
+
+            if (collidersHit != null && collidersHit.transform.root.TryGetComponent<IDamageable>(out var damageableObject)) {
+                damageableObject.TakeDamage(currentAttackData.DamageAmount);
+                canDamage = false; // Ensures the attacker will only deal damage once. Resets when attackComplete = true;
+            }
+        }
+    }
+
+    private void ResetAttackData() {
+        if (!IsAttacking && receivedAttackData != null) {
+            receivedAttackData = null;
+            currentAttackData = null;
+            currentAttackClip = null;
+        }
+    }
 
     private IEnumerator CheckAttackAnimation() {
         yield return new WaitForEndOfFrame();
         attackCompleted = !characterAnimator.IsClipPlaying(currentAttackClip, ATTACK_CLIP_THRESHOLD);
         if (attackCompleted && IsAttacking) {
             ExitAttackState(currentAttackData);
+            canDamage = true;
         }
     }
 
@@ -139,17 +225,6 @@ public class CharacterCombat : MonoBehaviour {
             StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
         }
         attackCounter++;
-    }
-
-    private void NormalAttackInputBuffer() {
-        Utilities.TickTimer(ref attackBufferTimer, attackBufferTime, autoReset: false);
-        if (attackBufferTimer == 0) {
-            attackBufferButton = false;
-        }
-        if (AttackIsReady() && attackCompleted && attackBufferButton) {
-            attackBufferTimer = 0;
-            NormalAttack(currentComboData.Count > 0);
-        }
     }
 
     private bool CanPerformNormalAttack() {

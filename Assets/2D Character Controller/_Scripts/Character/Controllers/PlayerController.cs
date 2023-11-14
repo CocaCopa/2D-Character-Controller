@@ -32,7 +32,7 @@ public class PlayerController : HumanoidController {
 
     protected override void Update() {
         base.Update();
-        Controller();
+        LocomotionController();
         PerformingChargedAttacks();
         if (input.OnGunContinuous() && CanGunAttack()) {
             characterCombat.PerformNormalAttack(gunFireAttack, false, bulletSpawnTransform);
@@ -79,7 +79,7 @@ public class PlayerController : HumanoidController {
         }
     }
 
-    private void Controller() {
+    private void LocomotionController() {
         FlipCharacter(input.GetMovementInput().x);
         ChangeHorizontalVelocity(input.GetMovementInput());
         TryFloorSlide(input.OnSlideKeyContinuous());

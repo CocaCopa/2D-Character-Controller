@@ -48,7 +48,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 2.5
-  m_LinearDrag: 0.5
+  m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -85,19 +85,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialVelocity: {x: 60, y: 0}
-  minimumInitialVelocity: {x: 0, y: 0}
+  minimumInitialVelocity: {x: 60, y: 0}
   useCustomBehaviour: 0
   lookAtOnGoingDirection: 1
-  OnCollisionEnter:
+  onCollisionEnter:
     m_PersistentCalls:
       m_Calls: []
+  handleSameLayerCollision: 1
+  affectObject: 0
   reactOnLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
-  onFirstContact: 2
+    m_Bits: 247
+  onFirstContact: 3
   constantMultiplier: 0
+  multiplierReductionRate: 0.5
   speedMultiplier: 0.5
-  allowBounces: 8
+  allowBounces: 120
   onRicochetEnd: 0
 --- !u!1 &2463437648392533879
 GameObject:

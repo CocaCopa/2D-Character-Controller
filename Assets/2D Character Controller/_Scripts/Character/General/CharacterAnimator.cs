@@ -14,6 +14,7 @@ public class CharacterAnimator : MonoBehaviour {
     private Animator animator;
     private HumanoidController humanoidController;
     private CharacterCombat characterCombat;
+    private EntityHealth entityHealth;
 
     #region Animator Constants
     // Animation - Variables
@@ -31,6 +32,7 @@ public class CharacterAnimator : MonoBehaviour {
     private const string LEDGE_CLIMB = "LedgeClimb";
     private const string LEDGE_GRAB_ENTER = "LedgeGrabEnter";
     private const string LEDGE_GRAB_LOOP = "LedgeGrabLoop";
+    private const string TAKE_DAMAGE = "TakeDamage";
 
     // Animation - Names
     private const string IDLE = "Idle";
@@ -45,6 +47,7 @@ public class CharacterAnimator : MonoBehaviour {
         animator = GetComponent<Animator>();
         humanoidController = GetComponentInParent<HumanoidController>();
         characterCombat = GetComponentInParent<CharacterCombat>();
+        entityHealth = GetComponentInParent<EntityHealth>();
     }
 
     private void Start() {
@@ -53,6 +56,16 @@ public class CharacterAnimator : MonoBehaviour {
         characterCombat.OnInitiateChargeAttack += Controller_OnCharacterChargeAttack;
         characterCombat.OnReleaseChargeAttack += Controller_OnCharacterReleaseAttack;
         characterCombat.OnCancelChargeAttack += Controller_OnCharacterCancelAttack;
+        entityHealth.OnTakeDamage += Health_OnTakeDamage;
+    }
+
+    private void OnDisable() {
+        humanoidController.OnCharacterJump -= Controller_OnCharacterJump;
+        characterCombat.OnInitiateNormalAttack -= Controller_OnCharacterNormalAttack;
+        characterCombat.OnInitiateChargeAttack -= Controller_OnCharacterChargeAttack;
+        characterCombat.OnReleaseChargeAttack -= Controller_OnCharacterReleaseAttack;
+        characterCombat.OnCancelChargeAttack -= Controller_OnCharacterCancelAttack;
+        entityHealth.OnTakeDamage -= Health_OnTakeDamage;
     }
 
     private void Controller_OnCharacterNormalAttack(object sender, CharacterCombat.OnInitiateNormalAttackEventArgs e) {
@@ -65,19 +78,23 @@ public class CharacterAnimator : MonoBehaviour {
         animator.Play(e.chargeClip.name);
     }
 
-    private void Controller_OnCharacterReleaseAttack(object sender, System.EventArgs e) {
+    private void Controller_OnCharacterReleaseAttack(object sender, System.EventArgs _) {
         animator.ResetTrigger(CANCEL_CHARGE_ATTACK);
         animator.SetTrigger(RELEASE_CHARGE_ATTACK);
     }
 
-    private void Controller_OnCharacterCancelAttack(object sender, System.EventArgs e) {
+    private void Controller_OnCharacterCancelAttack(object sender, System.EventArgs _) {
         animator.SetTrigger(CANCEL_CHARGE_ATTACK);
     }
 
-    private void Controller_OnCharacterJump(object sender, System.EventArgs e) {
+    private void Controller_OnCharacterJump(object sender, System.EventArgs _) {
         if (humanoidController.IsGrounded == false) {
             animator.SetTrigger(DOUBLE_JUMP);
         }
+    }
+
+    private void Health_OnTakeDamage(object sender, EntityHealth.OnTakeDamageEventArgs _) {
+        animator.SetTrigger(TAKE_DAMAGE);
     }
 
     private void Update() {

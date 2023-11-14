@@ -50,7 +50,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -86,17 +86,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialVelocity: {x: 100, y: 0}
   minimumInitialVelocity: {x: 0, y: 0}
+  useCustomBehaviour: 0
   lookAtOnGoingDirection: 1
-  OnCollisionEnter:
+  onCollisionEnter:
     m_PersistentCalls:
       m_Calls: []
+  handleSameLayerCollision: 0
+  affectObject: 0
   reactOnLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  onFirstContact: 1
-  constantMultiplier: 0
-  speedMultiplier: 0
-  allowBounces: 0
+  onFirstContact: 3
+  constantMultiplier: 1
+  multiplierReductionRate: 0
+  speedMultiplier: 0.51
+  allowBounces: 10000
   onRicochetEnd: 0
 --- !u!1 &4781442400813480178
 GameObject:
@@ -150,7 +154,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 007812e0279bebd429079f82ab7ab725, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -172,7 +176,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -234,7 +238,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 007812e0279bebd429079f82ab7ab725, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -256,7 +260,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

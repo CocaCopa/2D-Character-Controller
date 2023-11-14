@@ -10,26 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 748551abfae5915438534e35c217d069, type: 3}
-  m_Name: Combo_Melee 3
+  m_Name: Combo_Melee 4
   m_EditorClassIdentifier: 
   attackName: 
   attackIcon: {fileID: 0}
-  attackAnimation: {fileID: 7400000, guid: ba4b61139a72d844f8166d90bc40ed3e, type: 2}
+  attackAnimation: {fileID: 7400000, guid: d1f2701508ebb5043bb1d8d451dab630, type: 2}
+  hitboxShape: 1
   whatIsDamageable:
     serializedVersion: 2
-    m_Bits: 0
-  damageAmount: 0
-  cooldown: 0.5
-  disableCastOnWall: 0
-  wallCastDistance: 0
+    m_Bits: 128
+  damageAmount: 125
+  cooldown: 1.5
+  disableCastOnWall: 1
+  wallCastDistance: 1
   resetVelocity: 1
   canChangeDirections: 0
-  adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
+  adjustPositionOnAttackEnd: {x: 0.74, y: 0, z: 0}
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1
   forceMode: 1
-  force: {x: 2000, y: 0}
+  force: {x: 650, y: 0}
   delayForceTime: 0
   useGravity: 0
   dragCoeficient: 10
@@ -43,6 +44,8 @@ MonoBehaviour:
   chargeMoveSpeedPercentage: 0
   canMoveOnReleaseAttack: 0
   throwsProjectile: 0
+  chooseRandomFromList: 0
   projectilePrefab: {fileID: 0}
+  projectilePrefabs: []
   throwAtPercentage: 0
   delayProjectileThrow: 0

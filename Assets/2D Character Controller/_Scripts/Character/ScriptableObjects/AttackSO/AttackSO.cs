@@ -1,10 +1,5 @@
 using UnityEngine;
 
-public enum ChargeOverTime {
-    ForceCancel,
-    ForceRelease
-}
-
 [CreateAssetMenu(fileName = "NewAttack", menuName = "Create New Attack", order = 0)]
 public class AttackSO : ScriptableObject {
 
@@ -12,6 +7,8 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private Sprite attackIcon;
     [Tooltip("The animation clip of the attack")]
     [SerializeField] private AnimationClip attackAnimation;
+    [Tooltip("Define the shape of this attack's hitbox")]
+    [SerializeField] private HitboxShape hitboxShape;
     [Tooltip("Specify which layers can be damaged")]
     [SerializeField] private LayerMask whatIsDamageable;
     [Tooltip("How much damage should be dealt by this attack")]
@@ -84,6 +81,7 @@ public class AttackSO : ScriptableObject {
     public string AttackName => attackName;
     public Sprite AttackIcon => attackIcon;
     public AnimationClip AttackAnimation => attackAnimation;
+    public HitboxShape HitboxShape => hitboxShape;
     public LayerMask WhatIsDamageable => whatIsDamageable;
     public float DamageAmount => damageAmount;
     public float Cooldown => cooldown;

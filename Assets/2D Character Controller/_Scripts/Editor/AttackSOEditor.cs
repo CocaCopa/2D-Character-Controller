@@ -8,6 +8,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty attackName;
     SerializedProperty attackIcon;
     SerializedProperty attackAnimation;
+    SerializedProperty hitboxShape;
     SerializedProperty whatIsDamageable;
     SerializedProperty damageAmount;
     SerializedProperty cooldown;
@@ -44,6 +45,7 @@ public class AttackSOEditor : Editor {
         attackName = serializedObject.FindProperty(nameof(attackName));
         attackIcon = serializedObject.FindProperty(nameof(attackIcon));
         attackAnimation = serializedObject.FindProperty(nameof(attackAnimation));
+        hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
         whatIsDamageable = serializedObject.FindProperty(nameof(whatIsDamageable));
         damageAmount = serializedObject.FindProperty(nameof(damageAmount));
         cooldown = serializedObject.FindProperty(nameof(cooldown));
@@ -93,7 +95,7 @@ public class AttackSOEditor : Editor {
 
     private void LogWarning() {
         if (attackSO.AttackAnimation != null && attackSO.AttackAnimation.isLooping) {
-            UnityEngine.Debug.LogWarning("The provided animation is configured with 'isLooping' set to 'true' " +
+            Debug.LogWarning("The provided animation is configured with 'isLooping' set to 'true' " +
                 "which might lead to potential visual issues when your character is attacking");
         }
     }
@@ -117,6 +119,7 @@ public class AttackSOEditor : Editor {
 
     private void CommonStats() {
         EditorGUILayout.PropertyField(attackAnimation);
+        EditorGUILayout.PropertyField(hitboxShape);
         EditorGUILayout.PropertyField(whatIsDamageable);
         EditorGUILayout.PropertyField(damageAmount);
         EditorGUILayout.PropertyField(cooldown);

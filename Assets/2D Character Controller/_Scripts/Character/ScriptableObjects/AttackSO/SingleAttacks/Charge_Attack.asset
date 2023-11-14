@@ -10,41 +10,42 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 748551abfae5915438534e35c217d069, type: 3}
-  m_Name: Combo_Melee 1
+  m_Name: Charge_Attack
   m_EditorClassIdentifier: 
   attackName: 
   attackIcon: {fileID: 0}
-  attackAnimation: {fileID: 7400000, guid: 9723596acd0b2a34d9ce0c835ec80b66, type: 2}
+  attackAnimation: {fileID: 7400000, guid: 10573f78446dc8d48bdd19cad83f3ef0, type: 2}
+  hitboxShape: 0
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 0
   damageAmount: 0
-  cooldown: 0.5
+  cooldown: 1
   disableCastOnWall: 0
   wallCastDistance: 0
   resetVelocity: 1
-  canChangeDirections: 0
+  canChangeDirections: 1
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
   canMoveWhileAttacking: 0
-  attackMoveSpeedPercentage: 0.224
-  attackPushesCharacter: 1
+  attackMoveSpeedPercentage: 0
+  attackPushesCharacter: 0
   forceMode: 1
   force: {x: 500, y: 0}
   delayForceTime: 0
-  useGravity: 0
+  useGravity: 1
   dragCoeficient: 10
-  isChargeableAttack: 0
-  chargeAnimation: {fileID: 0}
-  chargeTime: 0
-  holdChargeTime: 0
+  isChargeableAttack: 1
+  chargeAnimation: {fileID: 7400000, guid: 9cd89d08c803f1645b8b61d03d9bf326, type: 2}
+  chargeTime: 1
+  holdChargeTime: 1
   chargeOverTime: 1
-  cooldownIfCanceled: 0
+  cooldownIfCanceled: 0.5
   canMoveWhileCharging: 0
-  chargeMoveSpeedPercentage: 1
+  chargeMoveSpeedPercentage: 0.337
   canMoveOnReleaseAttack: 0
-  throwsProjectile: 0
+  throwsProjectile: 1
   chooseRandomFromList: 0
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 846552828456564998, guid: 337d447b9eee1ad4882c234b345c64d1, type: 3}
   projectilePrefabs: []
-  throwAtPercentage: 0
+  throwAtPercentage: 0.35
   delayProjectileThrow: 0

@@ -30,7 +30,7 @@ public class AttackSO : ScriptableObject {
     [Tooltip("Determines if the character should be able to move while they cast an attack")]
     [SerializeField] private bool canMoveWhileAttacking;
     [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
-    [SerializeField, Range(0,1)] private float attackMoveSpeedPercentage;
+    [SerializeField, Range(0f,1f)] private float attackMoveSpeedPercentage;
     [Tooltip("If 'true,' a force will be applied to the character in the direction they are facing when the attack is initiated")]
     [SerializeField] private bool attackPushesCharacter;
     [Tooltip("Choose which Rigidbody.AddForce() force mode should be applied")]
@@ -58,7 +58,7 @@ public class AttackSO : ScriptableObject {
     [Tooltip("If 'true', your character will be allowed to move while they charge the attack")]
     [SerializeField] private bool canMoveWhileCharging = false;
     [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
-    [SerializeField, Range(0,1)] private float chargeMoveSpeedPercentage;
+    [SerializeField, Range(0f,1f)] private float chargeMoveSpeedPercentage;
     [Tooltip("True if you want your character to be allowed to move as soon as the attack is released")]
     [SerializeField] private bool canMoveOnReleaseAttack;
     [Tooltip("Does this attack throw a projectile?")]
@@ -70,7 +70,7 @@ public class AttackSO : ScriptableObject {
     [Tooltip("Projectile to spawn")]
     [SerializeField] private GameObject[] projectilePrefabs;
     [Tooltip("Indicates the exact timing for launching the projectile during the 'AttackAnimation', based on a specified percentage.")]
-    [SerializeField, Range(0, 1)] private float throwAtPercentage;
+    [SerializeField, Range(0f, 0.98f)] private float throwAtPercentage;
     [Tooltip("Specifies the delay, in seconds, before the projectile is thrown.")]
     [SerializeField] private float delayProjectileThrow;
 

@@ -378,14 +378,16 @@ public class CharacterCombat : MonoBehaviour {
             projectile = spawnedProjectile
         });
         if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
+            projectile.DamageAmount = attackData.DamageAmount;
+            projectile.DamageLayers = attackData.WhatIsDamageable;
             if (attackData.IsChargeableAttack) {
                 float speedMultiplier = chargeTimer / attackData.ChargeTime;
-                projectile.Velocity *= 1 - speedMultiplier;
-                projectile.Velocity *= transform.right.x;
+                projectile.InitialVelocity *= 1 - speedMultiplier;
+                projectile.InitialVelocity *= transform.right.x;
                 projectile.enabled = true;
             }
             else {
-                projectile.Velocity *= transform.right.x;
+                projectile.InitialVelocity *= transform.right.x;
                 projectile.enabled = true;
             }
         }

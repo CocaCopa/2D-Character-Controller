@@ -20,3 +20,8 @@ public enum HitboxShape {
     Circle,
     Box
 }
+
+public enum ProjectileType {
+    Normal,
+    Explosive
+}

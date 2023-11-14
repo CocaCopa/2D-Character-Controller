@@ -676,53 +676,6 @@ RectTransform:
   m_AnchoredPosition: {x: -785, y: 474}
   m_SizeDelta: {x: 267.33, y: 77.29}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &835736735
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 835736737}
-  - component: {fileID: 835736736}
-  m_Layer: 0
-  m_Name: Test
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &835736736
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 835736735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c217dc1a5d8df245b7e806dab09126e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  circleTransform: {fileID: 1828240309}
-  circle: 1
-  box: 0
---- !u!4 &835736737
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 835736735}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &886844961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1291,11 +1244,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1828240309 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2462863334859225788, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-  m_PrefabInstance: {fileID: 1614694581}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1985833644
 GameObject:
   m_ObjectHideFlags: 0
@@ -1873,7 +1821,7 @@ Transform:
   - {fileID: 9041070529118374537}
   - {fileID: 102061098653272827}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2432946941510558614
 MonoBehaviour:

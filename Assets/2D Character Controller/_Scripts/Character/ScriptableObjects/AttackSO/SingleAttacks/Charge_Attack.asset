@@ -18,8 +18,8 @@ MonoBehaviour:
   hitboxShape: 0
   whatIsDamageable:
     serializedVersion: 2
-    m_Bits: 0
-  damageAmount: 0
+    m_Bits: 128
+  damageAmount: 25
   cooldown: 1
   disableCastOnWall: 0
   wallCastDistance: 0

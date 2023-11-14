@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8001275414685059503}
   - component: {fileID: 8836953763527751836}
   - component: {fileID: 4222821136634696927}
+  - component: {fileID: 98615298304206508}
   m_Layer: 8
   m_Name: Arrow
   m_TagString: Untagged
@@ -32,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8669475031667805084}
+  - {fileID: 5425613964351173653}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -85,23 +87,71 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialVelocity: {x: 60, y: 0}
-  minimumInitialVelocity: {x: 60, y: 0}
-  useCustomBehaviour: 0
+  minimumInitialVelocity: {x: 0, y: 0}
+  hitboxTransform: {fileID: 5425613964351173653}
+  visualizeHitbox: 1
+  projectileType: 0
+  hitboxShape: 0
+  hitboxRadius: 0.15
+  hitboxSize: {x: 1, y: 1}
+--- !u!114 &98615298304206508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846552828456564998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 687b457bd2c99744097fc167e255be6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   lookAtOnGoingDirection: 1
   onCollisionEnter:
     m_PersistentCalls:
       m_Calls: []
-  handleSameLayerCollision: 1
+  handleSameLayerCollision: 0
   affectObject: 0
   reactOnLayers:
     serializedVersion: 2
-    m_Bits: 247
-  onFirstContact: 3
+    m_Bits: 4294967295
+  onFirstContact: 2
   constantMultiplier: 0
-  multiplierReductionRate: 0.5
-  speedMultiplier: 0.5
-  allowBounces: 120
+  multiplierReductionRate: 0
+  speedMultiplier: 0
+  allowBounces: 0
   onRicochetEnd: 0
+--- !u!1 &939239532846394179
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5425613964351173653}
+  m_Layer: 8
+  m_Name: Hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5425613964351173653
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939239532846394179}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.358, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8680910996574686070}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2463437648392533879
 GameObject:
   m_ObjectHideFlags: 0

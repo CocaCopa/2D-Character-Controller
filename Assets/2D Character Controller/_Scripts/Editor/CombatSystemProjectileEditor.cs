@@ -7,34 +7,23 @@ public class CombatSystemProjectileEditor : Editor {
     #region --- Properties ---
     SerializedProperty initialVelocity;
     SerializedProperty minimumInitialVelocity;
-    SerializedProperty useCustomBehaviour;
-    SerializedProperty lookAtOnGoingDirection;
-    SerializedProperty onCollisionEnter;
-    SerializedProperty handleSameLayerCollision;
-    SerializedProperty affectObject;
-    SerializedProperty reactOnLayers;
-    SerializedProperty onFirstContact;
-    SerializedProperty constantMultiplier;
-    SerializedProperty multiplierReductionRate;
-    SerializedProperty speedMultiplier;
-    SerializedProperty allowBounces;
-    SerializedProperty onRicochetEnd;
+    SerializedProperty hitboxTransform;
+    SerializedProperty visualizeHitbox;
+    SerializedProperty projectileType;
+    SerializedProperty hitboxShape;
+    SerializedProperty hitboxRadius;
+    SerializedProperty hitboxSize;
+
 
     private void OnEnable() {
         initialVelocity = serializedObject.FindProperty(nameof(initialVelocity));
         minimumInitialVelocity = serializedObject.FindProperty(nameof(minimumInitialVelocity));
-        useCustomBehaviour = serializedObject.FindProperty(nameof(useCustomBehaviour));
-        lookAtOnGoingDirection = serializedObject.FindProperty(nameof(lookAtOnGoingDirection));
-        onCollisionEnter = serializedObject.FindProperty(nameof(onCollisionEnter));
-        handleSameLayerCollision = serializedObject.FindProperty(nameof(handleSameLayerCollision));
-        affectObject = serializedObject.FindProperty(nameof(affectObject));
-        reactOnLayers = serializedObject.FindProperty(nameof(reactOnLayers));
-        onFirstContact = serializedObject.FindProperty(nameof(onFirstContact));
-        constantMultiplier = serializedObject.FindProperty(nameof(constantMultiplier));
-        multiplierReductionRate = serializedObject.FindProperty(nameof(multiplierReductionRate));
-        speedMultiplier = serializedObject.FindProperty(nameof(speedMultiplier));
-        allowBounces = serializedObject.FindProperty(nameof(allowBounces));
-        onRicochetEnd = serializedObject.FindProperty(nameof(onRicochetEnd));
+        hitboxTransform = serializedObject.FindProperty(nameof(hitboxTransform));
+        visualizeHitbox = serializedObject.FindProperty(nameof(visualizeHitbox));
+        projectileType = serializedObject.FindProperty(nameof(projectileType));
+        hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
+        hitboxRadius = serializedObject.FindProperty(nameof(hitboxRadius));
+        hitboxSize = serializedObject.FindProperty(nameof(hitboxSize));
     }
     #endregion
 
@@ -57,31 +46,16 @@ public class CombatSystemProjectileEditor : Editor {
         EditorGUILayout.PropertyField(initialVelocity);
         EditorGUILayout.PropertyField(minimumInitialVelocity);
         EditorGUILayout.Space(10);
-        EditorGUILayout.PropertyField(useCustomBehaviour);
-        EditorGUILayout.Space(10);
-        if (!projectile.UseCustomBehaviour) {
-            EditorGUILayout.PropertyField(lookAtOnGoingDirection);
-            EditorGUILayout.PropertyField(onCollisionEnter);
-            EditorGUILayout.PropertyField(handleSameLayerCollision);
-            if (projectile.HandleSameLayerCollision) {
-                EnsureLayersAreSetUpCorrectly();
-                EditorGUILayout.PropertyField(affectObject);
+        EditorGUILayout.PropertyField(hitboxTransform);
+        EditorGUILayout.PropertyField(visualizeHitbox);
+        EditorGUILayout.PropertyField(projectileType);
+        if (projectile.ProjectileType == ProjectileType.Normal) {
+            EditorGUILayout.PropertyField(hitboxShape);
+            if (projectile.HitboxShape == HitboxShape.Circle) {
+                EditorGUILayout.PropertyField(hitboxRadius);
             }
-            EditorGUILayout.Space(10);
-            EditorGUILayout.PropertyField(reactOnLayers);
-            EditorGUILayout.PropertyField(onFirstContact);
-            if (projectile.OnFirstContact == ProjectileContact.Ricochet) {
-                EditorGUILayout.PropertyField(constantMultiplier);
-                if (!projectile.ConstantMultiplier) {
-                    EditorGUILayout.PropertyField(multiplierReductionRate);
-                }
-                EditorGUILayout.PropertyField(speedMultiplier);
-                EditorGUILayout.PropertyField(allowBounces);
-                EditorGUILayout.PropertyField(onRicochetEnd);
-                if (projectile.OnRicochetEnd == ProjectileContact.Ricochet) {
-                    projectile.OnRicochetEnd = ProjectileContact.DefaultPhysics;
-                    Debug.LogWarning("Unable to set 'Ricochet' to prevent a potential stack overflow.");
-                }
+            else if (projectile.HitboxShape == HitboxShape.Box) {
+                EditorGUILayout.PropertyField(hitboxSize);
             }
         }
         serializedObject.ApplyModifiedProperties();
@@ -95,23 +69,5 @@ public class CombatSystemProjectileEditor : Editor {
         EditorGUILayout.PropertyField(scriptProperty, true, new GUILayoutOption[0]);
         EditorGUI.EndDisabledGroup();
         serializedObject.ApplyModifiedProperties();
-    }
-
-    private void EnsureLayersAreSetUpCorrectly() {
-        if (!projectile.HandleSameLayerCollision) {
-            return;
-        }
-
-        GameObject obj = projectile.gameObject;
-        int objectLayer = obj.layer;
-
-        LayerMask selectedMask = projectile.ReactOnLayers;
-
-        int layerValue = 1 << objectLayer;
-
-        if ((selectedMask.value & layerValue) != 0) {
-            EditorGUILayout.HelpBox("To prevent collision issues, ensure the 'reactOnLayers' excludes " +
-                "the layer assigned to this gameObject.", MessageType.Warning);
-        }
     }
 }

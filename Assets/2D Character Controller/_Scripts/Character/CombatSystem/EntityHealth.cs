@@ -14,7 +14,7 @@ public class EntityHealth : MonoBehaviour, IDamageable {
     [Tooltip("Current health points of the entity.")]
     [SerializeField] private float currentHealthPoints;
     [Tooltip("Whether or not your character/object is able to regen missing health points.")]
-    [SerializeField] private float canRegenHealth;
+    [SerializeField] private bool canRegenHealth;
     [Tooltip("Time in seconds at which the health regeneration can take effect, if the current health points are not equal to max health points.")]
     [SerializeField] private float regenTriggerTime;
     [Tooltip("Time in seconds to regen back to full health points, once the health regeneration has been triggered.")]

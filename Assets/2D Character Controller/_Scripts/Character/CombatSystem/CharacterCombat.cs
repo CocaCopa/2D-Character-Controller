@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CocaCopa;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(AudioSource))]
 public class CharacterCombat : MonoBehaviour {
 
     public class OnInitiateNormalAttackEventArgs {
@@ -22,13 +22,6 @@ public class CharacterCombat : MonoBehaviour {
     public event EventHandler OnReleaseChargeAttack;
     public event EventHandler OnCancelChargeAttack;
 
-#if UNITY_EDITOR
-    [Tooltip("Set to true, if to visualize the hitbox of your current attack")]
-    [SerializeField] private bool visualizeAttackHitbox = true;
-    [Tooltip("Choose the shape of the hitbox that is configured in the attack you are visualizing")]
-    [SerializeField] HitboxShape shape;
-    [SerializeField] private Color gizmosColor = Color.green;
-#endif
     [Tooltip("The transform of the attack hitbox")]
     [SerializeField] private Transform attackHitboxTransform;
     [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack.")]
@@ -43,6 +36,7 @@ public class CharacterCombat : MonoBehaviour {
     private const float ATTACK_CLIP_THRESHOLD = 1f;
 
     private Rigidbody2D playerRb;
+    private AudioSource audioSource;
     private CharacterEnvironmentalQuery envQuery;
     private CharacterAnimator characterAnimator;
     private AnimationClip currentAttackClip;
@@ -67,14 +61,19 @@ public class CharacterCombat : MonoBehaviour {
 
     public int AttackCounter => attackCounter;
     public bool IsAttacking => isAttacking;
+    public bool AttackCompleted => attackCompleted;
     public bool IsCharging => isCharging;
     public bool CanMoveWhileAttacking => currentAttackData != null && (currentAttackData.CanMoveWhileAttacking || currentAttackData.CanMoveWhileCharging);
     public bool CanChangeDirections => currentAttackData == null || currentAttackData.CanChangeDirections;
-#if UNITY_EDITOR
-    public bool VisualizeAttackHitbox => visualizeAttackHitbox;
-#endif
 
+    #region --- Debug ---
 #if UNITY_EDITOR
+    [Tooltip("Set to true, if to visualize the hitbox of your current attack")]
+    [SerializeField] private bool visualizeAttackHitbox = true;
+    [Tooltip("Choose the shape of the hitbox that is configured in the attack you are visualizing")]
+    [SerializeField] private Color gizmosColor = Color.green;
+    private HitboxShape shape;
+    public bool VisualizeAttackHitbox => visualizeAttackHitbox;
     private void OnDrawGizmos() {
         if (visualizeAttackHitbox) {
             Gizmos.color = gizmosColor;
@@ -82,11 +81,14 @@ public class CharacterCombat : MonoBehaviour {
                 Vector3 center = attackHitboxTransform.position;
                 float radius = (attackHitboxTransform.lossyScale.x / 2 + attackHitboxTransform.lossyScale.y / 2) / 2;
                 if (attackHitboxTransform.gameObject.activeInHierarchy) {
-                    Gizmos.DrawSphere(center, radius);
+                    //Gizmos.DrawSphere(center, radius);
+                    DrawFilledArc(center, radius, 360f, 2000);
                 }
                 else {
-                    Gizmos.DrawWireSphere(center, radius);
+                    //Gizmos.DrawWireSphere(center, radius);
+                    DrawArc(center, radius, 360f, 20);
                 }
+                
             }
             else if (shape == HitboxShape.Box) {
                 Vector3 center = attackHitboxTransform.position;
@@ -100,7 +102,46 @@ public class CharacterCombat : MonoBehaviour {
             }
         }
     }
+    void DrawArc(Vector3 center, float radius, float angle, int segments) {
+        float angleStep = angle / segments;
+
+        float currentAngle = 0f;
+
+        Vector3 prevPoint = center + Quaternion.Euler(0, 0, -angle / 2f) * Vector3.right * radius;
+
+        for (int i = 1; i <= segments; i++) {
+            currentAngle = i * angleStep;
+
+            Vector3 nextPoint = center + Quaternion.Euler(0, 0, -angle / 2f + currentAngle) * Vector3.right * radius;
+
+            Gizmos.DrawLine(prevPoint, nextPoint);
+
+            prevPoint = nextPoint;
+        }
+    }
+    void DrawFilledArc(Vector3 center, float radius, float angle, int segments) {
+        float angleStep = angle / segments;
+
+        float currentAngle = 0f;
+
+        Vector3 prevPoint = center + Quaternion.Euler(0, 0, -angle / 2f) * Vector3.right * radius;
+
+        for (int i = 1; i <= segments; i++) {
+            currentAngle = i * angleStep;
+
+            Vector3 nextPoint = center + Quaternion.Euler(0, 0, -angle / 2f + currentAngle) * Vector3.right * radius;
+
+            Gizmos.DrawLine(center, prevPoint);
+            Gizmos.DrawLine(center, nextPoint);
+
+            Gizmos.DrawRay(center, (prevPoint - center).normalized * radius);
+            Gizmos.DrawRay(center, (nextPoint - center).normalized * radius);
+
+            prevPoint = nextPoint;
+        }
+    }
 #endif
+    #endregion
 
     private void Awake() {
         InitializeComponents();
@@ -116,6 +157,7 @@ public class CharacterCombat : MonoBehaviour {
 
     private void InitializeComponents() {
         playerRb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
         envQuery = GetComponent<CharacterEnvironmentalQuery>();
         characterAnimator = GetComponentInChildren<CharacterAnimator>();
     }
@@ -164,22 +206,26 @@ public class CharacterCombat : MonoBehaviour {
 
         if (canDamage && attackHitboxTransform.gameObject.activeInHierarchy) {
             Collider2D collidersHit = null;
+            Vector2 point = attackHitboxTransform.position;
+            int layerMask = currentAttackData.WhatIsDamageable;
             if (currentAttackData.HitboxShape == HitboxShape.Circle) {
-                Vector2 point = attackHitboxTransform.position;
+                #if UNITY_EDITOR
+                shape = HitboxShape.Circle;
+                #endif
                 float radius = (attackHitboxTransform.lossyScale.x / 2 + attackHitboxTransform.lossyScale.y / 2) / 2;
-                int layerMask = currentAttackData.WhatIsDamageable;
                 collidersHit = Physics2D.OverlapCircle(point, radius, layerMask);
             }
             else if (currentAttackData.HitboxShape == HitboxShape.Box) {
-                Vector2 point = attackHitboxTransform.position;
+                #if UNITY_EDITOR
+                shape = HitboxShape.Box;
+                #endif
                 Vector2 size = attackHitboxTransform.lossyScale;
-                int layerMask = currentAttackData.WhatIsDamageable;
                 collidersHit = Physics2D.OverlapBox(point, size, 0, layerMask);
             }
 
             if (collidersHit != null && collidersHit.transform.root.TryGetComponent<IDamageable>(out var damageableObject)) {
                 damageableObject.TakeDamage(currentAttackData.DamageAmount);
-                canDamage = false; // Ensures the attacker will only deal damage once. Resets when attackComplete = true;
+                canDamage = false; // Ensures the attacker will only deal damage once. Resets when attackCompleted = true;
             }
         }
     }
@@ -210,6 +256,10 @@ public class CharacterCombat : MonoBehaviour {
         }
 
         if (CanPerformNormalAttack()) {
+            if (attackData.AttackSounds.Length > 0) {
+                int soundIndex = UnityEngine.Random.Range(0, attackData.AttackSounds.Length);
+                audioSource.PlayOneShot(attackData.AttackSounds[soundIndex]);
+            }
             NormalAttack(isPartOfCombo);
         }
     }
@@ -378,7 +428,7 @@ public class CharacterCombat : MonoBehaviour {
             projectile = spawnedProjectile
         });
         if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
-            projectile.DamageAmount = attackData.DamageAmount;
+            projectile.DamageAmount = attackData.ProjectileDamage;
             projectile.DamageLayers = attackData.WhatIsDamageable;
             if (attackData.IsChargeableAttack) {
                 float speedMultiplier = chargeTimer / attackData.ChargeTime;
@@ -397,7 +447,7 @@ public class CharacterCombat : MonoBehaviour {
                 projectileName = projectileName.Replace("(Clone)", "");
             }
             Debug.LogError(attackData.name + ": The projectile prefab provided (prefab: " + projectileName + "), " +
-                "is missing the 'CombatSystemProjectile' component.");
+                "is missing the 'CombatSystemProjectile' component. \nMake sure, said component is attached to the root gameObject.");
         }
     }
 

@@ -9,18 +9,15 @@ public class CombatSystemProjectileEditor : Editor {
     SerializedProperty minimumInitialVelocity;
     SerializedProperty hitboxTransform;
     SerializedProperty visualizeHitbox;
-    SerializedProperty projectileType;
     SerializedProperty hitboxShape;
     SerializedProperty hitboxRadius;
     SerializedProperty hitboxSize;
-
 
     private void OnEnable() {
         initialVelocity = serializedObject.FindProperty(nameof(initialVelocity));
         minimumInitialVelocity = serializedObject.FindProperty(nameof(minimumInitialVelocity));
         hitboxTransform = serializedObject.FindProperty(nameof(hitboxTransform));
         visualizeHitbox = serializedObject.FindProperty(nameof(visualizeHitbox));
-        projectileType = serializedObject.FindProperty(nameof(projectileType));
         hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
         hitboxRadius = serializedObject.FindProperty(nameof(hitboxRadius));
         hitboxSize = serializedObject.FindProperty(nameof(hitboxSize));
@@ -48,15 +45,12 @@ public class CombatSystemProjectileEditor : Editor {
         EditorGUILayout.Space(10);
         EditorGUILayout.PropertyField(hitboxTransform);
         EditorGUILayout.PropertyField(visualizeHitbox);
-        EditorGUILayout.PropertyField(projectileType);
-        if (projectile.ProjectileType == ProjectileType.Normal) {
-            EditorGUILayout.PropertyField(hitboxShape);
-            if (projectile.HitboxShape == HitboxShape.Circle) {
-                EditorGUILayout.PropertyField(hitboxRadius);
-            }
-            else if (projectile.HitboxShape == HitboxShape.Box) {
-                EditorGUILayout.PropertyField(hitboxSize);
-            }
+        EditorGUILayout.PropertyField(hitboxShape);
+        if (projectile.HitboxShape == HitboxShape.Circle) {
+            EditorGUILayout.PropertyField(hitboxRadius);
+        }
+        else if (projectile.HitboxShape == HitboxShape.Box) {
+            EditorGUILayout.PropertyField(hitboxSize);
         }
         serializedObject.ApplyModifiedProperties();
     }

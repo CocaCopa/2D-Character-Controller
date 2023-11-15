@@ -5,6 +5,7 @@ public class AttackSO : ScriptableObject {
 
     [SerializeField] private string attackName;
     [SerializeField] private Sprite attackIcon;
+    [SerializeField] private AudioClip[] attackSounds;
     [Tooltip("The animation clip of the attack")]
     [SerializeField] private AnimationClip attackAnimation;
     [Tooltip("Define the shape of this attack's hitbox")]
@@ -63,6 +64,8 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool canMoveOnReleaseAttack;
     [Tooltip("Does this attack throw a projectile?")]
     [SerializeField] private bool throwsProjectile = false;
+    [Tooltip("How much damage should the projectile deal")]
+    [SerializeField] private float projectileDamage;
     [Tooltip("Enabling this option allows multiple prefabs to be assigned as projectiles. Upon attacking, a random prefab will be chosen.")]
     [SerializeField] private bool chooseRandomFromList = false;
     [Tooltip("Projectile to spawn")]
@@ -77,9 +80,9 @@ public class AttackSO : ScriptableObject {
     private void OnEnable() => CurrentCooldownTime = 0;
 
     public float CurrentCooldownTime { get; set; }
-    public float ChargeTimer { get; set; }
     public string AttackName => attackName;
     public Sprite AttackIcon => attackIcon;
+    public AudioClip[] AttackSounds => attackSounds;
     public AnimationClip AttackAnimation => attackAnimation;
     public HitboxShape HitboxShape => hitboxShape;
     public LayerMask WhatIsDamageable => whatIsDamageable;
@@ -108,6 +111,7 @@ public class AttackSO : ScriptableObject {
     public float ChargeMoveSpeedPercentage => chargeMoveSpeedPercentage;
     public bool CanMoveOnReleaseAttack => canMoveOnReleaseAttack;
     public bool ThrowsProjectile => throwsProjectile;
+    public float ProjectileDamage => projectileDamage;
     public bool ChooseRandomFromList => chooseRandomFromList;
     public GameObject ProjectilePrefab => projectilePrefab;
     public GameObject[] ProjectilePrefabs => projectilePrefabs;

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8001275414685059503}
   - component: {fileID: 8836953763527751836}
   - component: {fileID: 4222821136634696927}
-  - component: {fileID: 98615298304206508}
+  - component: {fileID: -6273051307424826378}
   m_Layer: 8
   m_Name: Arrow
   m_TagString: Untagged
@@ -89,12 +89,11 @@ MonoBehaviour:
   initialVelocity: {x: 60, y: 0}
   minimumInitialVelocity: {x: 0, y: 0}
   hitboxTransform: {fileID: 5425613964351173653}
-  visualizeHitbox: 1
-  projectileType: 0
   hitboxShape: 0
   hitboxRadius: 0.15
   hitboxSize: {x: 1, y: 1}
---- !u!114 &98615298304206508
+  visualizeHitbox: 1
+--- !u!114 &-6273051307424826378
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,24 +102,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 846552828456564998}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 687b457bd2c99744097fc167e255be6b, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ff8ffd67c5a83c47b2d519aabf8c76f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookAtOnGoingDirection: 1
-  onCollisionEnter:
-    m_PersistentCalls:
-      m_Calls: []
-  handleSameLayerCollision: 0
-  affectObject: 0
-  reactOnLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  onFirstContact: 2
-  constantMultiplier: 0
-  multiplierReductionRate: 0
-  speedMultiplier: 0
-  allowBounces: 0
-  onRicochetEnd: 0
 --- !u!1 &939239532846394179
 GameObject:
   m_ObjectHideFlags: 0

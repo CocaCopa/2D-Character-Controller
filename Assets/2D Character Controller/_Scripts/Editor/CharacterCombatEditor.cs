@@ -6,7 +6,6 @@ public class CharacterCombatEditor : Editor {
 
     #region --- Serialized Properties ---
     SerializedProperty visualizeAttackHitbox;
-    SerializedProperty shape;
     SerializedProperty gizmosColor;
     SerializedProperty attackHitboxTransform;
     SerializedProperty attackBufferTime;
@@ -16,7 +15,6 @@ public class CharacterCombatEditor : Editor {
 
     private void OnEnable() {
         visualizeAttackHitbox = serializedObject.FindProperty(nameof(visualizeAttackHitbox));
-        shape = serializedObject.FindProperty(nameof(shape));
         gizmosColor = serializedObject.FindProperty(nameof(gizmosColor));
         attackHitboxTransform = serializedObject.FindProperty(nameof(attackHitboxTransform));
         attackBufferTime = serializedObject.FindProperty(nameof(attackBufferTime));
@@ -44,7 +42,6 @@ public class CharacterCombatEditor : Editor {
         serializedObject.Update();
         EditorGUILayout.PropertyField(visualizeAttackHitbox);
         if (combat.VisualizeAttackHitbox) {
-            EditorGUILayout.PropertyField(shape);
             EditorGUILayout.PropertyField(gizmosColor);
             EditorGUILayout.Space(10);
         }

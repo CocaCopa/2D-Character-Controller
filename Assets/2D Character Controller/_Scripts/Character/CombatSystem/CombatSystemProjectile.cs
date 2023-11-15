@@ -9,17 +9,15 @@ public class CombatSystemProjectile : MonoBehaviour {
         "can be set to, based on the amount of charge")]
     [SerializeField] private Vector2 minimumInitialVelocity;
     [SerializeField] private Transform hitboxTransform;
-    [SerializeField] private ProjectileType projectileType;
     [SerializeField] private HitboxShape hitboxShape;
     [SerializeField] private float hitboxRadius;
     [SerializeField] private Vector2 hitboxSize;
 
-
-    /*[SerializeField] private bool isExplosive = false;
-    [SerializeField] private ParticleSystem explodeParticles;
-    [SerializeField] private float damageRadius;*/
-
+    private GameObject lastGameObjectHit;
     private Rigidbody2D projectileRb;
+    private System.Collections.Generic.List<Collider2D> colliders = new();
+    private System.Collections.Generic.List<float> damageTimers = new();
+    private float damageTimer = 0;
 
     public Vector2 InitialVelocity {
         get => initialVelocity;
@@ -33,8 +31,6 @@ public class CombatSystemProjectile : MonoBehaviour {
 
     public int DamageLayers { get; set; }
     public float DamageAmount { get; set; }
-
-    public ProjectileType ProjectileType => projectileType;
     public HitboxShape HitboxShape => hitboxShape;
 
     private void Awake() {
@@ -45,8 +41,11 @@ public class CombatSystemProjectile : MonoBehaviour {
     private void OnEnable() {
         projectileRb.velocity = initialVelocity;
     }
-    private bool canDamage = true;
-    private void Update() {
+
+    /// <summary>
+    /// Deals damage to the first collider that enters the specified hit box.
+    /// </summary>
+    public void DealDamageOnContact() {
         Collider2D colliderHit = null;
         if (hitboxShape == HitboxShape.Circle) {
             colliderHit = Physics2D.OverlapCircle(hitboxTransform.position, hitboxRadius, DamageLayers);
@@ -55,12 +54,71 @@ public class CombatSystemProjectile : MonoBehaviour {
             colliderHit = Physics2D.OverlapBox(hitboxTransform.position, hitboxSize, 0, DamageLayers);
         }
         if (colliderHit != null && colliderHit.transform.root.TryGetComponent<IDamageable>(out var damageableObject)) {
-            if (canDamage) {
-                canDamage = false;
+            if (lastGameObjectHit != colliderHit.gameObject) {
+                lastGameObjectHit = colliderHit.gameObject;
                 damageableObject.TakeDamage(DamageAmount);
             }
         }
-        canDamage = !colliderHit;
+    }
+
+    /// <summary>
+    /// Deals damage instantly to any new colliders that enters the specified hitbox and then deals damage again, to all targets, every 'x' seconds.
+    /// </summary>
+    /// <param name="damageAgainInSeconds">Damage frequency</param>
+    public void AreaOfEffectDamage(float damageAgainInSeconds) {
+        Collider2D[] colliderHit = null;
+        if (hitboxShape == HitboxShape.Circle) {
+            colliderHit = Physics2D.OverlapCircleAll(hitboxTransform.position, hitboxRadius, DamageLayers);
+        }
+        else if (hitboxShape == HitboxShape.Box) {
+            colliderHit = Physics2D.OverlapBoxAll(hitboxTransform.position, hitboxSize, 0, DamageLayers);
+        }
+
+        foreach (var collider in colliderHit) {
+            if (collider.transform.root.TryGetComponent<IDamageable>(out var damageableObject)) {
+                if (!colliders.Contains(collider)) {
+                    colliders.Add(collider);
+                    damageTimers.Add(damageAgainInSeconds);
+                    damageableObject.TakeDamage(DamageAmount);
+                }
+            }
+        }
+        if (colliders.Count > 0) {
+            for (int i = 0; i < colliders.Count; i++) {
+                damageTimer = damageTimers[i];
+                CocaCopa.Utilities.TickTimer(ref damageTimer, damageAgainInSeconds, false);
+                damageTimers[i] = damageTimer;
+                if (damageTimer == 0) {
+                    colliders.Remove(colliders[i]);
+                    damageTimers.RemoveAt(i);
+                }
+            }
+        }
+        if (colliderHit == null) {
+            colliders.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Deals damage to all colliders inside the specified hitbox and then destroys the projectile.
+    /// </summary>
+    public void Explode() {
+        Collider2D[] collidersHit = null;
+        if (hitboxShape == HitboxShape.Circle) {
+            collidersHit = Physics2D.OverlapCircleAll(hitboxTransform.position, hitboxRadius, DamageLayers);
+        }
+        else if (hitboxShape == HitboxShape.Box) {
+            collidersHit = Physics2D.OverlapBoxAll(hitboxTransform.position, hitboxSize, 0, DamageLayers);
+        }
+
+        if (collidersHit != null) {
+            foreach (var collider in collidersHit) {
+                if (collider.transform.root.TryGetComponent<IDamageable>(out var damageableObject)) {
+                    damageableObject.TakeDamage(DamageAmount);
+                }
+            }
+        }
+        Destroy(gameObject);
     }
 
 #if UNITY_EDITOR

@@ -427,7 +427,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &535927053
 GameObject:
@@ -495,7 +495,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &590003991
 GameObject:
@@ -539,7 +539,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &732140456
 GameObject:
@@ -820,7 +820,7 @@ RectTransform:
   m_Children:
   - {fileID: 732140459}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1127,11 +1127,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.2
+      value: -4.02
       objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1169,12 +1169,32 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3090859874179469632, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: shape
+    - target: {fileID: 2462863334859225788, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 2462863334859225788, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 2462863334859225788, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2777837057832776020, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3090859874179469632, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: shape
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3090859874179469632, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: visualizeAttackHitbox
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
+      propertyPath: timeScale
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
@@ -1242,7 +1262,7 @@ Transform:
   - {fileID: 438510065}
   - {fileID: 1499058624}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1985833644
 GameObject:
@@ -1287,7 +1307,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &70416837136950298
 GameObject:
@@ -1821,7 +1841,7 @@ Transform:
   - {fileID: 9041070529118374537}
   - {fileID: 102061098653272827}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2432946941510558614
 MonoBehaviour:
@@ -2100,7 +2120,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualizeAttackHitbox: 1
-  shape: 0
   gizmosColor: {r: 0, g: 1, b: 0, a: 1}
   attackHitboxTransform: {fileID: 2542072120723452863}
   attackBufferTime: 0.4

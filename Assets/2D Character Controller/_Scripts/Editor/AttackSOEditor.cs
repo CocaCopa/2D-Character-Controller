@@ -7,6 +7,7 @@ public class AttackSOEditor : Editor {
     #region --- Serialized Properties ---
     SerializedProperty attackName;
     SerializedProperty attackIcon;
+    SerializedProperty attackSounds;
     SerializedProperty attackAnimation;
     SerializedProperty hitboxShape;
     SerializedProperty whatIsDamageable;
@@ -35,6 +36,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty chargeMoveSpeedPercentage;
     SerializedProperty canMoveOnReleaseAttack;
     SerializedProperty throwsProjectile;
+    SerializedProperty projectileDamage;
     SerializedProperty chooseRandomFromList;
     SerializedProperty projectilePrefab;
     SerializedProperty projectilePrefabs;
@@ -44,6 +46,7 @@ public class AttackSOEditor : Editor {
     private void OnEnable() {
         attackName = serializedObject.FindProperty(nameof(attackName));
         attackIcon = serializedObject.FindProperty(nameof(attackIcon));
+        attackSounds = serializedObject.FindProperty(nameof(attackSounds));
         attackAnimation = serializedObject.FindProperty(nameof(attackAnimation));
         hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
         whatIsDamageable = serializedObject.FindProperty(nameof(whatIsDamageable));
@@ -72,6 +75,7 @@ public class AttackSOEditor : Editor {
         chargeMoveSpeedPercentage = serializedObject.FindProperty(nameof(chargeMoveSpeedPercentage));
         canMoveOnReleaseAttack = serializedObject.FindProperty(nameof(canMoveOnReleaseAttack));
         throwsProjectile = serializedObject.FindProperty(nameof(throwsProjectile));
+        projectileDamage = serializedObject.FindProperty(nameof(projectileDamage));
         chooseRandomFromList = serializedObject.FindProperty(nameof(chooseRandomFromList));
         projectilePrefab = serializedObject.FindProperty(nameof(projectilePrefab));
         projectilePrefabs = serializedObject.FindProperty(nameof(projectilePrefabs));
@@ -114,6 +118,7 @@ public class AttackSOEditor : Editor {
     private void CommonDetails() {
         EditorGUILayout.PropertyField(attackName);
         EditorGUILayout.PropertyField(attackIcon);
+        EditorGUILayout.PropertyField(attackSounds);
         EditorGUILayout.Space(10);
     }
 
@@ -186,6 +191,7 @@ public class AttackSOEditor : Editor {
         }
         EditorGUILayout.PropertyField(throwsProjectile);
         if (attackSO.ThrowsProjectile) {
+            EditorGUILayout.PropertyField(projectileDamage);
             EditorGUILayout.PropertyField(chooseRandomFromList);
             if (attackSO.ChooseRandomFromList) {
                 EditorGUILayout.PropertyField(projectilePrefabs);

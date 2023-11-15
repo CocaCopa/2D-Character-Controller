@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 3150813461014018220}
   - component: {fileID: 2995576852180674100}
   - component: {fileID: 9169414196385668605}
-  m_Layer: 0
+  - component: {fileID: 2449774662548696339}
+  m_Layer: 9
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8952237234032313370}
+  - {fileID: 5024073062422946801}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -50,7 +52,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -84,24 +86,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cba9726e2c3e3b34587041d7a5adc6bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialVelocity: {x: 100, y: 0}
+  initialVelocity: {x: 60, y: 0}
   minimumInitialVelocity: {x: 0, y: 0}
-  useCustomBehaviour: 0
-  lookAtOnGoingDirection: 1
-  onCollisionEnter:
-    m_PersistentCalls:
-      m_Calls: []
-  handleSameLayerCollision: 0
-  affectObject: 0
-  reactOnLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  onFirstContact: 3
-  constantMultiplier: 1
-  multiplierReductionRate: 0
-  speedMultiplier: 0.51
-  allowBounces: 10000
-  onRicochetEnd: 0
+  hitboxTransform: {fileID: 5024073062422946801}
+  hitboxShape: 0
+  hitboxRadius: 0.1
+  hitboxSize: {x: 0, y: 0}
+  visualizeHitbox: 1
+--- !u!114 &2449774662548696339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3690905825076657289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76f5933c63134fe4b9eb408305165744, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  impactEffectPrefab: {fileID: 1818321630667548219, guid: fced110c97f470a43b85b85b644ced31, type: 3}
+  impactEffectTime: 0.75
+--- !u!1 &4089091282369997885
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5024073062422946801}
+  m_Layer: 9
+  m_Name: Hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5024073062422946801
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4089091282369997885}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.295, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 455092273092092466}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4781442400813480178
 GameObject:
   m_ObjectHideFlags: 0
@@ -112,7 +148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5507435049558472382}
   - component: {fileID: 7093809431818407747}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,8 +163,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4781442400813480178}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.66, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.66000015, y: -0.000000059604645, z: 0}
+  m_LocalScale: {x: 1.0000004, y: 1.0000004, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8952237234032313370}
@@ -176,7 +212,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -196,7 +232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3302459073983305203}
   - component: {fileID: 7304267306057581640}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +296,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -279,7 +315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8952237234032313370}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -46,7 +46,9 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private float dragCoeficient;
     [Tooltip("Wether or not this attack can be charged")]
     [SerializeField] private bool isChargeableAttack = false;
-    [Tooltip("Animation to play when the charge attack is initiated")]
+    [Tooltip("Animation to play when the attack is initiated. (Can be null)")]
+    [SerializeField] private AnimationClip initiateChargeAnimation;
+    [Tooltip("Animation to play when the attack is charging")]
     [SerializeField] private AnimationClip chargeAnimation;
     [Tooltip("How much time should it take for the attack to be charged in seconds")]
     [SerializeField] private float chargeTime;
@@ -102,6 +104,7 @@ public class AttackSO : ScriptableObject {
     public bool UseGravity => useGravity;
     public float DragCoeficient => dragCoeficient;
     public bool IsChargeableAttack => isChargeableAttack;
+    public AnimationClip InitiateChargeAnimation => initiateChargeAnimation;
     public AnimationClip ChargeAnimation => chargeAnimation;
     public float ChargeTime => chargeTime;
     public float HoldChargeTime => holdChargeTime;

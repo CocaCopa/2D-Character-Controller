@@ -87,7 +87,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialVelocity: {x: 60, y: 0}
-  minimumInitialVelocity: {x: 0, y: 0}
+  minimumInitialVelocity: {x: 5, y: 0}
   hitboxTransform: {fileID: 5425613964351173653}
   hitboxShape: 0
   hitboxRadius: 0.15

@@ -27,6 +27,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty useGravity;
     SerializedProperty dragCoeficient;
     SerializedProperty isChargeableAttack;
+    SerializedProperty initiateChargeAnimation;
     SerializedProperty chargeAnimation;
     SerializedProperty chargeTime;
     SerializedProperty holdChargeTime;
@@ -66,6 +67,7 @@ public class AttackSOEditor : Editor {
         useGravity = serializedObject.FindProperty(nameof(useGravity));
         dragCoeficient = serializedObject.FindProperty(nameof(dragCoeficient));
         isChargeableAttack = serializedObject.FindProperty(nameof(isChargeableAttack));
+        initiateChargeAnimation = serializedObject.FindProperty(nameof(initiateChargeAnimation));
         chargeAnimation = serializedObject.FindProperty(nameof(chargeAnimation));
         chargeTime = serializedObject.FindProperty(nameof(chargeTime));
         holdChargeTime = serializedObject.FindProperty(nameof(holdChargeTime));
@@ -176,6 +178,7 @@ public class AttackSOEditor : Editor {
     private void ChargeableAttack() {
         EditorGUILayout.PropertyField(isChargeableAttack);
         if (attackSO.IsChargeableAttack) {
+            EditorGUILayout.PropertyField(initiateChargeAnimation);
             EditorGUILayout.PropertyField(chargeAnimation);
             EditorGUILayout.PropertyField(chargeTime);
             EditorGUILayout.PropertyField(holdChargeTime);

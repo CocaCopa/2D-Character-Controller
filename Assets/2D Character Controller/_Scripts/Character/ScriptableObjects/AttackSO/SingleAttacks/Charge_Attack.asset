@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: 
   attackIcon: {fileID: 0}
+  attackSounds: []
   attackAnimation: {fileID: 7400000, guid: 10573f78446dc8d48bdd19cad83f3ef0, type: 2}
   hitboxShape: 0
   whatIsDamageable:
@@ -35,7 +36,8 @@ MonoBehaviour:
   useGravity: 1
   dragCoeficient: 10
   isChargeableAttack: 1
-  chargeAnimation: {fileID: 7400000, guid: 9cd89d08c803f1645b8b61d03d9bf326, type: 2}
+  initiateChargeAnimation: {fileID: 7400000, guid: 9cd89d08c803f1645b8b61d03d9bf326, type: 2}
+  chargeAnimation: {fileID: 7400000, guid: 6b8729b7a0a214d4faec9c96a8eb113f, type: 2}
   chargeTime: 1
   holdChargeTime: 1
   chargeOverTime: 1

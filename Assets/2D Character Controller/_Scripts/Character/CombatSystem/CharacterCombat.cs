@@ -231,7 +231,7 @@ public class CharacterCombat : MonoBehaviour {
     }
 
     private void ResetAttackData() {
-        if (!IsAttacking && receivedAttackData != null) {
+        if (!IsCharging && !IsAttacking && receivedAttackData != null) {
             receivedAttackData = null;
             currentAttackData = null;
             currentAttackClip = null;
@@ -320,16 +320,22 @@ public class CharacterCombat : MonoBehaviour {
             Debug.LogError("The attack is not configured as chargeable. Call 'PerformNormalAttack()' instead.");
             return;
         }
+
         if (attackCompleted && AttackIsReady() && !IsCharging && !IsAttacking) {
             canReleaseChargedAttack = true;
             currentAttackData = attackData;
             UpdateAttackInformation(false);
             EnterAttackState(currentAttackData);
             isCharging = true;
+            isAttacking = true;
+            AnimationClip initiateChargeClip = currentAttackData.InitiateChargeAnimation != null
+                ? currentAttackData.InitiateChargeAnimation
+                : currentAttackData.ChargeAnimation;
             OnInitiateChargeAttack?.Invoke(this, new OnInitiateChargeAttackEventArgs {
-                chargeClip = currentAttackData.ChargeAnimation
+                chargeClip = initiateChargeClip
             });
         }
+
         if (IsCharging) {
             isAttacking = true;
             ChargeAttack(currentAttackData, projectileSpawPoint);
@@ -340,12 +346,13 @@ public class CharacterCombat : MonoBehaviour {
     /// Makes the character charge an attack
     /// </summary>
     /// <param name="attackData">The scriptable object that the data of the attack</param>
-    /// <param name="chargeOvertime">Indicates when the character holded the attack for more than the allowed time</param>
     private void ChargeAttack(AttackSO attackData, Transform projectileSpawnPoint) {
 
         attackCharged = Utilities.TickTimer(ref chargeTimer, attackData.ChargeTime, false);
-
-        if (canReleaseChargedAttack && attackCharged) {
+        if (attackData.InitiateChargeAnimation != null && characterAnimator.IsClipPlaying(attackData.InitiateChargeAnimation, 1)) {
+            chargeTimer = attackData.ChargeTime;
+        }
+        else if (canReleaseChargedAttack && attackCharged) {
             if (Utilities.TickTimer(ref holdAttackTimer, attackData.HoldChargeTime, false)) {
                 attackCharged = false;
                 if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceRelease) {
@@ -398,7 +405,10 @@ public class CharacterCombat : MonoBehaviour {
         AttackSO attackData = currentAttackData;
         if (attackData.IsChargeableAttack) {
             yield return new WaitForEndOfFrame();
-            while (characterAnimator.IsClipPlaying(attackData.ChargeAnimation, 1f)) {
+            AnimationClip chargeAnimation = attackData.InitiateChargeAnimation != null
+                ? attackData.InitiateChargeAnimation
+                : attackData.ChargeAnimation;
+            while (characterAnimator.IsClipPlaying(chargeAnimation, 1f)) {
                 yield return null;
             }
         }

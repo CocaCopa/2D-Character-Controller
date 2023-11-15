@@ -10,7 +10,14 @@ public class PlayerController : HumanoidController {
     [SerializeField] private Transform arrowSpawnTransform;
     [Header("--- Gun Normal Attack ---")]
     [SerializeField] private AttackSO gunFireAttack;
+    [Tooltip("Position at which the projectile of this attack will be spawned.")]
     [SerializeField] private Transform bulletSpawnTransform;
+    [Tooltip("Position at which the muzzle flash effect should be spawned.")]
+    [SerializeField] private Transform muzzleEffectSpawnTransform;
+    [Tooltip("Prefab to spawn as muzzle flash.")]
+    [SerializeField] private GameObject muzzleEffectPrefab;
+    [Tooltip("Duration before the game object is automatically destroyed.")]
+    [SerializeField] private float destroyMuzzleEffectTime;
 
     private PlayerInput input;
     private bool canLedgeClimb = false;
@@ -23,6 +30,7 @@ public class PlayerController : HumanoidController {
     protected override void Start() {
         base.Start();
         SubscribeToEvents();
+        characterCombat.OnProjectileThrown += Combat_ProjectileThrown;
     }
 
     protected override void OnDisable() {
@@ -36,6 +44,14 @@ public class PlayerController : HumanoidController {
         PerformingChargedAttacks();
         if (input.OnGunContinuous() && CanGunAttack()) {
             characterCombat.PerformNormalAttack(gunFireAttack, false, bulletSpawnTransform);
+        }
+    }
+
+    private void Combat_ProjectileThrown(object sender, CharacterCombat.OnProjectileThrownEventArgs e) {
+        if (e.projectile.TryGetComponent<BulletProjectileExample>(out var _)) {
+            GameObject effect = Instantiate(muzzleEffectPrefab, muzzleEffectSpawnTransform.position, Quaternion.identity);
+            effect.transform.right = transform.right;
+            Destroy(effect, destroyMuzzleEffectTime);
         }
     }
 

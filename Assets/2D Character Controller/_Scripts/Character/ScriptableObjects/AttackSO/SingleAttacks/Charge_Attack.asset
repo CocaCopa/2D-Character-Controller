@@ -22,14 +22,15 @@ MonoBehaviour:
     m_Bits: 128
   damageAmount: 25
   cooldown: 1
-  disableCastOnWall: 0
-  wallCastDistance: 0
+  disableCastOnWall: 1
+  wallCastDistance: 0.5
   resetVelocity: 1
   canChangeDirections: 1
   adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 0
+  attackPushMode: 0
   forceMode: 1
   force: {x: 500, y: 0}
   delayForceTime: 0

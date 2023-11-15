@@ -21,6 +21,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty canMoveWhileAttacking;
     SerializedProperty attackMoveSpeedPercentage;
     SerializedProperty attackPushesCharacter;
+    SerializedProperty attackPushMode;
     SerializedProperty forceMode;
     SerializedProperty force;
     SerializedProperty delayForceTime;
@@ -61,6 +62,7 @@ public class AttackSOEditor : Editor {
         canMoveWhileAttacking = serializedObject.FindProperty(nameof(canMoveWhileAttacking));
         attackMoveSpeedPercentage = serializedObject.FindProperty(nameof(attackMoveSpeedPercentage));
         attackPushesCharacter = serializedObject.FindProperty(nameof(attackPushesCharacter));
+        attackPushMode = serializedObject.FindProperty(nameof(attackPushMode));
         forceMode = serializedObject.FindProperty(nameof(forceMode));
         force = serializedObject.FindProperty(nameof(force));
         delayForceTime = serializedObject.FindProperty(nameof(delayForceTime));
@@ -160,6 +162,9 @@ public class AttackSOEditor : Editor {
         }
         EditorGUILayout.PropertyField(attackPushesCharacter);
         if (attackSO.AttackPushesCharacter) {
+            if (attackSO.IsChargeableAttack) {
+                EditorGUILayout.PropertyField(attackPushMode);
+            }
             EditorGUILayout.PropertyField(forceMode);
             EditorGUILayout.PropertyField(force);
             EditorGUILayout.PropertyField(delayForceTime);

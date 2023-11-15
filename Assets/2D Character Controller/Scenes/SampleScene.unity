@@ -1117,10 +1117,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 112787606063426841, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2353421476736477801, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_Name
       value: CharacterTemplate
@@ -1168,58 +1164,6 @@ PrefabInstance:
     - target: {fileID: 2353421476736477846, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2462863334859225788, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.27
-      objectReference: {fileID: 0}
-    - target: {fileID: 2462863334859225788, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.27
-      objectReference: {fileID: 0}
-    - target: {fileID: 2462863334859225788, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2777837057832776020, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3090859874179469632, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: shape
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3090859874179469632, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: visualizeAttackHitbox
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568310045885841301, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: timeScale
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: debugColor.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: debugColor.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: debugColor.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: excludeCharacter
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: useSpecifiedLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8495183058462437203, guid: 3725be8803d0f4e469db78f40f704457, type: 3}
-      propertyPath: specifiedLayer.m_Bits
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3725be8803d0f4e469db78f40f704457, type: 3}

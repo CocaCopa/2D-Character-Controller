@@ -6,67 +6,69 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private string attackName;
     [SerializeField] private Sprite attackIcon;
     [SerializeField] private AudioClip[] attackSounds;
-    [Tooltip("The animation clip of the attack")]
+    [Tooltip("The animation clip of the attack.")]
     [SerializeField] private AnimationClip attackAnimation;
-    [Tooltip("Define the shape of this attack's hitbox")]
+    [Tooltip("Define the shape of this attack's hitbox.")]
     [SerializeField] private HitboxShape hitboxShape;
-    [Tooltip("Specify which layers can be damaged")]
+    [Tooltip("Specify which layers can be damaged.")]
     [SerializeField] private LayerMask whatIsDamageable;
-    [Tooltip("How much damage should be dealt by this attack")]
+    [Tooltip("How much damage should be dealt by this attack.")]
     [SerializeField] private float damageAmount;
-    [Tooltip("Attack cooldown in seconds")]
+    [Tooltip("Attack cooldown in seconds.")]
     [SerializeField] private float cooldown;
-    [Tooltip("Wether or not your character should be able to cast the attack, if a wall is detected in front of them")]
+    [Tooltip("Wether or not your character should be able to cast the attack, if a wall is detected in front of them.")]
     [SerializeField] private bool disableCastOnWall = false;
-    [Tooltip("Specify at what distance away from a wall your character must be, in order to allow them to cast the attack")]
+    [Tooltip("Specify at what distance away from a wall your character must be, in order to allow them to cast the attack.")]
     [SerializeField] private float wallCastDistance;
     [Tooltip("True, sets your character's velocity to Vector3.zero when the attack is initiated. " +
         "False, your character will continue moving at a constant speed based on their velocity before the attack.")]
     [SerializeField] private bool resetVelocity = true;
-    [Tooltip("Determines wether or not your character can change directions while they're attacking")]
+    [Tooltip("Determines wether or not your character can change directions while they're attacking.")]
     [SerializeField] private bool canChangeDirections = false;
     [Tooltip("If your animation offsets your character during the attack, you can adjust their position by setting an offset. " +
-        "After the attack, your character will teleport to that offseted position")]
+        "After the attack, your character will teleport to that offseted position.")]
     [SerializeField] private Vector3 adjustPositionOnAttackEnd;
-    [Tooltip("Determines if the character should be able to move while they cast an attack")]
+    [Tooltip("Determines if the character should be able to move while they cast an attack.")]
     [SerializeField] private bool canMoveWhileAttacking;
-    [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
+    [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed.")]
     [SerializeField, Range(0f,1f)] private float attackMoveSpeedPercentage;
-    [Tooltip("If 'true,' a force will be applied to the character in the direction they are facing when the attack is initiated")]
+    [Tooltip("If 'true,' a force will be applied to the character in the direction they are facing when the attack is initiated.")]
     [SerializeField] private bool attackPushesCharacter;
-    [Tooltip("Choose which Rigidbody.AddForce() force mode should be applied")]
+    [Tooltip("Choose when your character should be pushed. OnInitiate: Once the attack is initiated. OnRelease: Once the attack is released.")]
+    [SerializeField] private PushMode attackPushMode;
+    [Tooltip("Choose which Rigidbody.AddForce() force mode should be applied.")]
     [SerializeField] private ForceMode2D forceMode = ForceMode2D.Impulse;
-    [Tooltip("How much force should be applied")]
+    [Tooltip("How much force should be applied.")]
     [SerializeField] private Vector2 force;
-    [Tooltip("Delay force application in seconds")]
+    [Tooltip("Delay force application in seconds.")]
     [SerializeField] private float delayForceTime;
-    [Tooltip("Whether the character should be affected by gravity for the duration of the attack")]
+    [Tooltip("Whether the character should be affected by gravity for the duration of the attack.")]
     [SerializeField] private bool useGravity;
-    [Tooltip("Change the drag coeficient of the Rigidbody2D for the duration of the attack")]
+    [Tooltip("Change the drag coeficient of the Rigidbody2D for the duration of the attack.")]
     [SerializeField] private float dragCoeficient;
-    [Tooltip("Wether or not this attack can be charged")]
+    [Tooltip("Wether or not this attack can be charged.")]
     [SerializeField] private bool isChargeableAttack = false;
-    [Tooltip("Animation to play when the attack is initiated. (Can be null)")]
+    [Tooltip("Animation to play when the attack is initiated. Can be null.")]
     [SerializeField] private AnimationClip initiateChargeAnimation;
-    [Tooltip("Animation to play when the attack is charging")]
+    [Tooltip("Animation to play when the attack is charging.")]
     [SerializeField] private AnimationClip chargeAnimation;
-    [Tooltip("How much time should it take for the attack to be charged in seconds")]
+    [Tooltip("How much time should it take for the attack to be charged in seconds.")]
     [SerializeField] private float chargeTime;
-    [Tooltip("For how long should your character be able to hold their charged attack in seconds, before being forced to cancel it")]
+    [Tooltip("For how long should your character be able to hold their charged attack in seconds, before being forced to cancel it.")]
     [SerializeField] private float holdChargeTime;
-    [Tooltip("Specify the action to be taken when the attack is held for longer than the designated hold charge time")]
+    [Tooltip("Specify the action to be taken when the attack is held for longer than the designated hold charge time.")]
     [SerializeField] private ChargeOverTime chargeOverTime = ChargeOverTime.ForceRelease;
-    [Tooltip("Cooldown to set the attack on, if is held more than 'holdChargeTime' or if the attack is canceled")]
+    [Tooltip("Cooldown to set the attack on, if is held more than 'holdChargeTime' or if the attack is canceled.")]
     [SerializeField] private float cooldownIfCanceled;
-    [Tooltip("If 'true', your character will be allowed to move while they charge the attack")]
+    [Tooltip("If 'true', your character will be allowed to move while they charge the attack.")]
     [SerializeField] private bool canMoveWhileCharging = false;
-    [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed")]
+    [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed.")]
     [SerializeField, Range(0f,1f)] private float chargeMoveSpeedPercentage;
-    [Tooltip("True if you want your character to be allowed to move as soon as the attack is released")]
+    [Tooltip("True if you want your character to be allowed to move as soon as the attack is released.")]
     [SerializeField] private bool canMoveOnReleaseAttack;
-    [Tooltip("Does this attack throw a projectile?")]
+    [Tooltip("Set to 'true' if your attack should throw a projectile.")]
     [SerializeField] private bool throwsProjectile = false;
-    [Tooltip("How much damage should the projectile deal")]
+    [Tooltip("How much damage should the projectile deal.")]
     [SerializeField] private float projectileDamage;
     [Tooltip("Enabling this option allows multiple prefabs to be assigned as projectiles. Upon attacking, a random prefab will be chosen.")]
     [SerializeField] private bool chooseRandomFromList = false;
@@ -98,6 +100,7 @@ public class AttackSO : ScriptableObject {
     public bool CanMoveWhileAttacking => !IsChargeableAttack && canMoveWhileAttacking;
     public float AttackMoveSpeedPercentage => attackMoveSpeedPercentage;
     public bool AttackPushesCharacter => attackPushesCharacter;
+    public PushMode AttackPushMode => attackPushMode;
     public ForceMode2D ForceMode => forceMode;
     public Vector3 Force => force;
     public float DelayForceTime => delayForceTime;

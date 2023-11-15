@@ -3,20 +3,13 @@ public enum ChargeOverTime {
     ForceRelease
 }
 
-public enum ProjectileContact {
-    DefaultPhysics,
-    Destroy,
-    FreezePosition,
-    Ricochet
-}
-
-public enum AffectObject {
-    Both,
-    Slowest,
-    Fastest
-}
-
 public enum HitboxShape {
     Circle,
     Box
+}
+
+public enum PushMode {
+    OnInitiate,
+    OnRelease,
+    Both
 }

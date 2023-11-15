@@ -22,7 +22,8 @@ public class CharacterCombat : MonoBehaviour {
     public event EventHandler OnReleaseChargeAttack;
     public event EventHandler OnCancelChargeAttack;
 
-    [Tooltip("The transform of the attack hitbox")]
+    [Tooltip("The transform of the attack hitbox. Projictiles have their own attack hitbox which can be assigned to their " +
+        "attached CombatSystemProjectile script.")]
     [SerializeField] private Transform attackHitboxTransform;
     [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack.")]
     [SerializeField] private float attackBufferTime;
@@ -59,10 +60,13 @@ public class CharacterCombat : MonoBehaviour {
     private bool isCharging = false;
     private bool canReleaseChargedAttack = false;
 
+    public AttackSO CurrentAttackData => currentAttackData;
     public int AttackCounter => attackCounter;
     public bool IsAttacking => isAttacking;
     public bool AttackCompleted => attackCompleted;
     public bool IsCharging => isCharging;
+    public float ChargeTimer => chargeTimer;
+    public float HoldAttackTimer => holdAttackTimer;
     public bool CanMoveWhileAttacking => currentAttackData != null && (currentAttackData.CanMoveWhileAttacking || currentAttackData.CanMoveWhileCharging);
     public bool CanChangeDirections => currentAttackData == null || currentAttackData.CanChangeDirections;
 
@@ -411,6 +415,9 @@ public class CharacterCombat : MonoBehaviour {
             while (characterAnimator.IsClipPlaying(chargeAnimation, 1f)) {
                 yield return null;
             }
+            if (attackData.AttackPushMode == PushMode.OnRelease || attackData.AttackPushMode == PushMode.Both) {
+                StartCoroutine(PushCharacter(currentAttackData));
+            }
         }
         yield return new WaitForEndOfFrame();
         while (characterAnimator.IsClipPlaying(attackData.AttackAnimation, attackData.ThrowAtPercentage)) {
@@ -470,7 +477,12 @@ public class CharacterCombat : MonoBehaviour {
             playerRb.gravityScale = 0f;
         }
         if (attackData.AttackPushesCharacter && !attackData.CanMoveWhileAttacking && !attackData.CanMoveWhileCharging) {
-            StartCoroutine(PushCharacter(attackData));
+            if (attackData.IsChargeableAttack && (attackData.AttackPushMode == PushMode.OnInitiate || attackData.AttackPushMode == PushMode.Both)) {
+                StartCoroutine(PushCharacter(attackData));
+            }
+            else if (!attackData.IsChargeableAttack) {
+                StartCoroutine(PushCharacter(attackData));
+            }
         }
         if (attackData.ResetVelocity) {
             playerRb.velocity = Vector2.zero;
@@ -494,9 +506,7 @@ public class CharacterCombat : MonoBehaviour {
         playerRb.drag = attackData.DragCoeficient;
     }
 
-    /// <summary>
-    /// Unlocks your character after the attack is completed
-    /// </summary>
+    
     private void ExitAttackState(AttackSO attackData, bool adjustPosition = true) {
         playerRb.drag = defaultLinearDrag;
         playerRb.gravityScale = defaultGravityScale;

@@ -4,23 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using CocaCopa;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(AudioSource))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class CharacterCombat : MonoBehaviour {
-
-    public class OnInitiateNormalAttackEventArgs {
-        public AnimationClip attackClip;
-    }
-    public class OnInitiateChargeAttackEventArgs {
-        public AnimationClip chargeClip;
-    }
     public class OnProjectileThrownEventArgs {
+        public AttackSO attackData;
         public GameObject projectile;
     }
-    public event EventHandler<OnInitiateNormalAttackEventArgs> OnInitiateNormalAttack;
-    public event EventHandler<OnInitiateChargeAttackEventArgs> OnInitiateChargeAttack;
+    public class CurrentAttackEventArgs {
+        public AttackSO attackData;
+    }
+    public event EventHandler<CurrentAttackEventArgs> OnInitiateNormalAttack;
+    public event EventHandler<CurrentAttackEventArgs> OnInitiateChargeAttack;
+    public event EventHandler<CurrentAttackEventArgs> OnChargedAttackFullyCharged;
+    public event EventHandler<CurrentAttackEventArgs> OnReleaseChargeAttack;
+    public event EventHandler<CurrentAttackEventArgs> OnCancelChargeAttack;
+    public event EventHandler<CurrentAttackEventArgs> OnAttackDealtDamage;
     public event EventHandler<OnProjectileThrownEventArgs> OnProjectileThrown;
-    public event EventHandler OnReleaseChargeAttack;
-    public event EventHandler OnCancelChargeAttack;
 
     [Tooltip("The transform of the attack hitbox. Projictiles have their own attack hitbox which can be assigned to their " +
         "attached CombatSystemProjectile script.")]
@@ -59,6 +58,7 @@ public class CharacterCombat : MonoBehaviour {
     private bool isAttacking = false;
     private bool isCharging = false;
     private bool canReleaseChargedAttack = false;
+    private bool canPlayChargeSound = true;
 
     public AttackSO CurrentAttackData => currentAttackData;
     public int AttackCounter => attackCounter;
@@ -229,6 +229,10 @@ public class CharacterCombat : MonoBehaviour {
 
             if (collidersHit != null && collidersHit.transform.root.TryGetComponent<IDamageable>(out var damageableObject)) {
                 damageableObject.TakeDamage(currentAttackData.DamageAmount);
+                OnAttackDealtDamage?.Invoke(this, new CurrentAttackEventArgs {
+                    attackData = currentAttackData
+                });
+                Debug.Log("Attack landed");
                 canDamage = false; // Ensures the attacker will only deal damage once. Resets when attackCompleted = true;
             }
         }
@@ -260,10 +264,6 @@ public class CharacterCombat : MonoBehaviour {
         }
 
         if (CanPerformNormalAttack()) {
-            if (attackData.AttackSounds.Length > 0) {
-                int soundIndex = UnityEngine.Random.Range(0, attackData.AttackSounds.Length);
-                audioSource.PlayOneShot(attackData.AttackSounds[soundIndex]);
-            }
             NormalAttack(isPartOfCombo);
         }
     }
@@ -272,8 +272,8 @@ public class CharacterCombat : MonoBehaviour {
         currentAttackData = receivedAttackData;
         UpdateAttackInformation(isPartOfCombo);
         EnterAttackState(currentAttackData);
-        OnInitiateNormalAttack?.Invoke(this, new OnInitiateNormalAttackEventArgs {
-            attackClip = currentAttackData.AttackAnimation
+        OnInitiateNormalAttack?.Invoke(this, new CurrentAttackEventArgs {
+            attackData = currentAttackData
         });
         if (currentAttackData.ThrowsProjectile) {
             StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
@@ -335,8 +335,8 @@ public class CharacterCombat : MonoBehaviour {
             AnimationClip initiateChargeClip = currentAttackData.InitiateChargeAnimation != null
                 ? currentAttackData.InitiateChargeAnimation
                 : currentAttackData.ChargeAnimation;
-            OnInitiateChargeAttack?.Invoke(this, new OnInitiateChargeAttackEventArgs {
-                chargeClip = initiateChargeClip
+            OnInitiateChargeAttack?.Invoke(this, new CurrentAttackEventArgs {
+                attackData = currentAttackData
             });
         }
 
@@ -351,25 +351,31 @@ public class CharacterCombat : MonoBehaviour {
     /// </summary>
     /// <param name="attackData">The scriptable object that the data of the attack</param>
     private void ChargeAttack(AttackSO attackData, Transform projectileSpawnPoint) {
-
         attackCharged = Utilities.TickTimer(ref chargeTimer, attackData.ChargeTime, false);
         if (attackData.InitiateChargeAnimation != null && characterAnimator.IsClipPlaying(attackData.InitiateChargeAnimation, 1)) {
             chargeTimer = attackData.ChargeTime;
         }
         else if (canReleaseChargedAttack && attackCharged) {
-            if (Utilities.TickTimer(ref holdAttackTimer, attackData.HoldChargeTime, false)) {
+            if (holdAttackTimer == attackData.HoldChargeTime) {
+                OnChargedAttackFullyCharged?.Invoke(this, new CurrentAttackEventArgs {
+                    attackData = currentAttackData
+                });
+            }
+            if (Utilities.TickTimer(ref holdAttackTimer, attackData.HoldChargeTime, autoReset: false)) {
                 attackCharged = false;
                 if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceRelease) {
-                    ReleaseChargedAttack(projectileSpawnPoint);
+                    TryReleaseChargedAttack(projectileSpawnPoint);
+                    canPlayChargeSound = true;
                 }
                 else if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceCancel) {
                     CancelChargedAttack(currentAttackData);
+                    canPlayChargeSound = true;
                 }
             }
         }
     }
 
-    public void ReleaseChargedAttack(Transform projectileSpawnTransform = null) {
+    public void TryReleaseChargedAttack(Transform projectileSpawnTransform = null) {
         if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
             return;
         }
@@ -378,7 +384,9 @@ public class CharacterCombat : MonoBehaviour {
             isAttacking = true;
             currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
             currentAttackClip = currentAttackData.AttackAnimation;
-            OnReleaseChargeAttack?.Invoke(this, EventArgs.Empty);
+            OnReleaseChargeAttack?.Invoke(this, new CurrentAttackEventArgs {
+                attackData = currentAttackData
+            });
             moveWhileCastingAttack = currentAttackData.CanMoveOnReleaseAttack;
             if (currentAttackData.ThrowsProjectile) {
                 if (projectileSpawnTransform != null) {
@@ -402,7 +410,9 @@ public class CharacterCombat : MonoBehaviour {
         isAttacking = false;
         attackCompleted = true;
         ExitAttackState(attackData, false);
-        OnCancelChargeAttack?.Invoke(this, EventArgs.Empty);
+        OnCancelChargeAttack?.Invoke(this, new CurrentAttackEventArgs {
+            attackData = currentAttackData
+        });
     }
 
     private IEnumerator WaitAnimationBeforeReleasing(Transform spawnPoint) {
@@ -442,6 +452,7 @@ public class CharacterCombat : MonoBehaviour {
             spawnedProjectile = Instantiate(attackData.ProjectilePrefab, spawnTransform.position, Quaternion.Euler(transform.eulerAngles));
         }
         OnProjectileThrown?.Invoke(this, new OnProjectileThrownEventArgs {
+            attackData = attackData,
             projectile = spawnedProjectile
         });
         if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {

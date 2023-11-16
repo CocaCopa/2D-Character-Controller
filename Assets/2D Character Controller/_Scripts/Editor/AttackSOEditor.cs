@@ -7,7 +7,6 @@ public class AttackSOEditor : Editor {
     #region --- Serialized Properties ---
     SerializedProperty attackName;
     SerializedProperty attackIcon;
-    SerializedProperty attackSounds;
     SerializedProperty attackAnimation;
     SerializedProperty hitboxShape;
     SerializedProperty whatIsDamageable;
@@ -48,7 +47,6 @@ public class AttackSOEditor : Editor {
     private void OnEnable() {
         attackName = serializedObject.FindProperty(nameof(attackName));
         attackIcon = serializedObject.FindProperty(nameof(attackIcon));
-        attackSounds = serializedObject.FindProperty(nameof(attackSounds));
         attackAnimation = serializedObject.FindProperty(nameof(attackAnimation));
         hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
         whatIsDamageable = serializedObject.FindProperty(nameof(whatIsDamageable));
@@ -122,7 +120,6 @@ public class AttackSOEditor : Editor {
     private void CommonDetails() {
         EditorGUILayout.PropertyField(attackName);
         EditorGUILayout.PropertyField(attackIcon);
-        EditorGUILayout.PropertyField(attackSounds);
         EditorGUILayout.Space(10);
     }
 
@@ -178,21 +175,34 @@ public class AttackSOEditor : Editor {
         if (attackSO.IsChargeableAttack && !attackSO.AttackPushesCharacter) {
             EditorGUILayout.Space(10);
         }
+
+        
+
     }
 
     private void ChargeableAttack() {
+        foldoutValue = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutValue, "Test Header Foldout");
         EditorGUILayout.PropertyField(isChargeableAttack);
-        if (attackSO.IsChargeableAttack) {
-            EditorGUILayout.PropertyField(initiateChargeAnimation);
-            EditorGUILayout.PropertyField(chargeAnimation);
-            EditorGUILayout.PropertyField(chargeTime);
-            EditorGUILayout.PropertyField(holdChargeTime);
-            EditorGUILayout.PropertyField(chargeOverTime);
-            EditorGUILayout.PropertyField(cooldownIfCanceled);
-            EditorGUILayout.Space(10);
-        }
-    }
 
+        if (foldoutValue) {
+            EditorGUI.indentLevel++; // Increase the indent for properties inside the foldout
+
+            if (isChargeableAttack.boolValue) {
+                EditorGUILayout.PropertyField(initiateChargeAnimation);
+                EditorGUILayout.PropertyField(chargeAnimation);
+                EditorGUILayout.PropertyField(chargeTime);
+                EditorGUILayout.PropertyField(holdChargeTime);
+                EditorGUILayout.PropertyField(chargeOverTime);
+                EditorGUILayout.PropertyField(cooldownIfCanceled);
+                EditorGUILayout.Space(10);
+            }
+
+            EditorGUI.indentLevel--; // Restore the indent level
+        }
+
+        EditorGUILayout.EndFoldoutHeaderGroup();
+    }
+    bool foldoutValue = true;
     private void Projectile() {
         if (attackSO.ThrowsProjectile && !attackSO.IsChargeableAttack) {
             EditorGUILayout.Space(10);

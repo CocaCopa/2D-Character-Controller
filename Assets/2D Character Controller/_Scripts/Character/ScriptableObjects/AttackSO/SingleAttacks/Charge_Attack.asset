@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: 
   attackIcon: {fileID: 0}
-  attackSounds: []
   attackAnimation: {fileID: 7400000, guid: 10573f78446dc8d48bdd19cad83f3ef0, type: 2}
   hitboxShape: 0
   whatIsDamageable:

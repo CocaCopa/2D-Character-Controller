@@ -151,5 +151,22 @@ namespace CocaCopa {
             }
             return tooClose;
         }
+
+        /// <summary>
+        /// Plays a random sound picked from the given sound array.
+        /// </summary>
+        /// <param name="audioSource">Target audio source</param>
+        /// <param name="soundsArray">List to choose sound from</param>
+        /// <param name="setAudioClip">Set to 'true' if you want to set the selected clip as the audioSource's clip</param>
+        public static void PlayRandomSound(AudioSource audioSource, AudioClip[] soundsArray, bool setAudioClip = false) {
+            if (soundsArray.Length > 0) {
+                int randomIndex = Random.Range(0, soundsArray.Length);
+                AudioClip audioClip = soundsArray[randomIndex];
+                if (setAudioClip) {
+                    audioSource.clip = audioClip;
+                }
+                audioSource.PlayOneShot(audioClip);
+            }
+        }
     }
 }

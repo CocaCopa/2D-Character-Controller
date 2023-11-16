@@ -48,7 +48,7 @@ public class PlayerController : HumanoidController {
     }
 
     private void Combat_ProjectileThrown(object sender, CharacterCombat.OnProjectileThrownEventArgs e) {
-        if (e.projectile.TryGetComponent<BulletProjectileExample>(out var _)) {
+        if (e.attackData == gunFireAttack) {
             GameObject effect = Instantiate(muzzleEffectPrefab, muzzleEffectSpawnTransform.position, Quaternion.identity);
             effect.transform.right = transform.right;
             Destroy(effect, destroyMuzzleEffectTime);
@@ -76,7 +76,7 @@ public class PlayerController : HumanoidController {
 
     private void Input_OnBowReleased(object sender, System.EventArgs _) {
         if (IsGrounded)
-            characterCombat.ReleaseChargedAttack(arrowSpawnTransform);
+            characterCombat.TryReleaseChargedAttack(arrowSpawnTransform);
         else {
             characterCombat.CancelChargedAttack(bowChargeAttack);
         }

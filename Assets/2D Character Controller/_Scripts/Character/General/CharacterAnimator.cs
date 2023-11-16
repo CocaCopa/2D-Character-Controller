@@ -68,22 +68,27 @@ public class CharacterAnimator : MonoBehaviour {
         entityHealth.OnTakeDamage -= Health_OnTakeDamage;
     }
 
-    private void Controller_OnCharacterNormalAttack(object sender, CharacterCombat.OnInitiateNormalAttackEventArgs e) {
-        animator.Play(e.attackClip.name, 0, 0);
+    private void Controller_OnCharacterNormalAttack(object sender, CharacterCombat.CurrentAttackEventArgs e) {
+        animator.Play(e.attackData.AttackAnimation.name, 0, 0);
     }
 
-    private void Controller_OnCharacterChargeAttack(object sender, CharacterCombat.OnInitiateChargeAttackEventArgs e) {
+    private void Controller_OnCharacterChargeAttack(object sender, CharacterCombat.CurrentAttackEventArgs e) {
         animator.ResetTrigger(CANCEL_CHARGE_ATTACK);
         animator.ResetTrigger(RELEASE_CHARGE_ATTACK);
-        animator.Play(e.chargeClip.name);
+        if (e.attackData.InitiateChargeAnimation) {
+            animator.Play(e.attackData.InitiateChargeAnimation.name);
+        }
+        else {
+            animator.Play(e.attackData.ChargeAnimation.name);
+        }
     }
 
-    private void Controller_OnCharacterReleaseAttack(object sender, System.EventArgs _) {
+    private void Controller_OnCharacterReleaseAttack(object sender, CharacterCombat.CurrentAttackEventArgs _) {
         animator.ResetTrigger(CANCEL_CHARGE_ATTACK);
         animator.SetTrigger(RELEASE_CHARGE_ATTACK);
     }
 
-    private void Controller_OnCharacterCancelAttack(object sender, System.EventArgs _) {
+    private void Controller_OnCharacterCancelAttack(object sender, CharacterCombat.CurrentAttackEventArgs _) {
         animator.SetTrigger(CANCEL_CHARGE_ATTACK);
     }
 

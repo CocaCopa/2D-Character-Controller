@@ -5,7 +5,6 @@ public class AttackSO : ScriptableObject {
 
     [SerializeField] private string attackName;
     [SerializeField] private Sprite attackIcon;
-    [SerializeField] private AudioClip[] attackSounds;
     [Tooltip("The animation clip of the attack.")]
     [SerializeField] private AnimationClip attackAnimation;
     [Tooltip("Define the shape of this attack's hitbox.")]
@@ -86,7 +85,6 @@ public class AttackSO : ScriptableObject {
     public float CurrentCooldownTime { get; set; }
     public string AttackName => attackName;
     public Sprite AttackIcon => attackIcon;
-    public AudioClip[] AttackSounds => attackSounds;
     public AnimationClip AttackAnimation => attackAnimation;
     public HitboxShape HitboxShape => hitboxShape;
     public LayerMask WhatIsDamageable => whatIsDamageable;

@@ -423,12 +423,12 @@ public class CharacterCombat : MonoBehaviour {
             while (characterAnimator.IsClipPlaying(chargeAnimation, 1f)) {
                 yield return null;
             }
-            if (attackData.AttackPushesCharacter && attackData.IsChargeableAttack) {
+            if (attackData.IsChargeableAttack && attackData.AttackPushesCharacter) {
                 if (attackData.AttackPushMode == PushMode.OnRelease) {
                     StartCoroutine(PushCharacter(currentAttackData));
                 }
                 else if (attackData.AttackPushMode == PushMode.Both) {
-                    StartCoroutine(PushCharacter(currentAttackData, true));
+                    StartCoroutine(PushCharacter(currentAttackData, useReleaseForces: true));
                 }
             }
         }

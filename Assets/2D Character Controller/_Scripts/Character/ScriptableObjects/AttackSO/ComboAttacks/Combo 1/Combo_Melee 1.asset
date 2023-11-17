@@ -35,6 +35,11 @@ MonoBehaviour:
   delayForceTime: 0
   useGravity: 0
   dragCoeficient: 10
+  m_ForceMode: 1
+  m_Force: {x: 0, y: 0}
+  m_DelayForceTime: 0
+  m_UseGravity: 0
+  m_DragCoeficient: 0
   isChargeableAttack: 0
   initiateChargeAnimation: {fileID: 0}
   chargeAnimation: {fileID: 0}

@@ -36,7 +36,6 @@ public class CharacterCombat : MonoBehaviour {
     private const float ATTACK_CLIP_THRESHOLD = 1f;
 
     private Rigidbody2D playerRb;
-    private AudioSource audioSource;
     private CharacterEnvironmentalQuery envQuery;
     private CharacterAnimator characterAnimator;
     private AnimationClip currentAttackClip;
@@ -161,7 +160,6 @@ public class CharacterCombat : MonoBehaviour {
 
     private void InitializeComponents() {
         playerRb = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>();
         envQuery = GetComponent<CharacterEnvironmentalQuery>();
         characterAnimator = GetComponentInChildren<CharacterAnimator>();
     }
@@ -425,8 +423,13 @@ public class CharacterCombat : MonoBehaviour {
             while (characterAnimator.IsClipPlaying(chargeAnimation, 1f)) {
                 yield return null;
             }
-            if (attackData.AttackPushMode == PushMode.OnRelease || attackData.AttackPushMode == PushMode.Both) {
-                StartCoroutine(PushCharacter(currentAttackData));
+            if (attackData.AttackPushesCharacter && attackData.IsChargeableAttack) {
+                if (attackData.AttackPushMode == PushMode.OnRelease) {
+                    StartCoroutine(PushCharacter(currentAttackData));
+                }
+                else if (attackData.AttackPushMode == PushMode.Both) {
+                    StartCoroutine(PushCharacter(currentAttackData, true));
+                }
             }
         }
         yield return new WaitForEndOfFrame();
@@ -508,13 +511,23 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
-    private IEnumerator PushCharacter(AttackSO attackData) {
-        yield return new WaitForSeconds(attackData.DelayForceTime);
-        Vector3 direction = transform.right;
-        Vector3 force = attackData.Force;
-        force.x *= direction.x;
-        playerRb.AddForce(force, attackData.ForceMode);
-        playerRb.drag = attackData.DragCoeficient;
+    private IEnumerator PushCharacter(AttackSO attackData, bool useReleaseForces = false) {
+        if (!useReleaseForces) {
+            yield return new WaitForSeconds(attackData.DelayForceTime);
+            Vector3 direction = transform.right;
+            Vector3 force = attackData.Force;
+            force.x *= direction.x;
+            playerRb.AddForce(force, attackData.ForceMode);
+            playerRb.drag = attackData.DragCoeficient;
+        }
+        else {
+            yield return new WaitForSeconds(attackData.ReleaseDelayForceTime);
+            Vector3 direction = transform.right;
+            Vector3 force = attackData.ReleaseFoce;
+            force.x *= direction.x;
+            playerRb.AddForce(force, attackData.ReleaseForceMode);
+            playerRb.drag = attackData.ReleaseDragCoeficient;
+        }
     }
 
     

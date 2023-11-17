@@ -26,6 +26,11 @@ public class AttackSOEditor : Editor {
     SerializedProperty delayForceTime;
     SerializedProperty useGravity;
     SerializedProperty dragCoeficient;
+    SerializedProperty m_ForceMode;
+    SerializedProperty m_Force;
+    SerializedProperty m_DelayForceTime;
+    SerializedProperty m_UseGravity;
+    SerializedProperty m_DragCoeficient;
     SerializedProperty isChargeableAttack;
     SerializedProperty initiateChargeAnimation;
     SerializedProperty chargeAnimation;
@@ -66,6 +71,13 @@ public class AttackSOEditor : Editor {
         delayForceTime = serializedObject.FindProperty(nameof(delayForceTime));
         useGravity = serializedObject.FindProperty(nameof(useGravity));
         dragCoeficient = serializedObject.FindProperty(nameof(dragCoeficient));
+
+        m_ForceMode = serializedObject.FindProperty(nameof(m_ForceMode));
+        m_Force = serializedObject.FindProperty(nameof(m_Force));
+        m_DelayForceTime = serializedObject.FindProperty(nameof(m_DelayForceTime));
+        m_UseGravity = serializedObject.FindProperty(nameof(m_UseGravity));
+        m_DragCoeficient = serializedObject.FindProperty(nameof(m_DragCoeficient));
+
         isChargeableAttack = serializedObject.FindProperty(nameof(isChargeableAttack));
         initiateChargeAnimation = serializedObject.FindProperty(nameof(initiateChargeAnimation));
         chargeAnimation = serializedObject.FindProperty(nameof(chargeAnimation));
@@ -86,20 +98,13 @@ public class AttackSOEditor : Editor {
     }
     #endregion
 
-    private AttackSO attackSO;
-
     public override void OnInspectorGUI() {
-        GetTargetComponent();
         LogWarning();
         DrawCustomEditor();
     }
 
-    private void GetTargetComponent() {
-        if (attackSO == null)
-            attackSO = target as AttackSO;
-    }
-
     private void LogWarning() {
+        AttackSO attackSO = target as AttackSO;
         if (attackSO.AttackAnimation != null && attackSO.AttackAnimation.isLooping) {
             Debug.LogWarning("The provided animation is configured with 'isLooping' set to 'true' " +
                 "which might lead to potential visual issues when your character is attacking");
@@ -131,21 +136,21 @@ public class AttackSOEditor : Editor {
         EditorGUILayout.PropertyField(cooldown);
         EditorGUILayout.Space(10);
         EditorGUILayout.PropertyField(disableCastOnWall);
-        if (attackSO.DisableCastOnWall) {
+        if (disableCastOnWall.boolValue) {
             EditorGUILayout.PropertyField(wallCastDistance);
         }
         EditorGUILayout.PropertyField(resetVelocity);
         EditorGUILayout.PropertyField(canChangeDirections);
         EditorGUILayout.PropertyField(adjustPositionOnAttackEnd);
-        if (!attackSO.IsChargeableAttack) {
+        if (!isChargeableAttack.boolValue) {
             EditorGUILayout.PropertyField(canMoveWhileAttacking);
-            if (attackSO.CanMoveWhileAttacking) {
+            if (canMoveWhileAttacking.boolValue) {
                 EditorGUILayout.PropertyField(attackMoveSpeedPercentage);
             }
         }
         else {
             EditorGUILayout.PropertyField(canMoveWhileCharging);
-            if (attackSO.CanMoveWhileCharging) {
+            if (canMoveWhileCharging.boolValue) {
                 EditorGUILayout.PropertyField(chargeMoveSpeedPercentage);
                 EditorGUILayout.PropertyField(canMoveOnReleaseAttack);
             }
@@ -154,64 +159,84 @@ public class AttackSOEditor : Editor {
 
     private void PushCharacter() {
         EditorGUILayout.Space(10);
-        if (attackSO.CanMoveWhileCharging || attackSO.CanMoveWhileAttacking) {
+        if (canMoveWhileCharging.boolValue || canMoveWhileAttacking.boolValue) {
             EditorGUI.BeginDisabledGroup(true);
         }
         EditorGUILayout.PropertyField(attackPushesCharacter);
-        if (attackSO.AttackPushesCharacter) {
-            if (attackSO.IsChargeableAttack) {
+        if (attackPushesCharacter.boolValue) {
+            if (isChargeableAttack.boolValue) {
                 EditorGUILayout.PropertyField(attackPushMode);
             }
-            EditorGUILayout.PropertyField(forceMode);
-            EditorGUILayout.PropertyField(force);
-            EditorGUILayout.PropertyField(delayForceTime);
-            EditorGUILayout.PropertyField(useGravity);
-            EditorGUILayout.PropertyField(dragCoeficient);
-            EditorGUILayout.Space(10);
-        }
-        if (attackSO.CanMoveWhileCharging || attackSO.CanMoveWhileAttacking) {
-            EditorGUI.EndDisabledGroup();
-        }
-        if (attackSO.IsChargeableAttack && !attackSO.AttackPushesCharacter) {
-            EditorGUILayout.Space(10);
-        }
+            if (!isChargeableAttack.boolValue || attackPushMode.enumValueIndex == 0 || attackPushMode.enumValueIndex == 1) {
+                EditorGUILayout.PropertyField(forceMode);
+                EditorGUILayout.PropertyField(force);
+                EditorGUILayout.PropertyField(delayForceTime);
+                EditorGUILayout.PropertyField(useGravity);
+                EditorGUILayout.PropertyField(dragCoeficient);
+                EditorGUILayout.Space(10);
 
-        
+            }
+            else if (attackPushMode.enumValueIndex == 2) {
+                foldoutValue = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutValue, "Initiate Forces");
+                if (foldoutValue) {
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(forceMode);
+                    EditorGUILayout.PropertyField(force);
+                    EditorGUILayout.PropertyField(delayForceTime);
+                    EditorGUILayout.PropertyField(useGravity);
+                    EditorGUILayout.PropertyField(dragCoeficient);
+                    EditorGUILayout.Space(10);
+                    EditorGUI.indentLevel--;
+                }
+                EditorGUILayout.EndFoldoutHeaderGroup();
 
-    }
-
-    private void ChargeableAttack() {
-        foldoutValue = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutValue, "Test Header Foldout");
-        EditorGUILayout.PropertyField(isChargeableAttack);
-
-        if (foldoutValue) {
-            EditorGUI.indentLevel++; // Increase the indent for properties inside the foldout
-
-            if (isChargeableAttack.boolValue) {
-                EditorGUILayout.PropertyField(initiateChargeAnimation);
-                EditorGUILayout.PropertyField(chargeAnimation);
-                EditorGUILayout.PropertyField(chargeTime);
-                EditorGUILayout.PropertyField(holdChargeTime);
-                EditorGUILayout.PropertyField(chargeOverTime);
-                EditorGUILayout.PropertyField(cooldownIfCanceled);
+                foldoutValue_2 = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutValue_2, "Release Forces");
+                if (foldoutValue_2) {
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(m_ForceMode);
+                    EditorGUILayout.PropertyField(m_Force);
+                    EditorGUILayout.PropertyField(m_DelayForceTime);
+                    EditorGUILayout.PropertyField(m_UseGravity);
+                    EditorGUILayout.PropertyField(m_DragCoeficient);
+                    EditorGUI.indentLevel--;
+                }
+                EditorGUILayout.EndFoldoutHeaderGroup();
                 EditorGUILayout.Space(10);
             }
-
-            EditorGUI.indentLevel--; // Restore the indent level
         }
 
-        EditorGUILayout.EndFoldoutHeaderGroup();
+        if (canMoveWhileCharging.boolValue || canMoveWhileAttacking.boolValue) {
+            EditorGUI.EndDisabledGroup();
+        }
+        if (isChargeableAttack.boolValue && !attackPushesCharacter.boolValue) {
+            EditorGUILayout.Space(10);
+        }
     }
     bool foldoutValue = true;
+    bool foldoutValue_2;
+    
+    private void ChargeableAttack() {
+        EditorGUILayout.PropertyField(isChargeableAttack);
+        if (isChargeableAttack.boolValue) {
+            EditorGUILayout.PropertyField(initiateChargeAnimation);
+            EditorGUILayout.PropertyField(chargeAnimation);
+            EditorGUILayout.PropertyField(chargeTime);
+            EditorGUILayout.PropertyField(holdChargeTime);
+            EditorGUILayout.PropertyField(chargeOverTime);
+            EditorGUILayout.PropertyField(cooldownIfCanceled);
+            EditorGUILayout.Space(10);
+        }
+    }
+
     private void Projectile() {
-        if (attackSO.ThrowsProjectile && !attackSO.IsChargeableAttack) {
+        if (throwsProjectile.boolValue && !isChargeableAttack.boolValue) {
             EditorGUILayout.Space(10);
         }
         EditorGUILayout.PropertyField(throwsProjectile);
-        if (attackSO.ThrowsProjectile) {
+        if (throwsProjectile.boolValue) {
             EditorGUILayout.PropertyField(projectileDamage);
             EditorGUILayout.PropertyField(chooseRandomFromList);
-            if (attackSO.ChooseRandomFromList) {
+            if (chooseRandomFromList.boolValue) {
                 EditorGUILayout.PropertyField(projectilePrefabs);
             }
             else {

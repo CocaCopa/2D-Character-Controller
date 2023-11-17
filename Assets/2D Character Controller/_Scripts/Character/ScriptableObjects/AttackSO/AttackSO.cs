@@ -45,6 +45,16 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool useGravity;
     [Tooltip("Change the drag coeficient of the Rigidbody2D for the duration of the attack.")]
     [SerializeField] private float dragCoeficient;
+    [Tooltip("Choose which Rigidbody.AddForce() force mode should be applied.")]
+    [SerializeField] private ForceMode2D m_ForceMode = ForceMode2D.Impulse;
+    [Tooltip("How much force should be applied.")]
+    [SerializeField] private Vector2 m_Force;
+    [Tooltip("Delay force application in seconds.")]
+    [SerializeField] private float m_DelayForceTime;
+    [Tooltip("Whether the character should be affected by gravity for the duration of the attack.")]
+    [SerializeField] private bool m_UseGravity;
+    [Tooltip("Change the drag coeficient of the Rigidbody2D for the duration of the attack.")]
+    [SerializeField] private float m_DragCoeficient;
     [Tooltip("Wether or not this attack can be charged.")]
     [SerializeField] private bool isChargeableAttack = false;
     [Tooltip("Animation to play when the attack is initiated. Can be null.")]
@@ -104,6 +114,11 @@ public class AttackSO : ScriptableObject {
     public float DelayForceTime => delayForceTime;
     public bool UseGravity => useGravity;
     public float DragCoeficient => dragCoeficient;
+    public ForceMode2D ReleaseForceMode => m_ForceMode;
+    public Vector3 ReleaseFoce => m_Force;
+    public float ReleaseDelayForceTime => m_DelayForceTime;
+    public bool ReleaseUseGravity => m_UseGravity;
+    public float ReleaseDragCoeficient => m_DragCoeficient;
     public bool IsChargeableAttack => isChargeableAttack;
     public AnimationClip InitiateChargeAnimation => initiateChargeAnimation;
     public AnimationClip ChargeAnimation => chargeAnimation;

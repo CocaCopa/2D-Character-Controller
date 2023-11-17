@@ -57,7 +57,6 @@ public class CharacterCombat : MonoBehaviour {
     private bool isAttacking = false;
     private bool isCharging = false;
     private bool canReleaseChargedAttack = false;
-    private bool canPlayChargeSound = true;
 
     public AttackSO CurrentAttackData => currentAttackData;
     public int AttackCounter => attackCounter;
@@ -258,6 +257,7 @@ public class CharacterCombat : MonoBehaviour {
         attackCompleted = !characterAnimator.IsClipPlaying(currentAttackClip, ATTACK_CLIP_THRESHOLD);
         if (attackCompleted && IsAttacking) {
             ExitAttackState(currentAttackData);
+            StopAllCoroutines();
             canDamage = true;
         }
     }
@@ -372,11 +372,9 @@ public class CharacterCombat : MonoBehaviour {
                 attackCharged = false;
                 if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceRelease) {
                     TryReleaseChargedAttack(projectileSpawnPoint);
-                    canPlayChargeSound = true;
                 }
                 else if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceCancel) {
                     CancelChargedAttack(currentAttackData);
-                    canPlayChargeSound = true;
                 }
             }
         }
@@ -445,11 +443,13 @@ public class CharacterCombat : MonoBehaviour {
         while (characterAnimator.IsClipPlaying(attackData.AttackAnimation, attackData.ThrowAtPercentage)) {
             yield return null;
         }
-        if (currentAttackData.ThrowsProjectile && (currentAttackData.ProjectilePrefab != null || currentAttackData.ProjectilePrefabs.Length > 0)) {
-            StartCoroutine(ThrowProjectile(currentAttackData, spawnPoint));
-        }
-        else {
-            Debug.LogError(currentAttackData.name + ": The attack is configured to launch a projectile, but no prefab(s) have been assigned.");
+        if (currentAttackData != null) {
+            if (currentAttackData.ThrowsProjectile && (currentAttackData.ProjectilePrefab != null || currentAttackData.ProjectilePrefabs.Length > 0)) {
+                StartCoroutine(ThrowProjectile(currentAttackData, spawnPoint));
+            }
+            else {
+                Debug.LogError(currentAttackData.name + ": The attack is configured to launch a projectile, but no prefab(s) have been assigned.");
+            }
         }
     }
 

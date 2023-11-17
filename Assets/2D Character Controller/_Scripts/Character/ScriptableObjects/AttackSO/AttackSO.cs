@@ -100,6 +100,10 @@ public class AttackSO : ScriptableObject {
 
     private void OnEnable() => CurrentCooldownTime = 0;
 
+    /// <summary>
+    /// This value is configured by the combat system to regulate the cooldown of the attack. It is recommended not to modify
+    /// this value in your code unless you intend to reset the attack cooldown, as altering it may lead to unintended bugs.
+    /// </summary>
     public float CurrentCooldownTime { get; set; }
     public string AttackName => attackName;
     public Sprite AttackIcon => attackIcon;

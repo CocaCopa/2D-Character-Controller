@@ -93,7 +93,7 @@ public class CharacterAnimator : MonoBehaviour {
     }
 
     private void Controller_OnCharacterJump(object sender, System.EventArgs _) {
-        if (humanoidController.IsGrounded == false) {
+        if (humanoidController.IsGrounded == false || characterCombat.IsAttacking) {
             animator.SetTrigger(DOUBLE_JUMP);
         }
     }

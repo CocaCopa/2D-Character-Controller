@@ -13,6 +13,10 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private LayerMask whatIsDamageable;
     [Tooltip("How much damage should be dealt by this attack.")]
     [SerializeField] private float damageAmount;
+    [Tooltip("Determines if the attack damage should scale with the level of charge applied.")]
+    [SerializeField] private bool scalableDamage;
+    [Tooltip("Minimum damage of the attack.")]
+    [SerializeField] private float minimumDamage;
     [Tooltip("Attack cooldown in seconds.")]
     [SerializeField] private float cooldown;
     [Tooltip("Wether or not your character should be able to cast the attack, if a wall is detected in front of them.")]
@@ -79,6 +83,10 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool throwsProjectile = false;
     [Tooltip("How much damage should the projectile deal.")]
     [SerializeField] private float projectileDamage;
+    [Tooltip("Determines if the attack damage should scale with the level of charge applied.")]
+    [SerializeField] private bool scalableProjectileDamage;
+    [Tooltip("Minimum damage of the projectile.")]
+    [SerializeField] private float minimumProjectileDamage;
     [Tooltip("Enabling this option allows multiple prefabs to be assigned as projectiles. Upon attacking, a random prefab will be chosen.")]
     [SerializeField] private bool chooseRandomFromList = false;
     [Tooltip("Projectile to spawn")]
@@ -99,6 +107,8 @@ public class AttackSO : ScriptableObject {
     public HitboxShape HitboxShape => hitboxShape;
     public LayerMask WhatIsDamageable => whatIsDamageable;
     public float DamageAmount => damageAmount;
+    public bool ScalableDamage => scalableDamage;
+    public float MinimumDamage => minimumDamage;
     public float Cooldown => cooldown;
     public bool DisableCastOnWall => disableCastOnWall;
     public float WallCastDistance => wallCastDistance;
@@ -131,6 +141,8 @@ public class AttackSO : ScriptableObject {
     public bool CanMoveOnReleaseAttack => canMoveOnReleaseAttack;
     public bool ThrowsProjectile => throwsProjectile;
     public float ProjectileDamage => projectileDamage;
+    public bool ScalableProjectileDamage => scalableProjectileDamage;
+    public float MinimumProjectileDamage => minimumProjectileDamage;
     public bool ChooseRandomFromList => chooseRandomFromList;
     public GameObject ProjectilePrefab => projectilePrefab;
     public GameObject[] ProjectilePrefabs => projectilePrefabs;

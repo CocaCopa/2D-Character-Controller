@@ -226,7 +226,16 @@ public class CharacterCombat : MonoBehaviour {
             }
 
             if (collidersHit != null && collidersHit.transform.root.TryGetComponent<IDamageable>(out var damageableObject)) {
-                damageableObject.TakeDamage(currentAttackData.DamageAmount);
+                if (currentAttackData.IsChargeableAttack && currentAttackData.ScalableDamage) {
+                    float damageAmount = currentAttackData.DamageAmount * (1 - chargeTimer / currentAttackData.ChargeTime);
+                    if (damageAmount < currentAttackData.MinimumDamage) {
+                        damageAmount = currentAttackData.MinimumDamage;
+                    }
+                    damageableObject.TakeDamage(damageAmount);
+                }
+                else if (!currentAttackData.IsChargeableAttack || (currentAttackData.IsChargeableAttack && !currentAttackData.ScalableDamage)) {
+                    damageableObject.TakeDamage(currentAttackData.DamageAmount);
+                }
                 OnAttackDealtDamage?.Invoke(this, new CurrentAttackEventArgs {
                     attackData = currentAttackData
                 });
@@ -454,14 +463,25 @@ public class CharacterCombat : MonoBehaviour {
         else {
             spawnedProjectile = Instantiate(attackData.ProjectilePrefab, spawnTransform.position, Quaternion.Euler(transform.eulerAngles));
         }
+        SetUpProjectileGameObject(spawnedProjectile, attackData);
         OnProjectileThrown?.Invoke(this, new OnProjectileThrownEventArgs {
             attackData = attackData,
             projectile = spawnedProjectile
         });
+    }
+
+    private void SetUpProjectileGameObject(GameObject spawnedProjectile, AttackSO attackData) {
         if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
             projectile.DamageAmount = attackData.ProjectileDamage;
             projectile.DamageLayers = attackData.WhatIsDamageable;
             if (attackData.IsChargeableAttack) {
+                if (attackData.ScalableProjectileDamage) {
+                    float projectileDamage = attackData.ProjectileDamage * (1 - chargeTimer / attackData.ChargeTime);
+                    if (projectileDamage < attackData.MinimumProjectileDamage) {
+                        projectileDamage = attackData.MinimumProjectileDamage;
+                    }
+                    projectile.DamageAmount = projectileDamage;
+                }
                 float speedMultiplier = chargeTimer / attackData.ChargeTime;
                 projectile.InitialVelocity *= 1 - speedMultiplier;
                 projectile.InitialVelocity *= transform.right.x;

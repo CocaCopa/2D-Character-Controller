@@ -11,6 +11,8 @@ public class AttackSOEditor : Editor {
     SerializedProperty hitboxShape;
     SerializedProperty whatIsDamageable;
     SerializedProperty damageAmount;
+    SerializedProperty scalableDamage;
+    SerializedProperty minimumDamage;
     SerializedProperty cooldown;
     SerializedProperty disableCastOnWall;
     SerializedProperty wallCastDistance;
@@ -43,6 +45,8 @@ public class AttackSOEditor : Editor {
     SerializedProperty canMoveOnReleaseAttack;
     SerializedProperty throwsProjectile;
     SerializedProperty projectileDamage;
+    SerializedProperty scalableProjectileDamage;
+    SerializedProperty minimumProjectileDamage;
     SerializedProperty chooseRandomFromList;
     SerializedProperty projectilePrefab;
     SerializedProperty projectilePrefabs;
@@ -56,6 +60,8 @@ public class AttackSOEditor : Editor {
         hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
         whatIsDamageable = serializedObject.FindProperty(nameof(whatIsDamageable));
         damageAmount = serializedObject.FindProperty(nameof(damageAmount));
+        scalableDamage = serializedObject.FindProperty(nameof(scalableDamage));
+        minimumDamage = serializedObject.FindProperty(nameof(minimumDamage));
         cooldown = serializedObject.FindProperty(nameof(cooldown));
         disableCastOnWall = serializedObject.FindProperty(nameof(disableCastOnWall));
         wallCastDistance = serializedObject.FindProperty(nameof(wallCastDistance));
@@ -71,13 +77,11 @@ public class AttackSOEditor : Editor {
         delayForceTime = serializedObject.FindProperty(nameof(delayForceTime));
         useGravity = serializedObject.FindProperty(nameof(useGravity));
         dragCoeficient = serializedObject.FindProperty(nameof(dragCoeficient));
-
         m_ForceMode = serializedObject.FindProperty(nameof(m_ForceMode));
         m_Force = serializedObject.FindProperty(nameof(m_Force));
         m_DelayForceTime = serializedObject.FindProperty(nameof(m_DelayForceTime));
         m_UseGravity = serializedObject.FindProperty(nameof(m_UseGravity));
         m_DragCoeficient = serializedObject.FindProperty(nameof(m_DragCoeficient));
-
         isChargeableAttack = serializedObject.FindProperty(nameof(isChargeableAttack));
         initiateChargeAnimation = serializedObject.FindProperty(nameof(initiateChargeAnimation));
         chargeAnimation = serializedObject.FindProperty(nameof(chargeAnimation));
@@ -90,6 +94,8 @@ public class AttackSOEditor : Editor {
         canMoveOnReleaseAttack = serializedObject.FindProperty(nameof(canMoveOnReleaseAttack));
         throwsProjectile = serializedObject.FindProperty(nameof(throwsProjectile));
         projectileDamage = serializedObject.FindProperty(nameof(projectileDamage));
+        scalableProjectileDamage = serializedObject.FindProperty(nameof(scalableProjectileDamage));
+        minimumProjectileDamage = serializedObject.FindProperty(nameof(minimumProjectileDamage));
         chooseRandomFromList = serializedObject.FindProperty(nameof(chooseRandomFromList));
         projectilePrefab = serializedObject.FindProperty(nameof(projectilePrefab));
         projectilePrefabs = serializedObject.FindProperty(nameof(projectilePrefabs));
@@ -97,6 +103,9 @@ public class AttackSOEditor : Editor {
         delayProjectileThrow = serializedObject.FindProperty(nameof(delayProjectileThrow));
     }
     #endregion
+
+    private bool foldoutValue = false;
+    private bool foldoutValue_2 = false;
 
     public override void OnInspectorGUI() {
         LogWarning();
@@ -133,6 +142,12 @@ public class AttackSOEditor : Editor {
         EditorGUILayout.PropertyField(hitboxShape);
         EditorGUILayout.PropertyField(whatIsDamageable);
         EditorGUILayout.PropertyField(damageAmount);
+        if (isChargeableAttack.boolValue) {
+            EditorGUILayout.PropertyField(scalableDamage);
+            if (scalableDamage.boolValue) {
+                EditorGUILayout.PropertyField(minimumDamage);
+            }
+        }
         EditorGUILayout.PropertyField(cooldown);
         EditorGUILayout.Space(10);
         EditorGUILayout.PropertyField(disableCastOnWall);
@@ -212,8 +227,6 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.Space(10);
         }
     }
-    bool foldoutValue = true;
-    bool foldoutValue_2;
     
     private void ChargeableAttack() {
         EditorGUILayout.PropertyField(isChargeableAttack);
@@ -235,6 +248,12 @@ public class AttackSOEditor : Editor {
         EditorGUILayout.PropertyField(throwsProjectile);
         if (throwsProjectile.boolValue) {
             EditorGUILayout.PropertyField(projectileDamage);
+            if (isChargeableAttack.boolValue) {
+                EditorGUILayout.PropertyField(scalableProjectileDamage);
+                if (scalableProjectileDamage.boolValue) {
+                    EditorGUILayout.PropertyField(minimumProjectileDamage);
+                }
+            }
             EditorGUILayout.PropertyField(chooseRandomFromList);
             if (chooseRandomFromList.boolValue) {
                 EditorGUILayout.PropertyField(projectilePrefabs);

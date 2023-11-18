@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 3090859874179469632}
   - component: {fileID: 1697739649}
   m_Layer: 6
-  m_Name: CharacterTemplate
+  m_Name: CharacterExample
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

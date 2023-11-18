@@ -19,7 +19,7 @@ MonoBehaviour:
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 128
-  damageAmount: 25
+  damageAmount: 0
   scalableDamage: 0
   minimumDamage: 0
   cooldown: 1
@@ -53,7 +53,7 @@ MonoBehaviour:
   chargeMoveSpeedPercentage: 0.337
   canMoveOnReleaseAttack: 0
   throwsProjectile: 1
-  projectileDamage: 75
+  projectileDamage: 85
   scalableProjectileDamage: 1
   minimumProjectileDamage: 10
   chooseRandomFromList: 0

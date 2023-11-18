@@ -443,12 +443,16 @@ public class CharacterCombat : MonoBehaviour {
         while (characterAnimator.IsClipPlaying(attackData.AttackAnimation, attackData.ThrowAtPercentage)) {
             yield return null;
         }
-        if (currentAttackData != null) {
-            if (currentAttackData.ThrowsProjectile && (currentAttackData.ProjectilePrefab != null || currentAttackData.ProjectilePrefabs.Length > 0)) {
-                StartCoroutine(ThrowProjectile(currentAttackData, spawnPoint));
+
+        if (currentAttackData != null && currentAttackData.ThrowsProjectile) {
+            bool unassignedProjectile = !currentAttackData.ChooseRandomFromList && currentAttackData.ProjectilePrefab == null;
+            bool unassignedProjectiles = currentAttackData.ChooseRandomFromList && currentAttackData.ProjectilePrefabs.Length == 0;
+
+            if (unassignedProjectile || unassignedProjectiles) {
+                Debug.LogError(currentAttackData.name + ": The attack is configured to launch a projectile, but no prefab(s) have been assigned.");
             }
             else {
-                Debug.LogError(currentAttackData.name + ": The attack is configured to launch a projectile, but no prefab(s) have been assigned.");
+                StartCoroutine(ThrowProjectile(currentAttackData, spawnPoint));
             }
         }
     }

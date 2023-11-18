@@ -100,7 +100,15 @@ public class AttackSO : ScriptableObject {
     [Tooltip("Specifies the delay, in seconds, before the projectile is thrown.")]
     [SerializeField] private float delayProjectileThrow;
 
-    private void OnEnable() => CurrentCooldownTime = 0;
+    private void OnEnable() {
+        CurrentCooldownTime = 0;
+        if (attackAnimation == null) {
+            Debug.LogWarning(name + ": The attack animation field cannot be null.");
+        }
+        if (IsChargeableAttack && chargeAnimation == null) {
+            Debug.LogWarning(name + ": The charge animation field cannot be null.");
+        }
+    }
 
     /// <summary>
     /// This value is configured by the combat system to regulate the cooldown of the attack. It is recommended not to modify

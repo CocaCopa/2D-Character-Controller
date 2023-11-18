@@ -86,8 +86,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cba9726e2c3e3b34587041d7a5adc6bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialVelocity: {x: 60, y: 0}
-  minimumInitialVelocity: {x: 5, y: 0}
+  initialVelocity: {x: 60, y: 1}
+  minimumInitialVelocity: {x: 5, y: 0.1}
   hitboxTransform: {fileID: 5425613964351173653}
   hitboxShape: 0
   hitboxRadius: 0.15

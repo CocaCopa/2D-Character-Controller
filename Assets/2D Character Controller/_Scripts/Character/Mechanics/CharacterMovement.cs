@@ -47,9 +47,19 @@ public class CharacterMovement : MonoBehaviour {
     private float onAirAnimPoints = 0;
     private bool startAirAcceleration = false;
 
+    /// <summary>
+    /// The character's top speed.
+    /// </summary>
     public float TopSpeed => moveSpeed;
-    public float CurrentSpeed { set { currentSpeed = value; } }
-    public Vector3 MoveDirection { set { moveDirection = value; } }
+    /// <summary>
+    /// Adjust this value if there is a sudden change in your character's speed.
+    /// </summary>
+    public float CurrentSpeed { get => currentSpeed;  set => currentSpeed = value; }
+    /// <summary>
+    /// Adjust this value if an external source, rather than movement input, alters the direction of your character.
+    /// </summary>
+    public Vector3 MoveDirection { get => moveDirection;  set => moveDirection = value; }
+    public void SetCharacterMoveSpeed(float value) => moveSpeed = value;
 
     private void Update() {
         

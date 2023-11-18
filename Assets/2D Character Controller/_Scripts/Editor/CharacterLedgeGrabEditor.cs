@@ -4,6 +4,7 @@ using UnityEditor;
 [CustomEditor(typeof(CharacterLedgeGrab))]
 public class CharacterLedgeGrabEditor : Editor {
 
+    #region --- Serialized Properties ---
     SerializedProperty spriteHolderTransform;
     SerializedProperty colliderTransform;
     SerializedProperty ledgeClimbEndTransform;
@@ -21,19 +22,25 @@ public class CharacterLedgeGrabEditor : Editor {
         offsetSprite = serializedObject.FindProperty(nameof(offsetSprite));
         offsetColliderHeight = serializedObject.FindProperty(nameof(offsetColliderHeight));
     }
+    #endregion
+
+    private bool foldoutValue = false;
 
     public override void OnInspectorGUI() {
         DisplayScriptReference();
         CharacterLedgeGrab ledgeGrab = target as CharacterLedgeGrab;
         serializedObject.Update();
-        EditorGUILayout.PropertyField(spriteHolderTransform);
-        EditorGUILayout.PropertyField(colliderTransform);
-        EditorGUILayout.PropertyField(ledgeClimbEndTransform);
-        if (ledgeGrab.IsAnimationStill) {
-            EditorGUILayout.Space(10);
+        foldoutValue = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutValue, "--- References ---");
+        if (foldoutValue) {
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(spriteHolderTransform);
+            EditorGUILayout.PropertyField(colliderTransform);
+            EditorGUILayout.PropertyField(ledgeClimbEndTransform);
+            EditorGUI.indentLevel--;
         }
+        EditorGUILayout.Space(5);
         EditorGUILayout.PropertyField(isAnimationStill);
-        if (ledgeGrab.IsAnimationStill) {
+        if (isAnimationStill.boolValue) {
             EditorGUILayout.PropertyField(ledgeClimbSpeed);
             EditorGUILayout.Space(10);
         }

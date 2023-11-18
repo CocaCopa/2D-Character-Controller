@@ -54,7 +54,7 @@ MonoBehaviour:
   canMoveOnReleaseAttack: 0
   throwsProjectile: 1
   projectileDamage: 75
-  scalableProjectileDamage: 0
+  scalableProjectileDamage: 1
   minimumProjectileDamage: 10
   chooseRandomFromList: 0
   projectilePrefab: {fileID: 846552828456564998, guid: 337d447b9eee1ad4882c234b345c64d1, type: 3}

@@ -1,20 +1,8 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterEnvironmentalQuery : MonoBehaviour {
 
-#if UNITY_EDITOR
-    #region Debug:
-    public enum DebugMode { None, GroundCheck, WallAbove, WallInFront, LedgeGrab, AllSpecificCastPoints, HeadCollision, ChestCollision, FeetCollision }
-    [Header("--- Debug ---")]
-    [Tooltip("When in play mode, select which Physics Cast you wish to debug")]
-    [SerializeField] DebugMode debugMode = DebugMode.None;
-    [Tooltip("Specify the color of the drawn wire boxes")]
-    [SerializeField] private Color debugColor = Color.white;
-    #endregion
-#endif
-
-    [Header("--- Cast Points References ---")]
+    #region --- Properties ---
     [Tooltip("Game object that specifies the transform of the ledge check GameObject")]
     [SerializeField] private Transform ledgeGrabTransform;
     [Tooltip("Game object that specifies the transform of the player's head")]
@@ -24,7 +12,6 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     [Tooltip("Game object that specifies the transform of the player's feet")]
     [SerializeField] private Transform feetRayTransform;
 
-    [Header("--- Layer Mask ---")]
     [Tooltip("Check this box to exclude the layer assigned to the Character from all the Physics Casts.")]
     [SerializeField] private bool excludeCharacter = true;
     [Tooltip("Name of the player's assigned layer.")]
@@ -34,7 +21,6 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     [Tooltip("Specify which layers to be used in the Physics Casts.")]
     [SerializeField] private LayerMask specifiedLayer;
 
-    [Header("--- Distance ---")]
     [Tooltip("How far should the cast check for a platform below the character")]
     [SerializeField, Range(0, 2)] private float groundCheckDistance = 0.57f;
     [Tooltip("How far should the cast check for a platform in front of the character")]
@@ -44,7 +30,6 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     [Tooltip("")]
     [SerializeField, Range(0, 2)] private float ledgeGrabRadius = 0.14f;
 
-    [Header("--- Cast Height ---")]
     [Tooltip("Adjust the size Y of the capsule cast")]
     [SerializeField, Range(0, 1)] private float groundCheckSizeY = 50f / 100f;
     [Tooltip("Adjust the size Y of the box cast")]
@@ -58,6 +43,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
 
     private Collider2D activeCollider;
     public void SetActiveCollider(Collider2D value) => activeCollider = value;
+    #endregion
 
     #region --- Common ---
     private RaycastHit2D PhysicsBoxCast(Vector3 origin, Vector3 size, Vector3 direction, float maxDistance) {
@@ -209,15 +195,16 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Checks if the character can ledge grab.
     /// </summary>
-    /// <param name="exitLedgeGrab">Informs that ledge grab can be performed again</param>
+    /// <param name="exitLedgeGrab">Indicates that the ability to perform ledge grab is available again</param>
     /// <param name="fixedOffset">The position of the detected ledge</param>
     /// <returns></returns>
     public bool LedgeGrabCheck(ref bool exitLedgeGrab, out Vector3 fixedOffset) {
         
         bool ledgeDetected = CanLedgeGrab() && InLedgeGrabRange();
-        
-        if (!ledgeDetected)
+
+        if (!ledgeDetected) {
             exitLedgeGrab = false;
+        }
 
         fixedOffset.x = GetHorizontalLedgePosition();
         fixedOffset.y = GetVerticalLedgePosition();
@@ -269,8 +256,16 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     private float GetHorizontalLedgePosition() {
         Vector2 origin = new(transform.position.x, ledgeGrabTransform.position.y - ledgeGrabRadius - 0.05f);
         Vector2 direction = transform.right;
-        float distance = (ledgeGrabTransform.position.x - transform.position.x) + 0.15f;
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction, distance, ~LayerMask.GetMask(characterMask));
+        float distance = activeCollider.bounds.size.x / 2 + activeCollider.bounds.size.x / 2 * 14f / 100;
+        Debug.DrawRay(origin, direction * distance);
+        RaycastHit2D hit;
+        if (excludeCharacter)
+            hit = Physics2D.Raycast(origin, direction, distance, ~LayerMask.GetMask(characterMask));
+        else if (useSpecifiedLayer)
+            hit = Physics2D.Raycast(origin, direction, distance, specifiedLayer);
+        else
+            hit = Physics2D.Raycast(origin, direction, distance);
+
         return hit.point.x;
     }
 
@@ -363,50 +358,35 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     }
     #endregion
 
+    #region --- Debug ---
 #if UNITY_EDITOR
+    public enum DebugMode { None, GroundCheck, WallAbove, WallInFront, LedgeGrab, AllSpecificCastPoints, HeadCollision, ChestCollision, FeetCollision }
+    [Tooltip("When in play mode, select which Physics Cast you wish to debug")]
+    [SerializeField] private DebugMode debugMode = DebugMode.None;
+    [Tooltip("Specify the color of the drawn wire boxes")]
+    [SerializeField] private Color debugColor = Color.white;
+    public bool ExcludeCharacter { get => excludeCharacter; set => excludeCharacter = value; }
+    public bool UseSpecifiedLayer { get => useSpecifiedLayer; set => useSpecifiedLayer = value; }
 
-    #region Debug:
     private void Update() {
-
         if (!activeCollider) {
             Debug.LogError("PlayerEnvironmentalQuery: No collider has been provided. " +
                 "Please make sure the script that calls the checks, also sets the 'activeCollider' variable.");
         }
-    }
-
-    private bool changeLayerOptionsFlag = true;
-    private void ChangeLayerOptions() {
-
-        if (excludeCharacter && changeLayerOptionsFlag) {
-            if (useSpecifiedLayer) {
-
-                changeLayerOptionsFlag = false;
-                excludeCharacter = false;
-            }
-        }
-        else if (useSpecifiedLayer) {
-            if (excludeCharacter) {
-
-                changeLayerOptionsFlag = true;
-                useSpecifiedLayer = false;
-            }
+        else {
+            enabled = false;
         }
     }
 
     private void OnDrawGizmos() {
-
-        ChangeLayerOptions();
-
         if (!activeCollider && debugMode != DebugMode.None) {
-
-            activeCollider = GameObject.Find("Vertical")?.GetComponent<CapsuleCollider2D>();
+            activeCollider = GameObject.Find("Vertical").GetComponent<CapsuleCollider2D>();
             if (!activeCollider) {
                 debugMode = DebugMode.None;
-                Debug.LogError("PlayerEnvironmentalQuery: Could not find character's collider. Please make sure that the 'Player' prefab was not changed");
+                Debug.LogError("PlayerEnvironmentalQuery: Could not find character's collider. Please make sure that the 'Player' prefab was not altered in any way");
                 return;
             }
         }
-                
         DebugPhysicsCasts(out Vector3 origin, out Vector3 size);
         Gizmos.color = debugColor;
         Gizmos.DrawWireCube(origin, size);
@@ -528,7 +508,6 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
 
         origin += direction * maxDistance + transform.right * size.x * 50f / 100f;
     }
-    #endregion
-
 #endif
+    #endregion
 }

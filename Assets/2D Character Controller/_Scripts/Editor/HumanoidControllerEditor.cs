@@ -36,6 +36,8 @@ public class HumanoidControllerEditor : Editor {
     }
     #endregion
 
+    private bool foldoutValue = true;
+
     public override void OnInspectorGUI() {
         DisplayScriptReference();
         DrawCustomInspector();
@@ -55,26 +57,32 @@ public class HumanoidControllerEditor : Editor {
 
     private void DrawCustomInspector() {
         HumanoidController controller = target as HumanoidController;
-        serializedObject.Update();
-        EditorGUILayout.PropertyField(timeScale);
-        EditorGUILayout.PropertyField(horizontalCollider);
-        EditorGUILayout.PropertyField(verticalCollider);
-        EditorGUILayout.PropertyField(smoothMovement);
-        EditorGUILayout.PropertyField(coyoteTime);
-        EditorGUILayout.PropertyField(numberOfAirJumps);
-        EditorGUILayout.PropertyField(alwaysDecreaseJumpCounter);
-        if (controller.TryGetComponent<CharacterDash>(out _)) {
-            EditorGUILayout.PropertyField(dashCooldown);
-            EditorGUILayout.PropertyField(minimumDashDistance);
+        foldoutValue = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutValue, "--- Controller Options ---");
+        if (foldoutValue) {
+            EditorGUI.indentLevel++;
+            serializedObject.Update();
+            EditorGUILayout.PropertyField(timeScale);
+            EditorGUILayout.PropertyField(horizontalCollider);
+            EditorGUILayout.PropertyField(verticalCollider);
+            EditorGUILayout.PropertyField(smoothMovement);
+            EditorGUILayout.PropertyField(coyoteTime);
+            EditorGUILayout.PropertyField(numberOfAirJumps);
+            EditorGUILayout.PropertyField(alwaysDecreaseJumpCounter);
+            if (controller.TryGetComponent<CharacterDash>(out _)) {
+                EditorGUILayout.PropertyField(dashCooldown);
+                EditorGUILayout.PropertyField(minimumDashDistance);
+            }
+            if (controller.TryGetComponent<CharacterSlide>(out _)) {
+                EditorGUILayout.PropertyField(minimumFloorSlideSpeed);
+            }
+            if (controller.TryGetComponent<CharacterLedgeGrab>(out _)) {
+                EditorGUILayout.PropertyField(ledgeJumpThreshold);
+                EditorGUILayout.PropertyField(maxLedgeGrabTime);
+            }
+            serializedObject.ApplyModifiedProperties();
+            EditorGUI.indentLevel--;
         }
-        if (controller.TryGetComponent<CharacterSlide>(out _)) {
-            EditorGUILayout.PropertyField(minimumFloorSlideSpeed);
-        }
-        if (controller.TryGetComponent<CharacterLedgeGrab>(out _)) {
-            EditorGUILayout.PropertyField(ledgeJumpThreshold);
-            EditorGUILayout.PropertyField(maxLedgeGrabTime);
-        }
-        serializedObject.ApplyModifiedProperties();
+        EditorGUILayout.EndFoldoutHeaderGroup();
     }
 
     private void DrawDefaultExcludingCustomFields() {

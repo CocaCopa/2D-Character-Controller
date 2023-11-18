@@ -1,39 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &589710327
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 589710328}
-  m_Layer: 0
-  m_Name: Projectiles Spawn Points
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &589710328
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 589710327}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1204360030}
-  - {fileID: 1926688877}
-  - {fileID: 1089999452}
-  m_Father: {fileID: 2353421476736477846}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &779023887
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,68 +67,6 @@ Transform:
   m_Father: {fileID: 779023888}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1089999451
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1089999452}
-  m_Layer: 0
-  m_Name: MuzzleFlashSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1089999452
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089999451}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.729, y: 1.107, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 589710328}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1204360029
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1204360030}
-  m_Layer: 0
-  m_Name: ArrowSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1204360030
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1204360029}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.25, y: 1.066, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 589710328}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1635141475
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,37 +97,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 779023888}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1926688876
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1926688877}
-  m_Layer: 0
-  m_Name: BulletSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1926688877
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1926688876}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.57, y: 1.102, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 589710328}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &112787606063426841
 GameObject:
@@ -320,7 +193,7 @@ GameObject:
   - component: {fileID: 2353421476736477846}
   - component: {fileID: 2353421476736477844}
   - component: {fileID: 8495183058462437203}
-  - component: {fileID: 5568310045885841301}
+  - component: {fileID: 1824619015866869743}
   - component: {fileID: 2353421476736477845}
   - component: {fileID: 2353421476736477842}
   - component: {fileID: 3064424124245081108}
@@ -328,7 +201,7 @@ GameObject:
   - component: {fileID: 3090859874179469632}
   - component: {fileID: 1697739649}
   m_Layer: 6
-  m_Name: CharacterExample
+  m_Name: CharacterTemplate
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -349,7 +222,6 @@ Transform:
   - {fileID: 1740074665312921847}
   - {fileID: 2353421477066155364}
   - {fileID: 779023888}
-  - {fileID: 589710328}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -390,9 +262,9 @@ MonoBehaviour:
   headRayTransform: {fileID: 1635141476}
   chestRayTransform: {fileID: 1006945747}
   feetRayTransform: {fileID: 4253622530668412611}
-  excludeCharacter: 0
+  excludeCharacter: 1
   characterMask: Player
-  useSpecifiedLayer: 1
+  useSpecifiedLayer: 0
   specifiedLayer:
     serializedVersion: 2
     m_Bits: 1
@@ -406,8 +278,8 @@ MonoBehaviour:
   chestCollisionSizeY: 0.05
   feetCollisionSizeY: 0.154
   debugMode: 0
-  debugColor: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &5568310045885841301
+  debugColor: {r: 0.8584906, g: 0.06074225, b: 0.06074225, a: 1}
+--- !u!114 &1824619015866869743
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -416,7 +288,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2353421476736477801}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b04c0496e27782849898dc02f126c5a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ec2f1d33e62bbd438d0b08470c48817, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
@@ -431,18 +303,6 @@ MonoBehaviour:
   minimumFloorSlideSpeed: 6
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
-  meleeCombo_1:
-  - {fileID: 11400000, guid: f45099718b4fe444184956f4b657cdda, type: 2}
-  - {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
-  - {fileID: 11400000, guid: 3a9c7972bbf888241bfd091d464c07e6, type: 2}
-  - {fileID: 11400000, guid: 47328ed80cfce0a41b27eb8654840846, type: 2}
-  bowChargeAttack: {fileID: 11400000, guid: 9f72d7046e614ea4da93f8c99b1e96b3, type: 2}
-  arrowSpawnTransform: {fileID: 1204360030}
-  gunFireAttack: {fileID: 11400000, guid: c5064e87c0fba58438f04a647698bc6b, type: 2}
-  bulletSpawnTransform: {fileID: 1926688877}
-  muzzleEffectSpawnTransform: {fileID: 1089999452}
-  muzzleEffectPrefab: {fileID: 1663199080206508932, guid: f482be83a3005c7449eb0d757fc9f32c, type: 3}
-  destroyMuzzleEffectTime: 0.75
 --- !u!114 &2353421476736477845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -648,7 +508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acb34604ff5bb4942bab7516c39272c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  afterImageObject: {fileID: 926788600726568885, guid: 1160e8cb05a030e4ebf907a634e467ee, type: 3}
+  afterImageObject: {fileID: 0}
   afterImageCount: 9
   dashSpeed: 90
   maxDashDistance: 7
@@ -671,7 +531,7 @@ MonoBehaviour:
   attackCharged: 0
   chargeTimer: 0
   holdAttackTimer: 0
-  visualizeAttackHitbox: 1
+  visualizeAttackHitbox: 0
   gizmosColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &1697739649
 MonoBehaviour:
@@ -688,7 +548,7 @@ MonoBehaviour:
   armourData: {fileID: 0}
   maxHealthPoints: 100
   currentHealthPoints: 0
-  canRegenHealth: 0
+  canRegenHealth: 1
   regenTriggerTime: 0
   regenHealthPoints: 0
 --- !u!1 &2353421476987182329
@@ -848,7 +708,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 66c32ec536cce5d4d89bd64a0e6be3c7, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -856,7 +716,7 @@ SpriteRenderer:
   m_Size: {x: 3, y: 2.625}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &2353421477066412494
@@ -869,7 +729,7 @@ Animator:
   m_GameObject: {fileID: 2353421477066412483}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 29509497c9a03c2488df841873fbfb09, type: 2}
+  m_Controller: {fileID: 9100000, guid: c4f7f813ff2da38409437e59a936a985, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

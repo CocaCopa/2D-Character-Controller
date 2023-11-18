@@ -20,8 +20,6 @@ public class CharacterLedgeGrab : MonoBehaviour {
     [Tooltip("Offset the character's collider if it doesn't correspond to the player's position.")]
     [SerializeField] private float offsetColliderHeight = 0;
 
-    public bool IsAnimationStill => isAnimationStill;
-
     private float climbAnimationPoints;
     private readonly AnimationCurve climbCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 

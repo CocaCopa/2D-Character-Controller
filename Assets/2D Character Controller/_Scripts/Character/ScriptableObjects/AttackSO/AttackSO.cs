@@ -43,7 +43,8 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private ForceMode2D forceMode = ForceMode2D.Impulse;
     [Tooltip("How much force should be applied.")]
     [SerializeField] private Vector2 force;
-    [Tooltip("Delay force application in seconds.")]
+    [Tooltip("Specifies the delay in seconds before applying force. The specified delay time should be less than the duration of " +
+        "the animation clip; otherwise, it will not be considered and the desired force will not be applied.")]
     [SerializeField] private float delayForceTime;
     [Tooltip("Whether the character should be affected by gravity for the duration of the attack.")]
     [SerializeField] private bool useGravity;
@@ -53,7 +54,8 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private ForceMode2D m_ForceMode = ForceMode2D.Impulse;
     [Tooltip("How much force should be applied.")]
     [SerializeField] private Vector2 m_Force;
-    [Tooltip("Delay force application in seconds.")]
+    [Tooltip("Specifies the delay in seconds before applying force. The specified delay time should be less than the duration of " +
+        "the animation clip; otherwise, it will not be considered and the desired force will not be applied.")]
     [SerializeField] private float m_DelayForceTime;
     [Tooltip("Whether the character should be affected by gravity for the duration of the attack.")]
     [SerializeField] private bool m_UseGravity;

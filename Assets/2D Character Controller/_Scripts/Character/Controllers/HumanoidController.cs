@@ -309,7 +309,7 @@ public abstract class HumanoidController : MonoBehaviour {
             // On ground jump
             coyoteTimer = 0;
             airJumpCounter = numberOfAirJumps;
-            bool canJump = /*!characterCombat.IsAttacking &&*/ !IsFloorSliding;
+            bool canJump = !IsFloorSliding;
             return canJump;
         }
         else if (airJumpCounter > 0 && !IsLedgeGrabbing) {

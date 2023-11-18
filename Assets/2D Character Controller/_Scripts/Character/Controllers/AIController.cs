@@ -5,8 +5,8 @@ public class AIController : HumanoidController {
 
     [SerializeField] private Transform playerTransform;
 
-    float timer;
-    float time = 2f;
+    /*float timer;
+    float time = 2f;*/
 
     protected override void Update() {
         base.Update();

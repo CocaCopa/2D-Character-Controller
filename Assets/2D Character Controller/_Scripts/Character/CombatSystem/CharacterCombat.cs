@@ -35,7 +35,7 @@ public class CharacterCombat : MonoBehaviour {
 
     private const float ATTACK_CLIP_THRESHOLD = 1f;
 
-    private Rigidbody2D playerRb;
+    private Rigidbody2D characterRb;
     private CharacterEnvironmentalQuery envQuery;
     private CharacterAnimator characterAnimator;
     private AnimationClip currentAttackClip;
@@ -158,14 +158,14 @@ public class CharacterCombat : MonoBehaviour {
     }
 
     private void InitializeComponents() {
-        playerRb = GetComponent<Rigidbody2D>();
+        characterRb = GetComponent<Rigidbody2D>();
         envQuery = GetComponent<CharacterEnvironmentalQuery>();
         characterAnimator = GetComponentInChildren<CharacterAnimator>();
     }
 
     private void InitializeProperties() {
-        defaultLinearDrag = playerRb.drag;
-        defaultGravityScale = playerRb.gravityScale;
+        defaultLinearDrag = characterRb.drag;
+        defaultGravityScale = characterRb.gravityScale;
         attackHitboxTransform.gameObject.SetActive(false);
     }
 
@@ -508,7 +508,7 @@ public class CharacterCombat : MonoBehaviour {
     /// <param name="attackData">The scriptable object that the data of the attack</param>
     private void EnterAttackState(AttackSO attackData) {
         if (!attackData.UseGravity) {
-            playerRb.gravityScale = 0f;
+            characterRb.gravityScale = 0f;
         }
         if (attackData.AttackPushesCharacter && !attackData.CanMoveWhileAttacking && !attackData.CanMoveWhileCharging) {
             if (attackData.IsChargeableAttack && (attackData.AttackPushMode == PushMode.OnInitiate || attackData.AttackPushMode == PushMode.Both)) {
@@ -519,7 +519,7 @@ public class CharacterCombat : MonoBehaviour {
             }
         }
         if (attackData.ResetVelocity) {
-            playerRb.velocity = Vector2.zero;
+            characterRb.velocity = Vector2.zero;
         }
         if (attackData.IsChargeableAttack) {
             chargeTimer = attackData.ChargeTime;
@@ -537,23 +537,23 @@ public class CharacterCombat : MonoBehaviour {
             Vector3 direction = transform.right;
             Vector3 force = attackData.Force;
             force.x *= direction.x;
-            playerRb.AddForce(force, attackData.ForceMode);
-            playerRb.drag = attackData.DragCoeficient;
+            characterRb.AddForce(force, attackData.ForceMode);
+            characterRb.drag = attackData.DragCoeficient;
         }
         else {
             yield return new WaitForSeconds(attackData.ReleaseDelayForceTime);
             Vector3 direction = transform.right;
             Vector3 force = attackData.ReleaseFoce;
             force.x *= direction.x;
-            playerRb.AddForce(force, attackData.ReleaseForceMode);
-            playerRb.drag = attackData.ReleaseDragCoeficient;
+            characterRb.AddForce(force, attackData.ReleaseForceMode);
+            characterRb.drag = attackData.ReleaseDragCoeficient;
         }
     }
 
     
     private void ExitAttackState(AttackSO attackData, bool adjustPosition = true) {
-        playerRb.drag = defaultLinearDrag;
-        playerRb.gravityScale = defaultGravityScale;
+        characterRb.drag = defaultLinearDrag;
+        characterRb.gravityScale = defaultGravityScale;
         moveWhileCastingAttack = false;
         if (adjustPosition && attackData.AdjustPositionOnAttackEnd != Vector3.zero) {
             StartCoroutine(TeleportToPosition(attackData.AdjustPositionOnAttackEnd));

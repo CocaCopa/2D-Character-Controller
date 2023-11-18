@@ -256,7 +256,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     private float GetHorizontalLedgePosition() {
         Vector2 origin = new(transform.position.x, ledgeGrabTransform.position.y - ledgeGrabRadius - 0.05f);
         Vector2 direction = transform.right;
-        float distance = activeCollider.bounds.size.x / 2 + activeCollider.bounds.size.x / 2 * 14f / 100;
+        float distance = activeCollider.bounds.size.x / 2 + activeCollider.bounds.size.x / 2 * 160f / 100;
         Debug.DrawRay(origin, direction * distance);
         RaycastHit2D hit;
         if (excludeCharacter)
@@ -274,7 +274,8 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
         Vector3 circleOrigin = ledgeGrabTransform.position + originOffset;
         Vector3 direction = Vector3.down;
         float circleRadius = ledgeGrabRadius;
-        float maxDistance = circleRadius * 2.1f;
+        float maxDistance = circleRadius * 4f;
+        Debug.DrawRay(circleOrigin, direction * maxDistance);
         RaycastHit2D hit;
         if (excludeCharacter)
             hit = Physics2D.CircleCast(circleOrigin, circleRadius, direction, maxDistance, ~LayerMask.GetMask(characterMask));

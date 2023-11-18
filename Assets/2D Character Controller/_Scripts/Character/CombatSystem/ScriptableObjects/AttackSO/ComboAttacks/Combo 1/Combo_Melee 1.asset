@@ -20,6 +20,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   damageAmount: 50
+  scalableDamage: 0
+  minimumDamage: 0
   cooldown: 0.5
   disableCastOnWall: 0
   wallCastDistance: 0
@@ -52,6 +54,8 @@ MonoBehaviour:
   canMoveOnReleaseAttack: 0
   throwsProjectile: 0
   projectileDamage: 0
+  scalableProjectileDamage: 0
+  minimumProjectileDamage: 0
   chooseRandomFromList: 0
   projectilePrefab: {fileID: 0}
   projectilePrefabs: []

@@ -1731,6 +1731,7 @@ MonoBehaviour:
   maxHealthPoints: 100
   currentHealthPoints: 0
   canRegenHealth: 1
+  interruptWhenDamaged: 0
   regenTriggerTime: 2.5
   regenHealthPoints: 50
 --- !u!4 &102061097861642606

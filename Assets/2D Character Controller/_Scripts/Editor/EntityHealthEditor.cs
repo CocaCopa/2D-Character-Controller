@@ -9,6 +9,7 @@ public class EntityHealthEditor : Editor {
     SerializedProperty maxHealthPoints;
     SerializedProperty currentHealthPoints;
     SerializedProperty canRegenHealth;
+    SerializedProperty interruptWhenDamaged;
     SerializedProperty regenTriggerTime;
     SerializedProperty regenHealthPoints;
 
@@ -16,6 +17,7 @@ public class EntityHealthEditor : Editor {
         armourData = serializedObject.FindProperty(nameof(armourData));
         maxHealthPoints = serializedObject.FindProperty(nameof(maxHealthPoints));
         currentHealthPoints = serializedObject.FindProperty(nameof(currentHealthPoints));
+        interruptWhenDamaged = serializedObject.FindProperty(nameof(interruptWhenDamaged));
         canRegenHealth = serializedObject.FindProperty(nameof(canRegenHealth));
         regenTriggerTime = serializedObject.FindProperty(nameof(regenTriggerTime));
         regenHealthPoints = serializedObject.FindProperty(nameof(regenHealthPoints));
@@ -46,6 +48,7 @@ public class EntityHealthEditor : Editor {
         EditorGUI.EndDisabledGroup();
         EditorGUILayout.PropertyField(canRegenHealth);
         if (canRegenHealth.boolValue) {
+            EditorGUILayout.PropertyField(interruptWhenDamaged);
             EditorGUILayout.PropertyField(regenTriggerTime);
             EditorGUILayout.PropertyField(regenHealthPoints);
         }

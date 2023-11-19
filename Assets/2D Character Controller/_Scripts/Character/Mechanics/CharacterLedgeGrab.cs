@@ -1,4 +1,3 @@
-#if LEDGE_GRAB_COMPONENT
 using CocaCopa;
 using UnityEngine;
 
@@ -118,4 +117,3 @@ public class CharacterLedgeGrab : MonoBehaviour {
         return hit.point;
     }
 }
-#endif

@@ -179,15 +179,15 @@ public class CharacterCombat : MonoBehaviour {
                 attackCompleted = false;
                 isAttacking = false;
                 attackComboCounter = 0;
-                
+                if (currentComboData.Count > 0) {
+                    currentComboData[0].CurrentCooldownTime = Time.time + currentComboData[^1].Cooldown;
+                    currentComboData.Clear();
+                }
+
             }
         }
 
         if (attackComboCounter == 0) {
-            if (currentComboData.Count > 0) {
-                currentComboData[0].CurrentCooldownTime = Time.time + currentComboData[^1].Cooldown;
-                currentComboData.Clear();
-            }
         }
 
         if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation, ATTACK_CLIP_THRESHOLD)) {

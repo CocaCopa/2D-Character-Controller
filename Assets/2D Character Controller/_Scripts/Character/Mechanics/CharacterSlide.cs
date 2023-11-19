@@ -1,4 +1,3 @@
-#if SLIDE_COMPONENT
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -71,4 +70,3 @@ public class CharacterSlide : MonoBehaviour {
         wallSlideFlag = true;
     }
 }
-#endif

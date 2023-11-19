@@ -24,9 +24,11 @@ public abstract class HumanoidController : MonoBehaviour {
     [SerializeField] private CapsuleCollider2D horizontalCollider;
     [Tooltip("Collider to use when in an upright position")]
     [SerializeField] private CapsuleCollider2D verticalCollider;
+    
     [Header("--- Movement ---")]
     [Tooltip("Higher values -> snappier movement | Lower values -> smoother movement")]
     [SerializeField] private float smoothMovement = 24f;
+    
     [Header("--- Jump ---")]
     [Tooltip("Time in seconds where jump can be performed if the character leaves 'Grounded' state")]
     [SerializeField] private float coyoteTime = 0.1f;
@@ -34,25 +36,22 @@ public abstract class HumanoidController : MonoBehaviour {
     [SerializeField] private int numberOfAirJumps = 1;
     [Tooltip("True means that wall jumps and ledge jumps will be considered as air jumps, while False indicates that only standard air jumps will be counted.")]
     [SerializeField] private bool alwaysDecreaseJumpCounter = false;
-#if DASH_COMPONENT
+    
     [Header("--- Dash ---")]
     [Tooltip("Dash cooldown in seconds")]
     [SerializeField] private float dashCooldown = 1.2f;
     [Tooltip("Dash will be allowed only if the travel distance exceeds the minimum dash distance")]
     [SerializeField] private float minimumDashDistance = 1f;
-#endif
-#if SLIDE_COMPONENT
+    
     [Header("--- Slide ---")]
     [Tooltip("Speed of which if reached, the floor slide should be canceled and transition back to running")]
     [SerializeField] private float minimumFloorSlideSpeed = 6f;
-#endif
-#if LEDGE_GRAB_COMPONENT
+    
     [Header("--- Wall ---")]
     [Tooltip("What percentage of the 'Ledge Enter' animation should be completed before the character can jump while in the 'LedgeGrab' state?")]
     [SerializeField, Range(0.01f, 0.99f)] private float ledgeJumpThreshold = 25f / 100f;
     [Tooltip("For how long should the character be able to hang from a ledge, before falling")]
     [SerializeField] private float maxLedgeGrabTime = 4f;
-#endif
     #endregion
 
     #region --- Constants ---
@@ -340,7 +339,6 @@ public abstract class HumanoidController : MonoBehaviour {
     #endregion
 
     #region --- Ledge Grab / Climb ---
-#if LEDGE_GRAB_COMPONENT
     /// <summary>
     /// Your character will enter ledge grab state, if a ledge is detected
     /// </summary>
@@ -410,11 +408,9 @@ public abstract class HumanoidController : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         characterRb.position = endPosition;
     }
-#endif
     #endregion
 
     #region --- Dash ---
-#if DASH_COMPONENT
     /// <summary>
     /// Your character will perform a Dash, if certain conditions are met
     /// </summary>
@@ -457,11 +453,9 @@ public abstract class HumanoidController : MonoBehaviour {
         characterDash.Dash(activeCollider.bounds.size.y, IsGrounded);
         isDashing = true;
     }
-#endif
 #endregion
 
     #region --- FloorSlide ---
-#if SLIDE_COMPONENT
     protected void TryFloorSlide(bool inputHold) {
         if (inputHold) {
             FloorSlideEnter();
@@ -532,11 +526,9 @@ public abstract class HumanoidController : MonoBehaviour {
 
         return !preventFloorSlide && floorSlideFlag;
     }
-#endif
 #endregion
 
     #region --- WallSlide ---
-#if SLIDE_COMPONENT
     protected void WallSlide(bool canWallSlide = true) {
         if (!characterSlide) {
             return;
@@ -551,8 +543,7 @@ public abstract class HumanoidController : MonoBehaviour {
             characterSlide.ExitWallSlide();
         }
     }
-#endif
-#endregion
+    #endregion
 
     #region --- Utilities ---
     private void ToggleColliders(bool sliding) {

@@ -45,7 +45,7 @@ MonoBehaviour:
   isChargeableAttack: 1
   initiateChargeAnimation: {fileID: 7400000, guid: 9cd89d08c803f1645b8b61d03d9bf326, type: 2}
   chargeAnimation: {fileID: 7400000, guid: 6b8729b7a0a214d4faec9c96a8eb113f, type: 2}
-  chargeTime: 0.5
+  chargeTime: 0.75
   holdChargeTime: 1
   chargeOverTime: 1
   cooldownIfCanceled: 0.5
@@ -53,9 +53,9 @@ MonoBehaviour:
   chargeMoveSpeedPercentage: 0.337
   canMoveOnReleaseAttack: 0
   throwsProjectile: 1
-  projectileDamage: 115
+  projectileDamage: 220
   scalableProjectileDamage: 1
-  minimumProjectileDamage: 10
+  minimumProjectileDamage: 95
   chooseRandomFromList: 0
   projectilePrefab: {fileID: 846552828456564998, guid: 337d447b9eee1ad4882c234b345c64d1, type: 3}
   projectilePrefabs: []

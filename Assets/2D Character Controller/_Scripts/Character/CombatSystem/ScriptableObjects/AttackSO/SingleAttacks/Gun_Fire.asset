@@ -18,7 +18,7 @@ MonoBehaviour:
   hitboxShape: 0
   damageableLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   damageAmount: 0
   scalableDamage: 0
   minimumDamage: 0
@@ -53,7 +53,7 @@ MonoBehaviour:
   chargeMoveSpeedPercentage: 0
   canMoveOnReleaseAttack: 0
   throwsProjectile: 1
-  projectileDamage: 140
+  projectileDamage: 310
   scalableProjectileDamage: 0
   minimumProjectileDamage: 0
   chooseRandomFromList: 0

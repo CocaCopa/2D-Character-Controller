@@ -30,10 +30,16 @@ public class ArrowProjectileExample : MonoBehaviour {
         }
         else {
             arrowRb.velocity = Vector2.zero;
-            arrowRb.isKinematic = true;
-            arrowRb.angularVelocity = 0;
+            arrowRb.simulated = false;
             canDamage = false;
+            enabled = false;
+            Invoke(nameof(Fall), 3.5f);
         }
+    }
+
+    private void Fall() {
+        arrowRb.simulated = true;
+        Destroy(gameObject, 2f);
     }
 
     private void LookAtOnGoingDirection() {

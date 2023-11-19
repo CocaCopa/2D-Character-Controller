@@ -11,6 +11,8 @@ public class BowAttackUI : MonoBehaviour {
 
     private void Awake() {
         characterCombat = transform.root.GetComponent<CharacterCombat>();
+        characterCombat.OnInitiateChargeAttack += Combat_OnInitiateChargeAttack;
+        enabled = false;
     }
 
     private void Update() {
@@ -21,10 +23,9 @@ public class BowAttackUI : MonoBehaviour {
 
     private void ImageGameObjectActive() {
         if (characterCombat.CurrentAttackData != bowAttack && chargeImage.gameObject.activeInHierarchy) {
+            chargeImage.fillAmount = 0;
             chargeImage.gameObject.SetActive(false);
-        }
-        else if (characterCombat.CurrentAttackData == bowAttack && !chargeImage.gameObject.activeInHierarchy) {
-            chargeImage.gameObject.SetActive(true);
+            enabled = false;
         }
     }
 
@@ -36,5 +37,12 @@ public class BowAttackUI : MonoBehaviour {
 
     private void BarGradientColor() {
         chargeImage.color = chargeBarColor.Evaluate(chargeImage.fillAmount);
+    }
+
+    private void Combat_OnInitiateChargeAttack(object sender, CharacterCombat.CurrentAttackEventArgs e) {
+        if (e.attackData == bowAttack) {
+            chargeImage.gameObject.SetActive(true);
+            enabled = true;
+        }
     }
 }

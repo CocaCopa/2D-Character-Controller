@@ -457,6 +457,9 @@ public abstract class HumanoidController : MonoBehaviour {
 
     #region --- FloorSlide ---
     protected void TryFloorSlide(bool inputHold) {
+        if (!characterSlide) {
+            return;
+        }
         if (inputHold) {
             FloorSlideEnter();
         }
@@ -481,10 +484,6 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     private void FloorSlide() {
-        if (!characterSlide) {
-            return;
-        }
-
         bool wallAbove = envQuery.WallAbove();
         bool noNeedToKeepSliding = !wallAbove && wallAboveWhenSliding;
         bool endSlide = !IsGrounded;

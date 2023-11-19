@@ -60,6 +60,9 @@ public class CharacterCombat : MonoBehaviour {
     private bool canReleaseChargedAttack = false;
     private bool isComboAttack = false;
 
+    /// <summary>
+    /// Get the data of the currently casted attack.
+    /// </summary>
     public AttackSO CurrentAttackData => currentAttackData;
     public int AttackComboCounter => attackComboCounter;
     public bool IsAttacking => isAttacking;
@@ -377,16 +380,10 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
-    /// <summary>
-    /// Makes the character charge an attack
-    /// </summary>
-    /// <param name="attackData">The scriptable object that the data of the attack</param>
     private void ChargeAttack(AttackSO attackData, Transform projectileSpawnPoint) {
-        attackCharged = Utilities.TickTimer(ref chargeTimer, attackData.ChargeTime, false);
-        if (attackData.InitiateChargeAnimation != null && characterAnimator.IsClipPlaying(attackData.InitiateChargeAnimation, 1)) {
-            chargeTimer = attackData.ChargeTime;
-        }
-        else if (canReleaseChargedAttack && attackCharged) {
+        Coroutine newCoroutine = StartCoroutine(CheckAttackCharged(attackData));
+        runningCoroutines.Add(newCoroutine);
+        if (canReleaseChargedAttack && attackCharged) {
             if (holdAttackTimer == attackData.HoldChargeTime) {
                 OnChargedAttackFullyCharged?.Invoke(this, new CurrentAttackEventArgs {
                     attackData = currentAttackData
@@ -401,6 +398,14 @@ public class CharacterCombat : MonoBehaviour {
                     CancelChargedAttack(currentAttackData);
                 }
             }
+        }
+    }
+
+    private IEnumerator CheckAttackCharged(AttackSO attackData) {
+        yield return new WaitForEndOfFrame();
+        attackCharged = Utilities.TickTimer(ref chargeTimer, attackData.ChargeTime, false);
+        if (attackData.InitiateChargeAnimation != null && characterAnimator.IsClipPlaying(attackData.InitiateChargeAnimation, 1)) {
+            chargeTimer = attackData.ChargeTime;
         }
     }
 

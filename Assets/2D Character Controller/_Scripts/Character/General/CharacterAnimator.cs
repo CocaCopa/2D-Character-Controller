@@ -7,7 +7,7 @@ public class CharacterAnimator : MonoBehaviour {
     private CharacterCombat characterCombat;
     private EntityHealth entityHealth;
 
-    #region Animator Constants
+    #region --- Animator Constants ---
     // Animation - Variables
     private const string VERTICAL_VELOCITY = "VerticalVelocity";
     private const string IS_RUNNING = "IsRunning";
@@ -114,7 +114,6 @@ public class CharacterAnimator : MonoBehaviour {
     }
 
     private void Update() {
-
         float verticalVelocity = humanoidController.VerticalVelocity;
         bool isRunning = humanoidController.IsRunning;
         bool isFloorSliding = humanoidController.IsFloorSliding;

@@ -303,6 +303,9 @@ MonoBehaviour:
   minimumFloorSlideSpeed: 6
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
+  comboNormalAttacks: []
+  singleNormalAttack: {fileID: 0}
+  singleChargeAttack: {fileID: 0}
 --- !u!114 &2353421476736477845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -549,6 +552,7 @@ MonoBehaviour:
   maxHealthPoints: 100
   currentHealthPoints: 0
   canRegenHealth: 1
+  interruptWhenDamaged: 1
   regenTriggerTime: 0
   regenHealthPoints: 0
 --- !u!1 &2353421476987182329

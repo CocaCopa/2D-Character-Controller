@@ -1,14 +1,5 @@
 using UnityEngine;
 
-public enum HumanoidStateName {
-    None,
-    Idle,
-    LedgeGrabEnter,
-    LedgeGrabLoop,
-    LedgeClimb,
-    Attack_1,
-    Attack_2,
-};
 public class CharacterAnimator : MonoBehaviour {
 
     private Animator animator;
@@ -36,12 +27,17 @@ public class CharacterAnimator : MonoBehaviour {
     private const string IS_DEAD = "IsDead";
 
     // Animation - State Names
-    private const string IDLE = "Idle";
+    private const string IDLE_NAME = "Idle";
+    private const string RUN_NAME = "Run";
+    private const string DOUBLE_JUMP_NAME = "Double-Jump";
+    private const string SLIDE_LOOP_NAME = "Slide-Loop";
+    private const string DASH_NAME = "Dash";
+    private const string WALL_SLIDE_NAME = "Wall-Slide";
     private const string LEDGE_GRAB_ENTER_NAME = "Ledge-Grab";
     private const string LEDGE_GRAB_LOOP_NAME = "Ledge-Idle";
     private const string LEDGE_CLIMB_NAME = "Ledge-Climb";
-    private const string MELEE_NAME_1 = "Melee-1";
-    private const string MELEE_NAME_2 = "Melee-2";
+    private const string TAKE_DAMAGE_NAME = "Take-Damage";
+    private const string DEATH_NAME = "Death";
     #endregion
 
     private void Awake() {
@@ -167,15 +163,14 @@ public class CharacterAnimator : MonoBehaviour {
     }
 
     /// <summary>
-    /// Checks if the animation clip with the given name has played less or more than the given percentage
+    /// Checks if the animation state with the given name has played more or less than the specified percentage.
     /// </summary>
-    /// <param name="stateName">Name of the animation to check</param>
-    /// <param name="percentage">Percentage to compare</param>
-    /// <param name="lessThan">True to check for 'less than', False to check for 'more than'</param>
-    /// <returns>True, once the animation clip has played more than the given percentage</returns>
+    /// <param name="stateName">Name of the animation state to check.</param>
+    /// <param name="percentage">Percentage threshold for comparison.</param>
+    /// <param name="lessThan">Set to true to check if the play percentage is less than the given value; false to check if it's more than.</param>
+    /// <returns>True, if the animation state has played more or less than the provided percentage, based on the specified comparison; otherwise, false.</returns>
     public bool CheckStatePercentage(HumanoidStateName stateName, float percentage, bool lessThan = false) {
-
-        string stateNameString = ConvertToAnimationClipName(stateName);
+        string stateNameString = ConvertToAnimationStateName(stateName);
         bool stateIsPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(stateNameString);
         bool stateMoreThanPercentage = lessThan
             ? animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= percentage
@@ -185,6 +180,12 @@ public class CharacterAnimator : MonoBehaviour {
         return reachedPercentage;
     }
 
+    /// <summary>
+    /// Determines if the specified animation clip is currently playing within a given percentage of its duration.
+    /// </summary>
+    /// <param name="clip">The animation clip to check.</param>
+    /// <param name="percentage">The desired percentage of the clip's duration.</param>
+    /// <returns>True, if the playhead is within the specified percentage of the animation clip; otherwise, false.</returns>
     public bool IsClipPlaying(AnimationClip clip, float percentage) {
         AnimatorClipInfo[] currentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
         foreach (var clipInfo in currentClipInfo) {
@@ -197,24 +198,37 @@ public class CharacterAnimator : MonoBehaviour {
     }
 
     /// <summary>
-    /// Checks if the animation clip with the given name is playing
+    /// Checks if the animation state with the given name is currently active.
     /// </summary>
-    /// <param name="stateName"></param>
-    /// <returns></returns>
+    /// <param name="stateName">Name of the animation state to check.</param>
+    /// <returns>True, if the specified animation state is playing; otherwise, false.</returns>
     public bool IsStateActive(HumanoidStateName stateName) {
-
-        string stateNameString = ConvertToAnimationClipName(stateName);
+        string stateNameString = ConvertToAnimationStateName(stateName);
         bool stateIsPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(stateNameString);
-
         return stateIsPlaying;
     }
 
-    private static string ConvertToAnimationClipName(HumanoidStateName stateName) {
+    private static string ConvertToAnimationStateName(HumanoidStateName stateName) {
 
         string name = "";
         switch (stateName) {
             case HumanoidStateName.Idle:
-            name = IDLE;
+            name = IDLE_NAME;
+            break;
+            case HumanoidStateName.Run:
+            name = RUN_NAME;
+            break;
+            case HumanoidStateName.DoubleJump:
+            name = DOUBLE_JUMP_NAME;
+            break;
+            case HumanoidStateName.SlideLoop:
+            name = SLIDE_LOOP_NAME;
+            break;
+            case HumanoidStateName.Dash:
+            name = DASH_NAME;
+            break;
+            case HumanoidStateName.WallSlide:
+            name = WALL_SLIDE_NAME;
             break;
             case HumanoidStateName.LedgeGrabEnter:
             name = LEDGE_GRAB_ENTER_NAME;
@@ -225,11 +239,11 @@ public class CharacterAnimator : MonoBehaviour {
             case HumanoidStateName.LedgeClimb:
             name = LEDGE_CLIMB_NAME;
             break;
-            case HumanoidStateName.Attack_1:
-            name = MELEE_NAME_1;
+            case HumanoidStateName.TakeDamage:
+            name = TAKE_DAMAGE_NAME;
             break;
-            case HumanoidStateName.Attack_2:
-            name = MELEE_NAME_2;
+            case HumanoidStateName.Death:
+            name = DEATH_NAME;
             break;
         }
         return name;

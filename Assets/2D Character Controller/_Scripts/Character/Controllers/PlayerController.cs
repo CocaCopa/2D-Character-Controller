@@ -57,8 +57,8 @@ public class PlayerController : HumanoidController {
 
     private void Input_OnComboNomalAttacksPerformed(object sender, System.EventArgs _) {
         if (CanComboAttack()) {
-            if (characterCombat.AttackCounter < meleeCombo_1.Count) {
-                characterCombat.PerformNormalAttack(meleeCombo_1[characterCombat.AttackCounter], isPartOfCombo: true);
+            if (characterCombat.AttackComboCounter < meleeCombo_1.Count) {
+                characterCombat.PerformNormalAttack(meleeCombo_1[characterCombat.AttackComboCounter], isPartOfCombo: true);
             }
         }
     }

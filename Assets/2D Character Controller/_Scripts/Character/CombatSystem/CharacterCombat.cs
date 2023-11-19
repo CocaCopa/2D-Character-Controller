@@ -43,12 +43,13 @@ public class CharacterCombat : MonoBehaviour {
     private AttackSO currentAttackData;     // Current attack playing
     private List<AttackSO> currentComboData = new();
     private Transform projectileSpawnTransform;
+    private List<Coroutine> runningCoroutines = new();
 
     private float defaultLinearDrag = 0f;
     private float defaultGravityScale = 0f;
     private float attackBufferTimer = 0f;
 
-    private int attackCounter;
+    private int attackComboCounter;
 
     private bool canDamage = true;
     private bool attackBufferButton = false;
@@ -57,9 +58,10 @@ public class CharacterCombat : MonoBehaviour {
     private bool isAttacking = false;
     private bool isCharging = false;
     private bool canReleaseChargedAttack = false;
+    private bool isComboAttack = false;
 
     public AttackSO CurrentAttackData => currentAttackData;
-    public int AttackCounter => attackCounter;
+    public int AttackComboCounter => attackComboCounter;
     public bool IsAttacking => isAttacking;
     public bool AttackCompleted => attackCompleted;
     public bool IsCharging => isCharging;
@@ -169,28 +171,22 @@ public class CharacterCombat : MonoBehaviour {
         attackHitboxTransform.gameObject.SetActive(false);
     }
 
-    private void NormalAttackInputBuffer() {
-        Utilities.TickTimer(ref attackBufferTimer, attackBufferTime, autoReset: false);
-        if (attackBufferTimer == 0) {
-            attackBufferButton = false;
-        }
-        if (AttackIsReady() && attackCompleted && attackBufferButton) {
-            attackBufferTimer = 0;
-            NormalAttack(currentComboData.Count > 0);
-        }
-    }
-
     private void HandleAttackState() {
         if (IsAttacking && !IsCharging) {
-            StartCoroutine(CheckAttackAnimation());
+            Coroutine newCoroutine = StartCoroutine(CheckAttackAnimation());
+            runningCoroutines.Add(newCoroutine);
             if (attackCompleted && !attackBufferButton) {
                 attackCompleted = false;
                 isAttacking = false;
-                attackCounter = 0;
-                if (currentComboData.Count > 0) {
-                    currentComboData[0].CurrentCooldownTime = Time.time + currentComboData[^1].Cooldown;
-                    currentComboData.Clear();
-                }
+                attackComboCounter = 0;
+                
+            }
+        }
+
+        if (attackComboCounter == 0) {
+            if (currentComboData.Count > 0) {
+                currentComboData[0].CurrentCooldownTime = Time.time + currentComboData[^1].Cooldown;
+                currentComboData.Clear();
             }
         }
 
@@ -208,7 +204,11 @@ public class CharacterCombat : MonoBehaviour {
         if (canDamage && attackHitboxTransform.gameObject.activeInHierarchy) {
             Collider2D collidersHit = null;
             Vector2 point = attackHitboxTransform.position;
-            int layerMask = currentAttackData.WhatIsDamageable;
+            int layerMask = currentAttackData.DamageableLayers;
+            if (currentAttackData.DamageableLayers.value == 0) {
+                Debug.LogWarning(currentAttackData.name + ": The attack will not damage any objects (LayerMask is set to 'Nothing').");
+                return;
+            }
             if (currentAttackData.HitboxShape == HitboxShape.Circle) {
                 #if UNITY_EDITOR
                 shape = HitboxShape.Circle;
@@ -256,9 +256,16 @@ public class CharacterCombat : MonoBehaviour {
         attackCompleted = !characterAnimator.IsClipPlaying(currentAttackClip, ATTACK_CLIP_THRESHOLD);
         if (attackCompleted && IsAttacking) {
             ExitAttackState(currentAttackData);
-            StopAllCoroutines();
+            StopSelectedCoroutines();
             canDamage = true;
         }
+    }
+
+    private void StopSelectedCoroutines() {
+        foreach (var coroutine in runningCoroutines) {
+            StopCoroutine(coroutine);
+        }
+        runningCoroutines.Clear();
     }
 
     public void PerformNormalAttack(AttackSO attackData, bool isPartOfCombo, Transform projectileSpawnTransform = null) {
@@ -268,9 +275,21 @@ public class CharacterCombat : MonoBehaviour {
             Debug.LogError("The attack is configured as chargeable. Call 'PerformChargedAttack()' instead.");
             return;
         }
-
+        isComboAttack = isPartOfCombo; // If the execution of NormalAttack() is a result of input buffering, 'isComboAttack' helps identify combo-related calls.
         if (CanPerformNormalAttack()) {
             NormalAttack(isPartOfCombo);
+        }
+    }
+
+    // Gets called in the Update() method.
+    private void NormalAttackInputBuffer() {
+        Utilities.TickTimer(ref attackBufferTimer, attackBufferTime, autoReset: false);
+        if (attackBufferTimer == 0) {
+            attackBufferButton = false;
+        }
+        if (AttackIsReady() && attackCompleted && attackBufferButton) {
+            attackBufferTimer = 0;
+            NormalAttack(isComboAttack);
         }
     }
 
@@ -282,9 +301,15 @@ public class CharacterCombat : MonoBehaviour {
             attackData = currentAttackData
         });
         if (currentAttackData.ThrowsProjectile) {
-            StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
+            Coroutine newCoroutine = StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
+            runningCoroutines.Add(newCoroutine);
         }
-        attackCounter++;
+        if (isPartOfCombo) {
+            attackComboCounter++;
+        }
+        else {
+            attackComboCounter = 0;
+        }
     }
 
     private bool CanPerformNormalAttack() {
@@ -394,7 +419,8 @@ public class CharacterCombat : MonoBehaviour {
             moveWhileCastingAttack = currentAttackData.CanMoveOnReleaseAttack;
             if (currentAttackData.ThrowsProjectile) {
                 if (projectileSpawnTransform != null) {
-                    StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
+                    Coroutine newCoroutine = StartCoroutine(WaitAnimationBeforeReleasing(projectileSpawnTransform));
+                    runningCoroutines.Add(newCoroutine);
                 }
                 else {
                     Debug.LogError(currentAttackData.name + ": The attack is configured to launch a projectile, but no `Transform` has been specified. " +
@@ -431,10 +457,12 @@ public class CharacterCombat : MonoBehaviour {
             }
             if (attackData.IsChargeableAttack && attackData.AttackPushesCharacter) {
                 if (attackData.AttackPushMode == PushMode.OnRelease) {
-                    StartCoroutine(PushCharacter(currentAttackData));
+                    Coroutine newCoroutine = StartCoroutine(PushCharacter(currentAttackData));
+                    runningCoroutines.Add(newCoroutine);
                 }
                 else if (attackData.AttackPushMode == PushMode.Both) {
-                    StartCoroutine(PushCharacter(currentAttackData, useReleaseForces: true));
+                    Coroutine newCoroutine = StartCoroutine(PushCharacter(currentAttackData, useReleaseForces : true));
+                    runningCoroutines.Add(newCoroutine);
                 }
             }
         }
@@ -451,7 +479,8 @@ public class CharacterCombat : MonoBehaviour {
                 Debug.LogError(currentAttackData.name + ": The attack is configured to launch a projectile, but no prefab(s) have been assigned.");
             }
             else {
-                StartCoroutine(ThrowProjectile(currentAttackData, spawnPoint));
+                Coroutine newCoroutine = StartCoroutine(ThrowProjectile(currentAttackData, spawnPoint));
+                runningCoroutines.Add(newCoroutine);
             }
         }
     }
@@ -476,7 +505,7 @@ public class CharacterCombat : MonoBehaviour {
     private void SetUpProjectileGameObject(GameObject spawnedProjectile, AttackSO attackData) {
         if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
             projectile.DamageAmount = attackData.ProjectileDamage;
-            projectile.DamageLayers = attackData.WhatIsDamageable;
+            projectile.DamageLayers = attackData.DamageableLayers;
             if (attackData.IsChargeableAttack) {
                 if (attackData.ScalableProjectileDamage) {
                     float projectileDamage = attackData.ProjectileDamage * (1 - chargeTimer / attackData.ChargeTime);
@@ -515,10 +544,12 @@ public class CharacterCombat : MonoBehaviour {
         }
         if (attackData.AttackPushesCharacter && !attackData.CanMoveWhileAttacking && !attackData.CanMoveWhileCharging) {
             if (attackData.IsChargeableAttack && (attackData.AttackPushMode == PushMode.OnInitiate || attackData.AttackPushMode == PushMode.Both)) {
-                StartCoroutine(PushCharacter(attackData));
+                Coroutine newCoroutine = StartCoroutine(PushCharacter(attackData));
+                runningCoroutines.Add(newCoroutine);
             }
             else if (!attackData.IsChargeableAttack) {
-                StartCoroutine(PushCharacter(attackData));
+                Coroutine newCoroutine = StartCoroutine(PushCharacter(attackData));
+                runningCoroutines.Add(newCoroutine);
             }
         }
         if (attackData.ResetVelocity) {
@@ -555,17 +586,17 @@ public class CharacterCombat : MonoBehaviour {
 
     
     private void ExitAttackState(AttackSO attackData, bool adjustPosition = true) {
-        characterRb.drag = defaultLinearDrag;
-        characterRb.gravityScale = defaultGravityScale;
-        moveWhileCastingAttack = false;
         if (adjustPosition && attackData.AdjustPositionOnAttackEnd != Vector3.zero) {
             StartCoroutine(TeleportToPosition(attackData.AdjustPositionOnAttackEnd));
         }
+        characterRb.drag = defaultLinearDrag;
+        characterRb.gravityScale = defaultGravityScale;
+        moveWhileCastingAttack = false;
     }
 
     private IEnumerator TeleportToPosition(Vector3 position) {
-        yield return new WaitForEndOfFrame();
         position.x *= transform.right.x;
+        yield return new WaitForEndOfFrame();
         transform.position += position;
     }
 

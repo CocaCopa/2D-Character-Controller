@@ -70,8 +70,8 @@ public class CustomControllerTemplate : HumanoidController {
 
     private void ComboNormalAttacks() {
         if (Input.GetKeyDown(KeyCode.C)) {
-            if (characterCombat.AttackCounter < comboNormalAttacks.Count) {
-                AttackSO currentAttack = comboNormalAttacks[characterCombat.AttackCounter];
+            if (characterCombat.AttackComboCounter < comboNormalAttacks.Count) {
+                AttackSO currentAttack = comboNormalAttacks[characterCombat.AttackComboCounter];
                 bool isPartOfCombo = true;
                 characterCombat.PerformNormalAttack(currentAttack, isPartOfCombo);
             }

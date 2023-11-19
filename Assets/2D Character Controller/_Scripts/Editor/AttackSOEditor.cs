@@ -9,7 +9,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty attackIcon;
     SerializedProperty attackAnimation;
     SerializedProperty hitboxShape;
-    SerializedProperty whatIsDamageable;
+    SerializedProperty damageableLayers;
     SerializedProperty damageAmount;
     SerializedProperty scalableDamage;
     SerializedProperty minimumDamage;
@@ -58,7 +58,7 @@ public class AttackSOEditor : Editor {
         attackIcon = serializedObject.FindProperty(nameof(attackIcon));
         attackAnimation = serializedObject.FindProperty(nameof(attackAnimation));
         hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
-        whatIsDamageable = serializedObject.FindProperty(nameof(whatIsDamageable));
+        damageableLayers = serializedObject.FindProperty(nameof(damageableLayers));
         damageAmount = serializedObject.FindProperty(nameof(damageAmount));
         scalableDamage = serializedObject.FindProperty(nameof(scalableDamage));
         minimumDamage = serializedObject.FindProperty(nameof(minimumDamage));
@@ -140,7 +140,7 @@ public class AttackSOEditor : Editor {
     private void CommonStats() {
         EditorGUILayout.PropertyField(attackAnimation);
         EditorGUILayout.PropertyField(hitboxShape);
-        EditorGUILayout.PropertyField(whatIsDamageable);
+        EditorGUILayout.PropertyField(damageableLayers);
         EditorGUILayout.PropertyField(damageAmount);
         if (isChargeableAttack.boolValue) {
             EditorGUILayout.PropertyField(scalableDamage);

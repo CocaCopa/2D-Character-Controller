@@ -16,7 +16,7 @@ MonoBehaviour:
   attackIcon: {fileID: 0}
   attackAnimation: {fileID: 7400000, guid: ba4b61139a72d844f8166d90bc40ed3e, type: 2}
   hitboxShape: 1
-  whatIsDamageable:
+  damageableLayers:
     serializedVersion: 2
     m_Bits: 128
   damageAmount: 110

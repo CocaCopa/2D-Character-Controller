@@ -10,7 +10,7 @@ public class AttackSO : ScriptableObject {
     [Tooltip("Define the shape of this attack's hitbox.")]
     [SerializeField] private HitboxShape hitboxShape;
     [Tooltip("Specify which layers can be damaged.")]
-    [SerializeField] private LayerMask whatIsDamageable;
+    [SerializeField] private LayerMask damageableLayers;
     [Tooltip("How much damage should be dealt by this attack.")]
     [SerializeField] private float damageAmount;
     [Tooltip("Determines if the attack damage should scale with the level of charge applied.")]
@@ -67,9 +67,9 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private AnimationClip initiateChargeAnimation;
     [Tooltip("Animation to play when the attack is charging.")]
     [SerializeField] private AnimationClip chargeAnimation;
-    [Tooltip("How much time should it take for the attack to be charged in seconds.")]
+    [Tooltip("How much time should it take for the attack to be fully charged in seconds.")]
     [SerializeField] private float chargeTime;
-    [Tooltip("For how long should your character be able to hold their charged attack in seconds, before being forced to cancel it.")]
+    [Tooltip("For how long should your character be able to hold their charged attack in seconds, before being forced to release/cancel it.")]
     [SerializeField] private float holdChargeTime;
     [Tooltip("Specify the action to be taken when the attack is held for longer than the designated hold charge time.")]
     [SerializeField] private ChargeOverTime chargeOverTime = ChargeOverTime.ForceRelease;
@@ -102,12 +102,6 @@ public class AttackSO : ScriptableObject {
 
     private void OnEnable() {
         CurrentCooldownTime = 0;
-        if (attackAnimation == null) {
-            Debug.LogWarning(name + ": The attack animation field cannot be null.");
-        }
-        if (IsChargeableAttack && chargeAnimation == null) {
-            Debug.LogWarning(name + ": The charge animation field cannot be null.");
-        }
     }
 
     /// <summary>
@@ -119,7 +113,7 @@ public class AttackSO : ScriptableObject {
     public Sprite AttackIcon => attackIcon;
     public AnimationClip AttackAnimation => attackAnimation;
     public HitboxShape HitboxShape => hitboxShape;
-    public LayerMask WhatIsDamageable => whatIsDamageable;
+    public LayerMask DamageableLayers => damageableLayers;
     public float DamageAmount => damageAmount;
     public bool ScalableDamage => scalableDamage;
     public float MinimumDamage => minimumDamage;

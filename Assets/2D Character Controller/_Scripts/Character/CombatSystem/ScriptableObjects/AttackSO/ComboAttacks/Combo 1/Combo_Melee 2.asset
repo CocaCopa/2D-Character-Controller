@@ -16,10 +16,12 @@ MonoBehaviour:
   attackIcon: {fileID: 0}
   attackAnimation: {fileID: 7400000, guid: 12482399ed2e0d34188669fc946e0f8c, type: 2}
   hitboxShape: 1
-  whatIsDamageable:
+  damageableLayers:
     serializedVersion: 2
     m_Bits: 128
   damageAmount: 75
+  scalableDamage: 0
+  minimumDamage: 0
   cooldown: 0.5
   disableCastOnWall: 1
   wallCastDistance: 1
@@ -29,12 +31,19 @@ MonoBehaviour:
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1
+  attackPushMode: 0
   forceMode: 1
   force: {x: 500, y: 0}
   delayForceTime: 0
   useGravity: 0
   dragCoeficient: 10
+  m_ForceMode: 1
+  m_Force: {x: 0, y: 0}
+  m_DelayForceTime: 0
+  m_UseGravity: 0
+  m_DragCoeficient: 0
   isChargeableAttack: 0
+  initiateChargeAnimation: {fileID: 0}
   chargeAnimation: {fileID: 0}
   chargeTime: 0
   holdChargeTime: 0
@@ -44,6 +53,9 @@ MonoBehaviour:
   chargeMoveSpeedPercentage: 0
   canMoveOnReleaseAttack: 0
   throwsProjectile: 0
+  projectileDamage: 0
+  scalableProjectileDamage: 0
+  minimumProjectileDamage: 0
   chooseRandomFromList: 0
   projectilePrefab: {fileID: 0}
   projectilePrefabs: []

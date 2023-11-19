@@ -16,6 +16,9 @@ public class ArrowProjectileExample : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
+        if (csProjectile == null) {
+            return;
+        }
         if (canDamage == false) {
             // Ensures that if the arrow is frozen on a wall, it won't damage a damageable object upon collision.
             return;

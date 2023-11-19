@@ -238,7 +238,6 @@ public class CharacterCombat : MonoBehaviour {
                 OnAttackDealtDamage?.Invoke(this, new CurrentAttackEventArgs {
                     attackData = currentAttackData
                 });
-                Debug.Log("Attack landed");
                 canDamage = false; // Ensures the attacker will only deal damage once. Resets when attackCompleted = true;
             }
         }

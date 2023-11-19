@@ -33,8 +33,9 @@ public class CharacterAnimator : MonoBehaviour {
     private const string LEDGE_GRAB_ENTER = "LedgeGrabEnter";
     private const string LEDGE_GRAB_LOOP = "LedgeGrabLoop";
     private const string TAKE_DAMAGE = "TakeDamage";
+    private const string IS_DEAD = "IsDead";
 
-    // Animation - Names
+    // Animation - State Names
     private const string IDLE = "Idle";
     private const string LEDGE_GRAB_ENTER_NAME = "Ledge-Grab";
     private const string LEDGE_GRAB_LOOP_NAME = "Ledge-Idle";
@@ -57,6 +58,8 @@ public class CharacterAnimator : MonoBehaviour {
         characterCombat.OnReleaseChargeAttack += Controller_OnCharacterReleaseAttack;
         characterCombat.OnCancelChargeAttack += Controller_OnCharacterCancelAttack;
         entityHealth.OnTakeDamage += Health_OnTakeDamage;
+        entityHealth.OnEntityDeath += Health_OnDeath;
+        entityHealth.OnEntityAlive += Health_OnAlive;
     }
 
     private void OnDisable() {
@@ -66,6 +69,18 @@ public class CharacterAnimator : MonoBehaviour {
         characterCombat.OnReleaseChargeAttack -= Controller_OnCharacterReleaseAttack;
         characterCombat.OnCancelChargeAttack -= Controller_OnCharacterCancelAttack;
         entityHealth.OnTakeDamage -= Health_OnTakeDamage;
+        entityHealth.OnEntityDeath -= Health_OnDeath;
+        entityHealth.OnEntityAlive -= Health_OnAlive;
+    }
+
+    private void Health_OnDeath(object sender, System.EventArgs e) {
+        animator.ResetTrigger(TAKE_DAMAGE);
+        animator.SetBool(IS_DEAD, true);
+    }
+
+    private void Health_OnAlive(object sender, System.EventArgs e) {
+        animator.ResetTrigger(TAKE_DAMAGE);
+        animator.SetBool(IS_DEAD, false);
     }
 
     private void Controller_OnCharacterNormalAttack(object sender, CharacterCombat.CurrentAttackEventArgs e) {

@@ -19,7 +19,9 @@ MonoBehaviour:
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 128
-  damageAmount: 100
+  damageAmount: 110
+  scalableDamage: 0
+  minimumDamage: 0
   cooldown: 0.5
   disableCastOnWall: 0
   wallCastDistance: 0
@@ -29,12 +31,19 @@ MonoBehaviour:
   canMoveWhileAttacking: 0
   attackMoveSpeedPercentage: 0
   attackPushesCharacter: 1
+  attackPushMode: 0
   forceMode: 1
   force: {x: 2000, y: 0}
   delayForceTime: 0
   useGravity: 0
   dragCoeficient: 10
+  m_ForceMode: 1
+  m_Force: {x: 0, y: 0}
+  m_DelayForceTime: 0
+  m_UseGravity: 0
+  m_DragCoeficient: 0
   isChargeableAttack: 0
+  initiateChargeAnimation: {fileID: 0}
   chargeAnimation: {fileID: 0}
   chargeTime: 0
   holdChargeTime: 0
@@ -44,6 +53,9 @@ MonoBehaviour:
   chargeMoveSpeedPercentage: 0
   canMoveOnReleaseAttack: 0
   throwsProjectile: 0
+  projectileDamage: 0
+  scalableProjectileDamage: 0
+  minimumProjectileDamage: 0
   chooseRandomFromList: 0
   projectilePrefab: {fileID: 0}
   projectilePrefabs: []

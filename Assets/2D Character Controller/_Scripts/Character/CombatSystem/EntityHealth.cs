@@ -9,6 +9,7 @@ public class EntityHealth : MonoBehaviour, IDamageable {
     }
     public event EventHandler<OnTakeDamageEventArgs> OnTakeDamage;
     public event EventHandler OnEntityDeath;
+    public event EventHandler OnEntityAlive;
 
     [Tooltip("Leave this field empty if your entity wears no armour.")]
     [SerializeField] private ArmourSO armourData;
@@ -18,6 +19,7 @@ public class EntityHealth : MonoBehaviour, IDamageable {
     [SerializeField] private float currentHealthPoints;
     [Tooltip("Whether or not your character/object is able to regen missing health points.")]
     [SerializeField] private bool canRegenHealth;
+    [Tooltip("Choose whether or not your entity should stop regenerating health, when they take damage.")]
     [SerializeField] private bool interruptWhenDamaged = true;
     [Tooltip("Time in seconds at which the health regeneration can take effect, if the current health points are not equal to max health points.")]
     [SerializeField] private float regenTriggerTime;
@@ -51,10 +53,12 @@ public class EntityHealth : MonoBehaviour, IDamageable {
         enabled = true;
     }
 
+    private bool defaultCanRegenHealth = false;
     private bool isRegenerating = false;
     private float regenTriggerTimer;
 
     private void Awake() {
+        defaultCanRegenHealth = canRegenHealth;
         currentHealthPoints = maxHealthPoints;
         regenTriggerTimer = regenTriggerTime;
         enabled = false;
@@ -70,13 +74,14 @@ public class EntityHealth : MonoBehaviour, IDamageable {
                 isRegenerating = true;
                 currentHealthPoints += regenHealthPoints * Time.deltaTime;
                 currentHealthPoints = Mathf.Clamp(currentHealthPoints, 0, maxHealthPoints);
-                if (currentHealthPoints == maxHealthPoints) {
-                    isRegenerating = false;
-                    regenTriggerTimer = regenTriggerTime;
-                    enabled = false;
-                }
+            }
+            if (currentHealthPoints == maxHealthPoints) {
+                isRegenerating = false;
+                regenTriggerTimer = regenTriggerTime;
+                enabled = false;
             }
         }
+        else enabled = false;
     }
 
     public void TakeDamage(float amount) {
@@ -84,13 +89,16 @@ public class EntityHealth : MonoBehaviour, IDamageable {
             ? armourData.ArmourPoints / (armourData.ArmourPoints + armourData.ArmourEffectiveness)
             : 0;
         float finalDamage = amount * (1 - damageReduction);
-        ReduceHealthPoints(finalDamage);
         ManageHealthRegenOnDamage();
+        ReduceHealthPoints(finalDamage);
     }
 
     private void ManageHealthRegenOnDamage() {
         if (canRegenHealth) {
             if (isRegenerating && interruptWhenDamaged) {
+                regenTriggerTimer = regenTriggerTime;
+            }
+            else if (!isRegenerating) {
                 regenTriggerTimer = regenTriggerTime;
             }
             enabled = true;
@@ -107,11 +115,19 @@ public class EntityHealth : MonoBehaviour, IDamageable {
         if (currentHealthPoints <= 0) {
             Death();
         }
-        Debug.Log(name + ": I received " + amount + " damage");
     }
 
     public void Death() {
+        canRegenHealth = false;
+        enabled = false;
         OnEntityDeath?.Invoke(this, EventArgs.Empty);
-        Debug.Log("Character died");
+    }
+
+    public void Alive() {
+        regenTriggerTimer = regenTriggerTime;
+        canRegenHealth = defaultCanRegenHealth;
+        currentHealthPoints = maxHealthPoints;
+        enabled = true;
+        OnEntityAlive?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -61,8 +61,8 @@ public abstract class HumanoidController : MonoBehaviour {
     #endregion
 
     #region --- Private Properties ---
-    private Rigidbody2D characterRb;
-    private CapsuleCollider2D activeCollider;
+    protected Rigidbody2D characterRb;
+    protected CapsuleCollider2D activeCollider;
     private CharacterAnimator characterAnimator;
     private CharacterEnvironmentalQuery envQuery;
     private CharacterMovement characterMovement;
@@ -96,9 +96,7 @@ public abstract class HumanoidController : MonoBehaviour {
     private float verticalVelocity = 0f;
     private float horizontalVelocity = 0f;
 
-    private int attackCounter = 0;
     private bool ledgeDetected = false;
-
     private bool isGrounded = true;
     private bool isRunning = false;
     private bool isLedgeGrabbing = false;
@@ -109,10 +107,7 @@ public abstract class HumanoidController : MonoBehaviour {
 
     public float VerticalVelocity => verticalVelocity;
     public float HorizontalVelocity => horizontalVelocity;
-
     public bool LedgeDetected => ledgeDetected;
-    public int AttackCounter => attackCounter;
-
     public bool IsGrounded => isGrounded;
     public bool IsRunning => isRunning;
     public bool IsFloorSliding => isFloorSliding;

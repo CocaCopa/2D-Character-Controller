@@ -38,6 +38,7 @@ public class EntityHealth : MonoBehaviour, IDamageable {
     /// Triggers health regeneration when this value reaches 0.
     /// </summary>
     public float RegenTriggerTimer { get => regenTriggerTimer; set => regenTriggerTimer = value; }
+    public bool IsRegeneratingHealth => isRegenerating;
     /// <summary>
     /// Starts health regeneration.
     /// </summary>
@@ -46,6 +47,7 @@ public class EntityHealth : MonoBehaviour, IDamageable {
         if (immediate) {
             regenTriggerTimer = 0;
         }
+        canRegenHealth = true;
         enabled = true;
     }
 

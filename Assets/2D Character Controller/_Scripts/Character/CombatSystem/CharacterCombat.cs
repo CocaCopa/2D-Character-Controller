@@ -412,11 +412,7 @@ public class CharacterCombat : MonoBehaviour {
         if (AttackIsReady() && canReleaseChargedAttack) {
             canReleaseChargedAttack = false;
             isAttacking = true;
-            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
             currentAttackClip = currentAttackData.AttackAnimation;
-            OnReleaseChargeAttack?.Invoke(this, new CurrentAttackEventArgs {
-                attackData = currentAttackData
-            });
             moveWhileCastingAttack = currentAttackData.CanMoveOnReleaseAttack;
             if (currentAttackData.ThrowsProjectile) {
                 if (projectileSpawnTransform != null) {
@@ -450,24 +446,33 @@ public class CharacterCombat : MonoBehaviour {
         AttackSO attackData = currentAttackData;
         if (attackData.IsChargeableAttack) {
             yield return new WaitForEndOfFrame();
+            // To handle charged attacks, which may involve both initiating and charging animations, we must select the appropriate one for validation.
             AnimationClip chargeAnimation = attackData.InitiateChargeAnimation != null
                 ? attackData.InitiateChargeAnimation
                 : attackData.ChargeAnimation;
+            // Wait for the charge animation to be completed before proceeding.
             while (characterAnimator.IsClipPlaying(chargeAnimation, 1f)) {
                 yield return null;
             }
+            // Push the character based on the attack configuration
             if (attackData.IsChargeableAttack && attackData.AttackPushesCharacter) {
                 if (attackData.AttackPushMode == PushMode.OnRelease) {
                     Coroutine newCoroutine = StartCoroutine(PushCharacter(currentAttackData));
                     runningCoroutines.Add(newCoroutine);
                 }
                 else if (attackData.AttackPushMode == PushMode.Both) {
-                    Coroutine newCoroutine = StartCoroutine(PushCharacter(currentAttackData, useReleaseForces : true));
+                    Coroutine newCoroutine = StartCoroutine(PushCharacter(currentAttackData, useReleaseForces: true));
                     runningCoroutines.Add(newCoroutine);
                 }
             }
+            // At this point, the charge animation has been completed so we can set the cooldown for the attack and fire the OnRelease event.
+            currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;
+            OnReleaseChargeAttack?.Invoke(this, new CurrentAttackEventArgs {
+                attackData = currentAttackData
+            });
         }
         yield return new WaitForEndOfFrame();
+        // Ensure that the attack animation is playing before proceeding.
         while (characterAnimator.IsClipPlaying(attackData.AttackAnimation, attackData.ThrowAtPercentage)) {
             yield return null;
         }

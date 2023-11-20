@@ -75,12 +75,11 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     /// <summary>
-    /// Only calculates the velocity on the X axis.
-    /// *Note* Best use of this function is, for when the character is grounded
+    /// Calculates the velocity exclusively along the X axis. Best used when the character is grounded.
     /// </summary>
     /// <param name="moveInput">Player input</param>
-    /// <param name="runsIntoWall">Did the character hit a wall?</param>
-    /// <returns>A vector with the calculated velocity for the X axis only</returns>
+    /// <param name="runsIntoWall">Indicates whether the character is colliding with a wall</param>
+    /// <returns>A vector with the calculated X axis velocity</returns>
     public Vector2 OnGroundHorizontalVelocity(Vector2 moveInput, bool runsIntoWall) {
 
         if (runsIntoWall) {
@@ -127,7 +126,7 @@ public class CharacterMovement : MonoBehaviour {
     /// <summary>
     /// Only calculates the velocity on the Y axis based on the strength of the jump.
     /// </summary>
-    /// <param name="againstWall">Is the character performing a jump against the wall?</param>
+    /// <param name="againstWall">ITrue, if your character is performing a jump against a wall.</param>
     /// <returns>A vector with the calculated velocity for the Y axis only</returns>
     public Vector2 VerticalVelocity(bool againstWall) {
 
@@ -147,10 +146,10 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     /// <summary>
-    /// Handles the movement of the character when NOT grounded
+    /// Handles your character's aerial movement.
     /// </summary>
     /// <param name="moveInput">Player input</param>
-    /// <param name="runsIntoWall">Did the character hit a wall?</param>
+    /// <param name="runsIntoWall">Indicates whether the character is colliding with a wall</param>
     /// <returns>A vector with the calculated velocity for the X axis only, based on the move speed the character had when grounded</returns>
     public Vector2 OnAirHorizontalVelocity(Vector2 moveInput, bool runsIntoWall) {
         bool inputOppositeToMoveDirection = moveInput.x * moveDirection.x == -1;

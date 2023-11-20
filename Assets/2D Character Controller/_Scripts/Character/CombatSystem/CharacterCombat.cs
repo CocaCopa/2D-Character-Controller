@@ -182,15 +182,12 @@ public class CharacterCombat : MonoBehaviour {
                 attackCompleted = false;
                 isAttacking = false;
                 attackComboCounter = 0;
-                if (currentComboData.Count > 0) {
-                    currentComboData[0].CurrentCooldownTime = Time.time + currentComboData[^1].Cooldown;
-                    currentComboData.Clear();
-                }
-
             }
         }
 
-        if (attackComboCounter == 0) {
+        if (currentComboData.Count > 0 && attackComboCounter == 0) {
+            currentComboData[0].CurrentCooldownTime = Time.time + currentComboData[^1].Cooldown;
+            currentComboData.Clear();
         }
 
         if (IsCharging && characterAnimator.IsClipPlaying(currentAttackData.AttackAnimation, ATTACK_CLIP_THRESHOLD)) {
@@ -373,8 +370,7 @@ public class CharacterCombat : MonoBehaviour {
                 attackData = currentAttackData
             });
         }
-
-        if (IsCharging) {
+        else if (IsCharging) {
             isAttacking = true;
             ChargeAttack(currentAttackData, projectileSpawPoint);
         }
@@ -413,7 +409,7 @@ public class CharacterCombat : MonoBehaviour {
         if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
             return;
         }
-        if (AttackIsReady()) {
+        if (AttackIsReady() && canReleaseChargedAttack) {
             canReleaseChargedAttack = false;
             isAttacking = true;
             currentAttackData.CurrentCooldownTime = Time.time + currentAttackData.Cooldown;

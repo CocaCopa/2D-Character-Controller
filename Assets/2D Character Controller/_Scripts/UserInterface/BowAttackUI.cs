@@ -12,6 +12,7 @@ public class BowAttackUI : MonoBehaviour {
     private void Awake() {
         characterCombat = transform.root.GetComponent<CharacterCombat>();
         characterCombat.OnInitiateChargeAttack += Combat_OnInitiateChargeAttack;
+        chargeImage.fillAmount = 0;
         enabled = false;
     }
 

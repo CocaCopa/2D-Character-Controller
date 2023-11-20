@@ -23,7 +23,7 @@ MonoBehaviour:
   scalableDamage: 0
   minimumDamage: 0
   cooldown: 0.6
-  disableCastOnWall: 1
+  disableCastOnWall: 0
   wallCastDistance: 0.5
   resetVelocity: 1
   canChangeDirections: 1

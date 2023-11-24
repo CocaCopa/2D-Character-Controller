@@ -342,7 +342,7 @@ public abstract class HumanoidController : MonoBehaviour {
     /// <summary>
     /// Your character will enter ledge grab state, if a ledge is detected
     /// </summary>
-    /// <param name="canLedgeGrab">Leave this parameter as is if you want your character to automatically grab the ledge when detected</param>
+    /// <param name="canLedgeGrab">True, your character will automatically perform a ledge grab as soon as a ledge is detected</param>
     protected void LedgeGrab(bool canLedgeGrab = true) {
         if (!characterLedgeGrab || characterCombat.IsAttacking || IsDashing || IsFloorSliding || IsLedgeClimbing) {
             return;
@@ -376,10 +376,11 @@ public abstract class HumanoidController : MonoBehaviour {
             OnLedgeExit?.Invoke(this, EventArgs.Empty);
         }
     }
-    
+
     /// <summary>
     /// If a ledge is detected, your character will climb it automatically
     /// </summary>
+    /// <param name="canLedgeClimb">True, your character will automatically perform a ledge climb as soon as a ledge is detected</param>
     protected void LedgeClimb(bool canLedgeClimb = true) {
         if (!characterLedgeGrab || characterCombat.IsAttacking || IsDashing || IsFloorSliding) {
             return;
@@ -426,7 +427,6 @@ public abstract class HumanoidController : MonoBehaviour {
     private bool CanDash() {
         bool canDash = !IsWallSliding && !IsFloorSliding && !characterCombat.IsAttacking;
         bool allowDash = !envQuery.WallInFront(minimumDashDistance) && Time.time >= dashCooldownTimer;
-
         return canDash && allowDash;
     }
 
@@ -453,9 +453,13 @@ public abstract class HumanoidController : MonoBehaviour {
         characterDash.Dash(activeCollider.bounds.size.y, IsGrounded);
         isDashing = true;
     }
-#endregion
+    #endregion
 
     #region --- FloorSlide ---
+    /// <summary>
+    /// Your character will perform a floor slide if certain conditions are met.
+    /// </summary>
+    /// <param name="inputHold">Determines when the floor slide should be initiated</param>
     protected void TryFloorSlide(bool inputHold) {
         if (!characterSlide) {
             return;

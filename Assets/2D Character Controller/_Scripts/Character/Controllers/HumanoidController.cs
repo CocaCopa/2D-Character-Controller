@@ -246,7 +246,7 @@ public abstract class HumanoidController : MonoBehaviour {
 
     #region --- Horizontal Velocity | Movement ---
     /// <summary>
-    /// Change your character's horizontal velocity, based on the given direction
+    /// Changes the character's horizontal velocity based on the provided direction.
     /// </summary>
     /// <param name="moveDirection">Desired horizontal direction to move towards</param>
     protected void ChangeHorizontalVelocity(Vector2 moveDirection) {

@@ -532,17 +532,19 @@ public abstract class HumanoidController : MonoBehaviour {
 #endregion
 
     #region --- WallSlide ---
+    /// <summary>
+    /// Handles the logic for wall sliding, based on the given condition
+    /// </summary>
+    /// <param name="canWallSlide">Condition for when the wall slide should be initiated, when near a wall</param>
     protected void WallSlide(bool canWallSlide = true) {
         if (!characterSlide) {
             return;
         }
         this.canWallSlide = canWallSlide;
         if (IsWallSliding) {
-
             characterSlide.EnterWallSlide();
         }
         else {
-
             characterSlide.ExitWallSlide();
         }
     }
@@ -557,7 +559,7 @@ public abstract class HumanoidController : MonoBehaviour {
     /// <summary>
     /// Flips your character towards the given direction
     /// </summary>
-    /// <param name="directionX"></param>
+    /// <param name="directionX">The direction the character should face.</param>
     protected void FlipCharacter(float directionX) {
         if (IsLedgeClimbing || IsLedgeGrabbing || !characterCombat.CanChangeDirections) {
             return;

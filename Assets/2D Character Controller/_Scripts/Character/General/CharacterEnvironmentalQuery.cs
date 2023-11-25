@@ -42,6 +42,10 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     [SerializeField, Range(0, 1)] private float feetCollisionSizeY = 15.4f / 100f;
 
     private Collider2D activeCollider;
+    /// <summary>
+    /// Updates the active collider to ensure correct functioning of collision checks.
+    /// </summary>
+    /// <param name="value">The collider to set as active.</param>
     public void SetActiveCollider(Collider2D value) => activeCollider = value;
     #endregion
 
@@ -79,8 +83,8 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Searches for any collider in the specified range around the character based on the character's collider
     /// </summary>
-    /// <param name="overlapBox">Whether it should be an overlapBox or an overlapCapsule</param>
-    /// <param name="range">Based on this value, a percentage of the character's collider size, will be added to the size of the cast</param>
+    /// <param name="overlapBox">False, will cast an OverlapCapsule instead.</param>
+    /// <param name="range">This value represents a percentage of the character's collider, to be used as the size of the cast.</param>
     /// <returns></returns>
     public bool ColliderAroundCharacter(bool overlapBox, float range) {
 
@@ -113,8 +117,9 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Checks if the character steps on a platform
     /// </summary>
-    /// <param name="originOffset">Offsets the cast's origin away from the character's right direction</param>
-    /// <param name="castDistance">Overrides the default cast distance</param>
+    /// <param name="originOffset">Offsets the origin of the cast away from the character's right direction.</param>
+    /// <param name="castDistance">Overrides the default cast distance.</param>
+    /// <param name="hitInfo">If true is returned, hitInfo will contain more information about where the closest collider was hit.</param>
     /// <returns></returns>
     public bool GroundCheck(float originOffset, float castDistance, out RaycastHit2D hitInfo) {
 
@@ -133,16 +138,16 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
 
     #region --- Wall Above ---
     /// <summary>
-    /// Checks if there is a wall above of the player's head
+    /// Checks if there is a wall above of the character's head.
     /// </summary>
     /// <returns></returns>
     public bool WallAbove() {
        return WallAbove(wallAboveDetectionDistance);
     }
     /// <summary>
-    /// Checks if there is a wall above of the player's head
+    /// Checks if there is a wall above of the character's head.
     /// </summary>
-    /// <param name="distance">Overrides the cast's default distance</param>
+    /// <param name="distance">Overrides the default cast distance.</param>
     /// <returns></returns>
     public bool WallAbove(float distance) {
 
@@ -158,25 +163,25 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
 
     #region --- Wall In Front ---
     /// <summary>
-    /// Checks if there is a wall in front of the character
+    /// Checks if there is a wall in front of the character.
     /// </summary>
     /// <returns></returns>
     public bool WallInFront() {
         return WallInFront(wallDetectionDistance);
     }
     /// <summary>
-    /// Checks if there is a wall in front of the character
+    /// Checks if there is a wall in front of the character.
     /// </summary>
-    /// <param name="distance">Overrides the cast's default distance</param>
+    /// <param name="distance">Overrides the default cast distance.</param>
     /// <returns></returns>
     public bool WallInFront(float distance) {
         return WallInFront(out RaycastHit2D hitInfo, distance);
     }
     /// <summary>
-    /// Checks if there is a wall in front of the character
+    /// Checks if there is a wall in front of the character.
     /// </summary>
-    /// <param name="hitInfo">Information of the collider that got hit</param>
-    /// <param name="distance">Overrides the cast's default distance</param>
+    /// <param name="hitInfo">Information of the collider that got hit.</param>
+    /// <param name="distance">Overrides the default cast distance.</param>
     /// <returns></returns>
     public bool WallInFront(out RaycastHit2D hitInfo, float distance) {
 
@@ -193,10 +198,10 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
 
     #region --- Ledge Grab Check ---
     /// <summary>
-    /// Checks if the character can ledge grab.
+    /// Checks if the character is able to grab onto a ledge.
     /// </summary>
-    /// <param name="exitLedgeGrab">Indicates that the ability to perform ledge grab is available again</param>
-    /// <param name="fixedOffset">The position of the detected ledge</param>
+    /// <param name="exitLedgeGrab">Indicates that the ability to perform ledge grab is available or not.</param>
+    /// <param name="fixedOffset">The position of the detected ledge.</param>
     /// <returns></returns>
     public bool LedgeGrabCheck(ref bool exitLedgeGrab, out Vector3 fixedOffset) {
         
@@ -290,18 +295,24 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Checks if there is a collider in front of the character's head, based on the transform asigned as the origin for the cast.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>True, if a collider was found, otherwise false.</returns>
     public bool HeadCollisionCheck() {
         return HeadCollisionCheck(wallDetectionDistance);
     }
+    /// <summary>
+    /// Checks if there is a collider in front of the character's head, based on the transform asigned as the origin for the cast.
+    /// </summary>
+    /// <returns>True, if a collider was found, otherwise false.</returns>
+    /// <param name="distance">Override the default cast distance.</param>
     public bool HeadCollisionCheck(float distance) {
         return HeadCollisionCheck(out RaycastHit2D hitInfo, distance);
     }
     /// <summary>
     /// Checks if there is a collider in front of the character's head, based on the transform asigned as the origin for the cast.
     /// </summary>
-    /// <param name="distance">Overrides the cast's default distance</param>
-    /// <returns></returns>
+    /// <param name="hitInfo">If true is returned, hitInfo will contain more information about where the closest collider was hit.</param>
+    /// <param name="distance">Override the default cast distance.</param>
+    /// <returns>True, if a collider was found, otherwise false.</returns>
     public bool HeadCollisionCheck(out RaycastHit2D hitInfo, float distance) {
         return BodyPartRay(headRayTransform.position, headCollisionSizeY, distance, out hitInfo);
     }
@@ -309,7 +320,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Checks if there is a collider in front of the character's chest, based on the transform asigned as the origin for the cast.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>True, if a collider was found, otherwise false.</returns>
     public bool ChestCollisionCheck() {
         return ChestCollisionCheck(wallDetectionDistance);
     }
@@ -319,8 +330,8 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Checks if there is a collider in front of the character's chest, based on the transform asigned as the origin for the cast.
     /// </summary>
-    /// <param name="distance">Overrides the cast's default distance</param>
-    /// <returns></returns>
+    /// <param name="distance">Overrides the cast's default distance.</param>
+    /// <returns>True, if a collider was found, otherwise false.</returns>
     public bool ChestCollisionCheck(out RaycastHit2D hitInfo, float distance) {
         return BodyPartRay(chestRayTransform.position, chestCollisionSizeY, distance, out hitInfo);
     }
@@ -328,7 +339,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Checks if there is a collider in front of the character's feet, based on the transform asigned as the origin for the cast.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>True, if a collider was found, otherwise false.</returns>
     public bool FeetCollisionCheck() {
         return FeetCollisionCheck(wallDetectionDistance);
     }
@@ -339,7 +350,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// Checks if there is a collider in front of the character's feet, based on the transform asigned as the origin for the cast.
     /// </summary>
     /// <param name="distance">Overrides the cast's default distance</param>
-    /// <returns></returns>
+    /// <returns>True, if a collider was found, otherwise false.</returns>
     public bool FeetCollisionCheck(out RaycastHit2D hitInfo, float distance) {
         return BodyPartRay(feetRayTransform.position, feetCollisionSizeY, distance, out hitInfo);
     }

@@ -81,11 +81,11 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
 
     #region --- Collider Around Character ---
     /// <summary>
-    /// Searches for any collider in the specified range around the character based on the character's collider
+    /// Searches for any collider in the specified range around the character based on the character's collider.
     /// </summary>
     /// <param name="overlapBox">False, will cast an OverlapCapsule instead.</param>
     /// <param name="range">This value represents a percentage of the character's collider, to be used as the size of the cast.</param>
-    /// <returns></returns>
+    /// <returns>True, if the overlap cast finds any colliders, otherwise false.</returns>
     public bool ColliderAroundCharacter(bool overlapBox, float range) {
 
         Vector2 origin = activeCollider.bounds.center;

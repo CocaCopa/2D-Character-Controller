@@ -19,7 +19,7 @@ public class PlayerController : HumanoidController {
     [Tooltip("Duration before the game object is automatically destroyed.")]
     [SerializeField] private float destroyMuzzleEffectTime;
 
-    private PlayerInput input;
+    [HideInInspector] private PlayerInput input;
     private bool canLedgeClimb = false;
 
     protected override void Awake() {

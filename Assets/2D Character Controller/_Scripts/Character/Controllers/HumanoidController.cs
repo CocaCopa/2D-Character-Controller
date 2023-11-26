@@ -60,15 +60,15 @@ public abstract class HumanoidController : MonoBehaviour {
     #endregion
 
     #region --- Private Properties ---
-    protected Rigidbody2D characterRb;
     protected CapsuleCollider2D activeCollider;
-    private CharacterAnimator characterAnimator;
-    private CharacterEnvironmentalQuery envQuery;
-    private CharacterMovement characterMovement;
-    private CharacterSlide characterSlide;
-    private CharacterDash characterDash;
-    private CharacterLedgeGrab characterLedgeGrab;
-    protected CharacterCombat characterCombat;
+    [HideInInspector] protected Rigidbody2D characterRb;
+    [HideInInspector]private CharacterAnimator characterAnimator;
+    [HideInInspector]private CharacterEnvironmentalQuery envQuery;
+    [HideInInspector] private CharacterMovement characterMovement;
+    [HideInInspector] private CharacterSlide characterSlide;
+    [HideInInspector] private CharacterDash characterDash;
+    [HideInInspector] private CharacterLedgeGrab characterLedgeGrab;
+    [HideInInspector] protected CharacterCombat characterCombat;
 
     private bool floorSlideInputHold = false;
     private bool jumpKeyPressed = false;
@@ -139,7 +139,6 @@ public abstract class HumanoidController : MonoBehaviour {
         ToggleColliders(IsFloorSliding);
         AdjustProperties();
         SpeedCalculations();
-        ManageTimers();
         UpdatePlayerState();
     }
     #endregion
@@ -213,12 +212,19 @@ public abstract class HumanoidController : MonoBehaviour {
 
     #region --- General Every Frame Adjustments ---
     private void AdjustProperties() {
-
-        activeCollider = verticalCollider.enabled ? verticalCollider : horizontalCollider;
-        envQuery.SetActiveCollider(activeCollider);
-
+        // The jumpKeyPressed flag is instrumental for coyote time. It resolves a bug where, instead of functioning as intended, coyote time
+        // would inadvertently grant the character the ability to double jump if the designated jump key was pressed within the period of time
+        // of the coyote time.
         if ((jumpKeyPressed && VerticalVelocity < 0) || IsLedgeGrabbing || IsLedgeClimbing) {
             jumpKeyPressed = false;
+        }
+
+        if (IsGrounded && !jumpKeyPressed) {
+            coyoteTimer = coyoteTime;
+        }
+        else {
+            coyoteTimer -= Time.deltaTime;
+            coyoteTimer = Mathf.Clamp(coyoteTimer, 0, coyoteTime);
         }
     }
 
@@ -229,17 +235,6 @@ public abstract class HumanoidController : MonoBehaviour {
         }
         if (characterRb.velocity == Vector2.zero) {
             characterMovement.CurrentSpeed = 0;
-        }
-    }
-
-    private void ManageTimers() {
-
-        if (IsGrounded && !jumpKeyPressed) {
-            coyoteTimer = coyoteTime;
-        }
-        else {
-            coyoteTimer -= Time.deltaTime;
-            coyoteTimer = Mathf.Clamp(coyoteTimer, 0, coyoteTime);
         }
     }
     #endregion
@@ -554,6 +549,8 @@ public abstract class HumanoidController : MonoBehaviour {
     private void ToggleColliders(bool sliding) {
         verticalCollider.enabled = !sliding;
         horizontalCollider.enabled = sliding;
+        activeCollider = verticalCollider.enabled ? verticalCollider : horizontalCollider;
+        envQuery.SetActiveCollider(activeCollider);
     }
 
     /// <summary>

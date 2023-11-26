@@ -43,7 +43,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
 
     private Collider2D activeCollider;
     /// <summary>
-    /// Updates the active collider to ensure correct functioning of collision checks.
+    /// Sets the collider to be utilized by the class.
     /// </summary>
     /// <param name="value">The collider to set as active.</param>
     public void SetActiveCollider(Collider2D value) => activeCollider = value;
@@ -140,15 +140,15 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Checks if there is a wall above of the character's head.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>True, if a collider is found, otherwise false.</returns>
     public bool WallAbove() {
-       return WallAbove(wallAboveDetectionDistance);
+        return WallAbove(wallAboveDetectionDistance);
     }
     /// <summary>
     /// Checks if there is a wall above of the character's head.
     /// </summary>
     /// <param name="distance">Overrides the default cast distance.</param>
-    /// <returns></returns>
+    /// <returns>True, if a collider is found, otherwise false.</returns>
     public bool WallAbove(float distance) {
 
         Vector2 origin = activeCollider.bounds.center;
@@ -200,9 +200,9 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
     /// <summary>
     /// Checks if the character is able to grab onto a ledge.
     /// </summary>
-    /// <param name="exitLedgeGrab">Indicates that the ability to perform ledge grab is available or not.</param>
+    /// <param name="exitLedgeGrab">Indicates that the ability to perform ledge grab is available again.</param>
     /// <param name="fixedOffset">The position of the detected ledge.</param>
-    /// <returns></returns>
+    /// <returns>True, if a ledge is detected, otherwise false.</returns>
     public bool LedgeGrabCheck(ref bool exitLedgeGrab, out Vector3 fixedOffset) {
         
         bool ledgeDetected = CanLedgeGrab() && InLedgeGrabRange();
@@ -383,9 +383,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
             Debug.LogError("PlayerEnvironmentalQuery: No collider has been provided. " +
                 "Please make sure the script that calls the checks, also sets the 'activeCollider' variable.");
         }
-        else {
-            enabled = false;
-        }
+        enabled = false;
     }
 
     private void OnDrawGizmos() {
@@ -393,7 +391,7 @@ public class CharacterEnvironmentalQuery : MonoBehaviour {
             activeCollider = GameObject.Find("Vertical").GetComponent<CapsuleCollider2D>();
             if (!activeCollider) {
                 debugMode = DebugMode.None;
-                Debug.LogError("PlayerEnvironmentalQuery: Could not find character's collider. Please make sure that the 'Player' prefab was not altered in any way");
+                Debug.LogError("PlayerEnvironmentalQuery: Could not find character's collider. Please make sure that the 'Character' prefab child objects were not altered in any way");
                 return;
             }
         }

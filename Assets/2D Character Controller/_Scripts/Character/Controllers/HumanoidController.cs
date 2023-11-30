@@ -425,6 +425,7 @@ public abstract class HumanoidController : MonoBehaviour {
         return canDash && allowDash;
     }
 
+    // Dash action completed.
     private void CharacterDash_OnDashDistanceCovered(object sender, CharacterDash.OnDasDistanceCoveredEventArgs e) {
         characterRb.position = e.targetDashPosition;
         transform.position = characterRb.position;
@@ -537,10 +538,10 @@ public abstract class HumanoidController : MonoBehaviour {
         }
         this.canWallSlide = canWallSlide;
         if (IsWallSliding) {
-            characterSlide.EnterWallSlide();
+            characterSlide.StartWallSliding();
         }
         else {
-            characterSlide.ExitWallSlide();
+            characterSlide.EndWallSliding();
         }
     }
     #endregion

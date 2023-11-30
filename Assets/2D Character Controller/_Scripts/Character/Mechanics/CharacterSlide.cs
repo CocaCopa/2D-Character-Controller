@@ -19,9 +19,9 @@ public class CharacterSlide : MonoBehaviour {
     }
 
     /// <summary>
-    /// Controls the behaviour of the character for as long as the character is floor sliding
+    /// Controls the behaviour of the character for as long as the character is floor sliding.
     /// </summary>
-    /// <param name="minimumSpeed">Character speed will stop being reduced as soon as it reaches the given value</param>
+    /// <param name="minimumSpeed">Character speed will stop being reduced as soon as it reaches the given value.</param>
     public void FloorSlide(float minimumSpeed = 0) {
 
         Vector3 currentVelocity = playerRb.velocity;
@@ -46,7 +46,7 @@ public class CharacterSlide : MonoBehaviour {
     /// <summary>
     /// Controls the behaviour of the character for as long as the character is wall sliding.
     /// </summary>
-    public void EnterWallSlide() {
+    public void StartWallSliding() {
 
         if (wallSlideFlag && playerRb.velocity.y <= 0) {
 
@@ -64,7 +64,7 @@ public class CharacterSlide : MonoBehaviour {
     /// <summary>
     /// Resets certain values when the character exits the wall slide.
     /// </summary>
-    public void ExitWallSlide() {
+    public void EndWallSliding() {
 
         playerRb.gravityScale = gravityScale;
         wallSlideFlag = true;

@@ -48,7 +48,7 @@ public class CharacterMovement : MonoBehaviour {
     private bool startAirAcceleration = false;
 
     /// <summary>
-    /// The character's top speed.
+    /// The character's set movement speed.
     /// </summary>
     public float TopSpeed => moveSpeed;
     /// <summary>
@@ -59,6 +59,10 @@ public class CharacterMovement : MonoBehaviour {
     /// Adjust this value if an external source, rather than movement input, alters the direction of your character.
     /// </summary>
     public Vector3 MoveDirection { get => moveDirection;  set => moveDirection = value; }
+    /// <summary>
+    /// Set a new movement speed (top speed) for your character.
+    /// </summary>
+    /// <param name="value">The new movement speed value (top speed).</param>
     public void SetCharacterMoveSpeed(float value) => moveSpeed = value;
 
     private void Update() {

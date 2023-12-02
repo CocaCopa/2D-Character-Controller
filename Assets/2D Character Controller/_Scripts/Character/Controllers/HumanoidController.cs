@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using System.Collections;
 using CocaCopa;
+using Mono.Cecil.Cil;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 [RequireComponent(typeof(CharacterMovement), typeof(CharacterEnvironmentalQuery), typeof(Rigidbody2D))]
 public abstract class HumanoidController : MonoBehaviour {
@@ -401,6 +403,11 @@ public abstract class HumanoidController : MonoBehaviour {
     }
     
     IEnumerator TeleportToPosition(Vector3 endPosition) {
+        // Ensure that the character is teleported at the end of the frame when the ledge climb is completed, to guarantee
+        // positioning after all 'ledgeClimb'-related tasks, including the mechanics' animations. This prevents a visual
+        // bug where the character experiences a slight jitter upon completion of the ledge climb.
+        // *Note* that the mentioned bug is unlikely to be triggered consistently in the editor. However, there is a higher
+        // chance of occurrence when the game is built.
         yield return new WaitForEndOfFrame();
         characterRb.position = endPosition;
     }

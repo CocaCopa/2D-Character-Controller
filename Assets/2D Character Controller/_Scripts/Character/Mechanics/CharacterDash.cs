@@ -17,7 +17,8 @@ public class CharacterDash : MonoBehaviour {
         "will be adjusted before the dash happens, to be on the platform's height, plus the given offset.")]
     [SerializeField, Range(0, 1)] private float adjustDashPosition = 20f / 100;
 
-    public float MaximumDashDistance => maxDashDistance;
+    public float DashSpeed { get => dashSpeed; set => dashSpeed = value; }
+    public float MaximumDashDistance { get => maxDashDistance; set => maxDashDistance = value; }
 
     public event System.EventHandler<OnDasDistanceCoveredEventArgs> OnDashDistanceCovered;
     public class OnDasDistanceCoveredEventArgs {
@@ -30,6 +31,7 @@ public class CharacterDash : MonoBehaviour {
     private Vector3 initialDashPosition;
     private Vector3 targetDashPosition;
     private Vector3 nextAfterImagePosition;
+
     private float dashDistance;
 
     private void Awake() {

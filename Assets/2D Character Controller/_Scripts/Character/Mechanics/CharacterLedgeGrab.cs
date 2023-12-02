@@ -30,15 +30,15 @@ public class CharacterLedgeGrab : MonoBehaviour {
         characterAnimator = GetComponentInChildren<CharacterAnimator>();
         if (spriteHolderTransform.TryGetComponent<SpriteRenderer>(out _)) {
             Debug.LogError("'spriteHolderTransform' should not have a sprite renderer attached. " +
-                "Please create a new gameObject and set it as the parent of the one with the Sprite Renderer component");
+                "Please create a new gameObject and set it as the parent of the gameObject that has the Sprite Renderer Component attached.");
         }
         
     }
 
     /// <summary>
-    /// Sets character to Ledge Grab state
+    /// Sets your character's state to Ledge Grab.
     /// </summary>
-    /// <param name="ledgePosition">The ledge position detected by your raycast</param>
+    /// <param name="ledgePosition">The ledge position detected by your collision query.</param>
     public void EnterLedgeGrabState(Vector3 ledgePosition) {
         enabled = true;
         playerRb.isKinematic = true;
@@ -47,7 +47,7 @@ public class CharacterLedgeGrab : MonoBehaviour {
     }
 
     /// <summary>
-    /// Exit from Ledge Grab state
+    /// Exit from Ledge Grab state.
     /// </summary>
     public void ExitLedgeGrabState() {
         ResetOffsets();
@@ -81,10 +81,11 @@ public class CharacterLedgeGrab : MonoBehaviour {
     }
 
     /// <summary>
-    /// Makes the character climb at the top of a ledge
+    /// Makes the character climb at the top of a ledge.
     /// </summary>
-    /// <param name="isLedgeClimbing">Indicates when the climb is finished</param>
-    /// <param name="endPosition">The position of the sprite holder once the ledge climb is finished</param>
+    /// <param name="ledgePosition">The ledge position detected by your collision query.</param>
+    /// <param name="isLedgeClimbing">Indicates when the character is climbing the ledge. Returns false when the ledge climb has been completed.</param>
+    /// <param name="endPosition">The position at the top of the detected ledge.</param>
     public void LedgeClimb(Vector3 ledgePosition, out bool isLedgeClimbing, out Vector3 endPosition) {
         isLedgeClimbing = true;
         playerRb.velocity = Vector2.zero;
@@ -113,7 +114,11 @@ public class CharacterLedgeGrab : MonoBehaviour {
     }
 
     private Vector3 GetEndPosition() {
-        RaycastHit2D hit = Physics2D.Raycast(ledgeClimbEndTransform.position, Vector2.down, 25f, ~LayerMask.GetMask("Player"));
+        Vector3 origin = ledgeClimbEndTransform.position;
+        Vector3 direction = Vector3.down;
+        float distance = 25f;
+        LayerMask excludePlayer = ~LayerMask.GetMask("Player");
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, distance, excludePlayer);
         return hit.point;
     }
 }

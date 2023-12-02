@@ -433,7 +433,7 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     // Dash action completed.
-    private void CharacterDash_OnDashDistanceCovered(object sender, CharacterDash.OnDasDistanceCoveredEventArgs e) {
+    private void CharacterDash_OnDashDistanceCovered(object sender, CharacterDash.OnDashDistanceCoveredEventArgs e) {
         characterRb.position = e.targetDashPosition;
         transform.position = characterRb.position;
         characterRb.velocity = ClampVelocityAfterDash();

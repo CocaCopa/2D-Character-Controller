@@ -20,8 +20,8 @@ public class CharacterDash : MonoBehaviour {
     public float DashSpeed { get => dashSpeed; set => dashSpeed = value; }
     public float MaximumDashDistance { get => maxDashDistance; set => maxDashDistance = value; }
 
-    public event System.EventHandler<OnDasDistanceCoveredEventArgs> OnDashDistanceCovered;
-    public class OnDasDistanceCoveredEventArgs {
+    public event System.EventHandler<OnDashDistanceCoveredEventArgs> OnDashDistanceCovered;
+    public class OnDashDistanceCoveredEventArgs {
         public Vector3 targetDashPosition;
     }
 
@@ -47,11 +47,11 @@ public class CharacterDash : MonoBehaviour {
     }
 
     /// <summary>
-    /// Perform a Dash
+    /// Makes your character dash.
     /// </summary>
-    /// <param name="characterHeight">Height of the character</param>
-    /// <param name="isGrounded">Whether the character is grounded</param>
-    /// <param name="adjustPosition">Should the position of the character be adjusted if the character is about to hit on the head/feet?</param>
+    /// <param name="characterHeight">Character's height (You can get that value using your character's collider).</param>
+    /// <param name="isGrounded">Whether the character is grounded or not.</param>
+    /// <param name="adjustPosition">Determines whether your character's position should be adjusted, to avoid collision with a wall.</param>
     public void Dash(float characterHeight, bool isGrounded, bool adjustPosition = true) {
 
         Vector3 positionBeforeDash = adjustPosition
@@ -105,9 +105,9 @@ public class CharacterDash : MonoBehaviour {
     /// <returns></returns>
     private bool FoundColliderInFront(out RaycastHit2D hit, out bool downwards) {
 
-        bool feetCollision = envQuery.FeetCollisionCheck(out hit, maxDashDistance); // Assume that a collider will be found in front of the character's feet.
+        bool feetCollision = envQuery.FeetCollisionCheck(out hit, maxDashDistance); // Assume that a collider will be found in front of the character's feet...
         bool headCollision = false; // Assume that a collider will NOT be found in front of the character's head.
-        if (!feetCollision) // If the assumption is incorrect, a head check will be initiated.
+        if (!feetCollision) // ...If the assumption is incorrect, a head check will be initiated.
             headCollision = envQuery.HeadCollisionCheck(out hit, maxDashDistance);
         bool chestCollision = envQuery.ChestCollisionCheck(maxDashDistance); // Check for colliders in front of the character's chest.
 
@@ -165,7 +165,7 @@ public class CharacterDash : MonoBehaviour {
             if (dashDistance != maxDashDistance) {
                 characterRb.velocity = Vector2.zero;
             }
-            OnDashDistanceCovered?.Invoke(this, new OnDasDistanceCoveredEventArgs {
+            OnDashDistanceCovered?.Invoke(this, new OnDashDistanceCoveredEventArgs {
                 targetDashPosition = targetDashPosition
             });
 

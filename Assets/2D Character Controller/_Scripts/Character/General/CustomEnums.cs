@@ -1,4 +1,4 @@
-public enum HumanoidStateName {
+public enum HumanoidAnimationStateName {
     None,
     Idle,
     Run,
@@ -27,4 +27,9 @@ public enum PushMode {
     OnInitiate,
     OnRelease,
     Both
+};
+
+public enum CollisionQuery {
+    ExcludeCharacter,
+    UseSpecifiedLayer
 };

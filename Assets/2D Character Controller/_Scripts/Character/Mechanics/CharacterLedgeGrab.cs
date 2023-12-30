@@ -107,7 +107,7 @@ public class CharacterLedgeGrab : MonoBehaviour {
             if (isLedgeClimbing) {
                 OffsetPositions(ledgePosition);
             }
-            if (characterAnimator.CheckStatePercentage(HumanoidStateName.LedgeClimb, 1f)) {
+            if (characterAnimator.CheckStatePercentage(HumanoidAnimationStateName.LedgeClimb, 1f)) {
                 isLedgeClimbing = false;
             }
         }

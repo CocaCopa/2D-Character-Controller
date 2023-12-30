@@ -322,8 +322,8 @@ public abstract class HumanoidController : MonoBehaviour {
             return false;
         }
 
-        bool desiredLedgePercentage = characterAnimator.CheckStatePercentage(HumanoidStateName.LedgeGrabEnter, ledgeJumpThreshold);
-        bool ledgeLoopPlaying = characterAnimator.IsStateActive(HumanoidStateName.LedgeGrabLoop);
+        bool desiredLedgePercentage = characterAnimator.CheckStatePercentage(HumanoidAnimationStateName.LedgeGrabEnter, ledgeJumpThreshold);
+        bool ledgeLoopPlaying = characterAnimator.IsStateActive(HumanoidAnimationStateName.LedgeGrabLoop);
         bool canLedgeJump = IsLedgeGrabbing && (desiredLedgePercentage || ledgeLoopPlaying);
         bool bypassJumpCheck = IsWallSliding || canLedgeJump;
 

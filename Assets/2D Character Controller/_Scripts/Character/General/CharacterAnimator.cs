@@ -142,7 +142,7 @@ public class CharacterAnimator : MonoBehaviour {
     private void LedgeGrabLogic() {
 
         bool isLedgeGrabbing = humanoidController.IsLedgeGrabbing;
-        bool ledgeEnterPlaying = IsStateActive(HumanoidStateName.LedgeGrabEnter);
+        bool ledgeEnterPlaying = IsStateActive(HumanoidAnimationStateName.LedgeGrabEnter);
 
         if (isLedgeGrabbing == false) {
 
@@ -168,7 +168,7 @@ public class CharacterAnimator : MonoBehaviour {
     /// <param name="percentage">Percentage threshold for comparison.</param>
     /// <param name="lessThan">Set to true to check if the play percentage is less than the given value; false to check if it's more than.</param>
     /// <returns>True, if the animation state has played more or less than the provided percentage, based on the specified comparison; otherwise, false.</returns>
-    public bool CheckStatePercentage(HumanoidStateName stateName, float percentage, bool lessThan = false) {
+    public bool CheckStatePercentage(HumanoidAnimationStateName stateName, float percentage, bool lessThan = false) {
         string stateNameString = ConvertToAnimationStateName(stateName);
         bool stateIsPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(stateNameString);
         bool stateMoreThanPercentage = lessThan
@@ -201,47 +201,47 @@ public class CharacterAnimator : MonoBehaviour {
     /// </summary>
     /// <param name="stateName">Name of the animation state to check.</param>
     /// <returns>True, if the specified animation state is playing; otherwise, false.</returns>
-    public bool IsStateActive(HumanoidStateName stateName) {
+    public bool IsStateActive(HumanoidAnimationStateName stateName) {
         string stateNameString = ConvertToAnimationStateName(stateName);
         bool stateIsPlaying = animator.GetCurrentAnimatorStateInfo(0).IsName(stateNameString);
         return stateIsPlaying;
     }
 
-    private static string ConvertToAnimationStateName(HumanoidStateName stateName) {
+    private static string ConvertToAnimationStateName(HumanoidAnimationStateName stateName) {
 
         string name = "";
         switch (stateName) {
-            case HumanoidStateName.Idle:
+            case HumanoidAnimationStateName.Idle:
             name = IDLE_NAME;
             break;
-            case HumanoidStateName.Run:
+            case HumanoidAnimationStateName.Run:
             name = RUN_NAME;
             break;
-            case HumanoidStateName.DoubleJump:
+            case HumanoidAnimationStateName.DoubleJump:
             name = DOUBLE_JUMP_NAME;
             break;
-            case HumanoidStateName.SlideLoop:
+            case HumanoidAnimationStateName.SlideLoop:
             name = SLIDE_LOOP_NAME;
             break;
-            case HumanoidStateName.Dash:
+            case HumanoidAnimationStateName.Dash:
             name = DASH_NAME;
             break;
-            case HumanoidStateName.WallSlide:
+            case HumanoidAnimationStateName.WallSlide:
             name = WALL_SLIDE_NAME;
             break;
-            case HumanoidStateName.LedgeGrabEnter:
+            case HumanoidAnimationStateName.LedgeGrabEnter:
             name = LEDGE_GRAB_ENTER_NAME;
             break;
-            case HumanoidStateName.LedgeGrabLoop:
+            case HumanoidAnimationStateName.LedgeGrabLoop:
             name = LEDGE_GRAB_LOOP_NAME;
             break;
-            case HumanoidStateName.LedgeClimb:
+            case HumanoidAnimationStateName.LedgeClimb:
             name = LEDGE_CLIMB_NAME;
             break;
-            case HumanoidStateName.TakeDamage:
+            case HumanoidAnimationStateName.TakeDamage:
             name = TAKE_DAMAGE_NAME;
             break;
-            case HumanoidStateName.Death:
+            case HumanoidAnimationStateName.Death:
             name = DEATH_NAME;
             break;
         }

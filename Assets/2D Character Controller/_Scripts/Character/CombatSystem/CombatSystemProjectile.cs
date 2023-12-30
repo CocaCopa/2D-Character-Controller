@@ -5,8 +5,7 @@ public class CombatSystemProjectile : MonoBehaviour {
 
     [Tooltip("The initial velocity of the projectile when it's launched.")]
     [SerializeField] private Vector2 initialVelocity;
-    [Tooltip("If the projectile is spawned by a chargeable attack, this is the minimum initial velocity, the projectile's velocity " +
-        "can be set to, based on the amount of charge")]
+    [Tooltip("If the projectile is spawned by a chargeable attack, this is the minimum initial velocity, the projectile's velocity can be set to, based on the amount of charge")]
     [SerializeField] private Vector2 minimumInitialVelocity;
     [SerializeField] private Transform hitboxTransform;
     [SerializeField] private HitboxShape hitboxShape;
@@ -122,6 +121,7 @@ public class CombatSystemProjectile : MonoBehaviour {
     }
 
 #if UNITY_EDITOR
+    [Tooltip("Visualizes the shape of the hitbox shape and size in the scene.")]
     [SerializeField] private bool visualizeHitbox;
     private void OnDrawGizmos() {
         if (!visualizeHitbox) {

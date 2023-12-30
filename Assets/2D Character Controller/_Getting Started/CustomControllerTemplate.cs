@@ -17,9 +17,13 @@ public class CustomControllerTemplate : HumanoidController {
 
     protected override void Awake() {
         base.Awake();
-        entityHealth = GetComponent<EntityHealth>();
-        entityHealth.OnTakeDamage += EntityHealth_OnTakeDamage;
-        entityHealth.OnEntityDeath += EntityHealth_OnEntityDeath;
+        if (TryGetComponent(out entityHealth)) {
+            entityHealth.OnTakeDamage += EntityHealth_OnTakeDamage;
+            entityHealth.OnEntityDeath += EntityHealth_OnEntityDeath;
+        }
+        else {
+            Debug.LogWarning("Missing Component: 'EntityHealth'");
+        }
     }
 
     protected override void Start() {
@@ -32,8 +36,10 @@ public class CustomControllerTemplate : HumanoidController {
 
     protected override void OnDisable() {
         base.OnDisable();
-        entityHealth.OnTakeDamage -= EntityHealth_OnTakeDamage;
-        entityHealth.OnEntityDeath -= EntityHealth_OnEntityDeath;
+        if (entityHealth != null) {
+            entityHealth.OnTakeDamage -= EntityHealth_OnTakeDamage;
+            entityHealth.OnEntityDeath -= EntityHealth_OnEntityDeath;
+        }
     }
 
     // ----------------- //
@@ -55,7 +61,7 @@ public class CustomControllerTemplate : HumanoidController {
     // vv This is how attacks should get called vv //
     private void SingleNormalAttack() {
         if (Input.GetKeyDown(KeyCode.Z)) {
-            characterCombat.PerformNormalAttack(singleChargeAttack, false);
+            characterCombat.PerformNormalAttack(singleChargeAttack, isPartOfCombo: false);
         }
     }
 
@@ -72,8 +78,7 @@ public class CustomControllerTemplate : HumanoidController {
         if (Input.GetKeyDown(KeyCode.C)) {
             if (characterCombat.AttackComboCounter < comboNormalAttacks.Count) {
                 AttackSO currentAttack = comboNormalAttacks[characterCombat.AttackComboCounter];
-                bool isPartOfCombo = true;
-                characterCombat.PerformNormalAttack(currentAttack, isPartOfCombo);
+                characterCombat.PerformNormalAttack(currentAttack, isPartOfCombo: true);
             }
         }
     }

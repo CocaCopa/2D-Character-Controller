@@ -21,8 +21,7 @@ public class CharacterCombat : MonoBehaviour {
     public event EventHandler<CurrentAttackEventArgs> OnAttackDealtDamage;
     public event EventHandler<OnProjectileThrownEventArgs> OnProjectileThrown;
 
-    [Tooltip("The transform of the attack hitbox. Projictiles have their own attack hitbox which can be assigned to their " +
-        "attached CombatSystemProjectile script.")]
+    [Tooltip("The transform of the attack hitbox. Projictiles have their own attack hitbox which can be assigned to their attached CombatSystemProjectile script.")]
     [SerializeField] private Transform attackHitboxTransform;
     [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack.")]
     [SerializeField] private float attackBufferTime;
@@ -77,7 +76,6 @@ public class CharacterCombat : MonoBehaviour {
 #if UNITY_EDITOR
     [Tooltip("Set to true, if to visualize the hitbox of your current attack")]
     [SerializeField] private bool visualizeAttackHitbox = true;
-    [Tooltip("Choose the shape of the hitbox that is configured in the attack you are visualizing")]
     [SerializeField] private Color gizmosColor = Color.green;
     private HitboxShape shape;
     public bool VisualizeAttackHitbox => visualizeAttackHitbox;

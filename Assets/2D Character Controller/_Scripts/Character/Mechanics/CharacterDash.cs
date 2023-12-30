@@ -13,9 +13,7 @@ public class CharacterDash : MonoBehaviour {
     [SerializeField] private float maxDashDistance = 6.5f;
     [Tooltip("How far from a wall should the character stop dashing")]
     [SerializeField] private float wallOffset = 0.2f;
-    [Tooltip("If the character's feet or head are going to hit a wall during the dash, the position of the character " +
-        "will be adjusted before the dash happens, to be on the platform's height, plus the given offset.")]
-    [SerializeField, Range(0, 1)] private float adjustDashPosition = 20f / 100;
+    [Tooltip("Adjusts the character's position to the platform's height plus the specified offset if their feet or head would collide with a wall during the dash, ensuring a smooth initiation of the dash.")]    [SerializeField, Range(0, 1)] private float adjustDashPosition = 20f / 100;
 
     public float DashSpeed { get => dashSpeed; set => dashSpeed = value; }
     public float MaximumDashDistance { get => maxDashDistance; set => maxDashDistance = value; }

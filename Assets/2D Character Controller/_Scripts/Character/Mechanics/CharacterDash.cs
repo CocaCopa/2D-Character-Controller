@@ -35,7 +35,6 @@ public class CharacterDash : MonoBehaviour {
     private float dashDistance;
 
     private void Awake() {
-
         envQuery = GetComponent<CharacterEnvironmentalQuery>();
         characterRb = GetComponent<Rigidbody2D>();
         enabled = false;
@@ -53,27 +52,24 @@ public class CharacterDash : MonoBehaviour {
     /// <param name="isGrounded">Whether the character is grounded or not.</param>
     /// <param name="adjustPosition">Determines whether your character's position should be adjusted, to avoid collision with a wall.</param>
     public void Dash(float characterHeight, bool isGrounded, bool adjustPosition = true) {
-
         Vector3 positionBeforeDash = adjustPosition
             ? DashInitialPosition(characterHeight, isGrounded)
             : characterRb.position;
 
         characterRb.position = positionBeforeDash;
         dashDistance = DashDistanceCorrection();
-
         characterRb.isKinematic = true;
         initialDashPosition = positionBeforeDash;
         nextAfterImagePosition = initialDashPosition;
         enabled = true;
-
         characterRb.velocity = new(dashSpeed * transform.right.x, 0);
-        
-        if (afterImageObject)
+        CalculateEndPosition();
+        if (afterImageObject) {
             AfterImageEffect();
+        }
     }
 
     private float DashDistanceCorrection() {
-
         bool wallInfront = envQuery.WallInFront(out RaycastHit2D hit, maxDashDistance + 0.5f);
         float correctedDistance = (hit.point - characterRb.position).magnitude - (wallOffset + 0.5f);
 
@@ -88,9 +84,7 @@ public class CharacterDash : MonoBehaviour {
     /// <param name="characterHeight"></param>
     /// <returns></returns>
     private Vector3 DashInitialPosition(float characterHeight, bool isGrounded) {
-
         if (!isGrounded && FoundColliderInFront(out RaycastHit2D hit, out bool downwardsOffset)) {
-
             GetColliderHitPoint(ref hit, characterHeight, downwardsOffset);
             characterRb.position = NewInitialDashPosition(hit.point.y, characterHeight, downwardsOffset);
         }
@@ -104,7 +98,6 @@ public class CharacterDash : MonoBehaviour {
     /// <param name="downwards">Informs if the collider found is above or below the character</param>
     /// <returns></returns>
     private bool FoundColliderInFront(out RaycastHit2D hit, out bool downwards) {
-
         bool feetCollision = envQuery.FeetCollisionCheck(out hit, maxDashDistance); // Assume that a collider will be found in front of the character's feet...
         bool headCollision = false; // Assume that a collider will NOT be found in front of the character's head.
         if (!feetCollision) // ...If the assumption is incorrect, a head check will be initiated.
@@ -122,7 +115,6 @@ public class CharacterDash : MonoBehaviour {
     /// <param name="characterHeight">Size Y of the character's collider</param>
     /// <param name="downwardsCast">Should cast downward or upward</param>
     private void GetColliderHitPoint(ref RaycastHit2D refHit, float characterHeight, bool downwardsCast) {
-
         float offsetDefaultOrigin = transform.right.x == 1
             ? refHit.point.x - characterRb.position.x
             : characterRb.position.x - refHit.point.x;
@@ -142,7 +134,6 @@ public class CharacterDash : MonoBehaviour {
     /// <param name="downwardsOffset">Should offset the character upwards or downwards</param>
     /// <returns></returns>
     private Vector3 NewInitialDashPosition(float colliderGroundHeight, float characterHeight, bool downwardsOffset) {
-
         float characterPivotPosition = characterRb.position.y;
         float distanceFromColliderToHitPoint = colliderGroundHeight - characterPivotPosition;
         float pivotToHitPointDistance = characterHeight - distanceFromColliderToHitPoint;
@@ -159,23 +150,19 @@ public class CharacterDash : MonoBehaviour {
     }
 
     private void StopDashing() {
-
         if (DashDistanceCovered()) {
-
             if (dashDistance != maxDashDistance) {
                 characterRb.velocity = Vector2.zero;
             }
             OnDashDistanceCovered?.Invoke(this, new OnDashDistanceCoveredEventArgs {
                 targetDashPosition = targetDashPosition
             });
-
             characterRb.isKinematic = false;
             enabled = false;
         }
     }
 
     private bool DashDistanceCovered() {
-
         if (transform.right.x > 0)
             return characterRb.position.x >= initialDashPosition.x + (dashDistance);
         else
@@ -186,25 +173,19 @@ public class CharacterDash : MonoBehaviour {
     /// Spawns the object given as the "After Image Object" based on the assigned values
     /// </summary>
     private void AfterImageEffect() {
-
         Vector3 initialPoint = initialDashPosition;
-        Vector3 endPoint;
-        AfterImageBasedOnDirection(out endPoint);
+        Vector3 endPoint = targetDashPosition;
         float distanceDivisions = (endPoint.x - initialPoint.x) / afterImageCount;
-
         for (int i = 0; i < afterImageCount; i++) {
-
             Instantiate(afterImageObject, nextAfterImagePosition, transform.rotation);
             nextAfterImagePosition.x += distanceDivisions;
         }
     }
 
-    private void AfterImageBasedOnDirection(out Vector3 endPoint) {
-
-        endPoint = transform.right.x == 1
+    private void CalculateEndPosition() {
+        Vector3 endPoint = transform.right.x == 1
             ? initialDashPosition + new Vector3(dashDistance, 0)
             : initialDashPosition - new Vector3(dashDistance, 0);
-
         targetDashPosition = endPoint;
     }
 }

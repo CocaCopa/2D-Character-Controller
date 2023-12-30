@@ -2,8 +2,6 @@ using System;
 using UnityEngine;
 using System.Collections;
 using CocaCopa;
-using Mono.Cecil.Cil;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 [RequireComponent(typeof(CharacterMovement), typeof(CharacterEnvironmentalQuery), typeof(Rigidbody2D))]
 public abstract class HumanoidController : MonoBehaviour {
@@ -106,16 +104,55 @@ public abstract class HumanoidController : MonoBehaviour {
     private bool isWallSliding = false;
     private bool isDashing = false;
 
+    /// <summary>
+    /// The character's rigidbody velocity along the Y axis.
+    /// </summary>
     public float VerticalVelocity => verticalVelocity;
+    /// <summary>
+    /// The character's rigidbody velocity along the X axis.
+    /// </summary>
     public float HorizontalVelocity => horizontalVelocity;
+    /// <summary>
+    /// Indicates whether a ledge is detected.
+    /// </summary>
     public bool LedgeDetected => ledgeDetected;
+    /// <summary>
+    /// Indicates whether the character is grounded.
+    /// </summary>
     public bool IsGrounded => isGrounded;
+    /// <summary>
+    /// Indicates whether the character is running.
+    /// </summary>
     public bool IsRunning => isRunning;
+    /// <summary>
+    /// Indicates whether the character is sliding on a floor.
+    /// </summary>
     public bool IsFloorSliding => isFloorSliding;
+    /// <summary>
+    /// Indicates whether the character is sliding on a wall.
+    /// </summary>
     public bool IsWallSliding => isWallSliding;
+    /// <summary>
+    /// Indicates whether the character is dashing.
+    /// </summary>
     public bool IsDashing => isDashing;
+    /// <summary>
+    /// Indicates whether the character is grabbing a ledge.
+    /// </summary>
     public bool IsLedgeGrabbing => isLedgeGrabbing;
+    /// <summary>
+    /// Indicates whether the character is climbing a ledge.
+    /// </summary>
     public bool IsLedgeClimbing => isLedgeClimbing;
+
+    /// <summary>
+    /// The set cooldown of the dash mechaninc in seconds.
+    /// </summary>
+    public float DashCooldown => dashCooldown;
+    /// <summary>
+    /// The set time that the character is able to stay idle while grabbing a ledge, before they are forced to exit 'LedgeGrab' state.
+    /// </summary>
+    public float LedgeGrabHoldTime => maxLedgeGrabTime;
     #endregion
 
     #region --- Callbacks ---

@@ -105,6 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ff8ffd67c5a83c47b2d519aabf8c76f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fallIfStuckTime: 3.5
+  destroyTime: 2
 --- !u!1 &939239532846394179
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class ArrowProjectileExample : MonoBehaviour {
 
+    [Tooltip("Time in seconds at which the arrow should fall to the ground if it stuck on a wall.")]
+    [SerializeField] private float fallIfStuckTime;
+    [Tooltip("Time in seconds to destroy the arrow after falling to the ground.")]
+    [SerializeField] private float destroyTime;
+
     private CombatSystemProjectile csProjectile;
     private Rigidbody2D arrowRb;
     private bool canDamage = true;
@@ -33,13 +38,13 @@ public class ArrowProjectileExample : MonoBehaviour {
             arrowRb.simulated = false;
             canDamage = false;
             enabled = false;
-            Invoke(nameof(Fall), 3.5f);
+            Invoke(nameof(Fall), fallIfStuckTime);
         }
     }
 
     private void Fall() {
         arrowRb.simulated = true;
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, destroyTime);
     }
 
     private void LookAtOnGoingDirection() {

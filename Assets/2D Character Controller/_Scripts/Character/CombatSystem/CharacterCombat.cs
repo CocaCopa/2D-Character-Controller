@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CocaCopa;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CharacterEnvironmentalQuery), typeof(Rigidbody2D))]
 public class CharacterCombat : MonoBehaviour {
     public class OnProjectileThrownEventArgs {
         public AttackSO attackData;
@@ -23,7 +23,7 @@ public class CharacterCombat : MonoBehaviour {
 
     [Tooltip("The transform of the attack hitbox. Projictiles have their own attack hitbox which can be assigned to their attached CombatSystemProjectile script.")]
     [SerializeField] private Transform attackHitboxTransform;
-    [Tooltip("Determines the time window during which your character can initiate a follow-up attack after an initial attack.")]
+    [Tooltip("Determines the time window during which the player can initiate a follow-up attack after an initial attack.")]
     [SerializeField] private float attackBufferTime;
     [Tooltip("If a charged attack is being casted, this value will be set to true once the attack is fully charged.")]
     [SerializeField] private bool attackCharged = false;

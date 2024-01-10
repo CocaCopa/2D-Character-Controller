@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+[RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
 public class CombatSystemProjectile : MonoBehaviour {
 
     [Tooltip("The initial velocity of the projectile when it's launched.")]
@@ -14,10 +15,13 @@ public class CombatSystemProjectile : MonoBehaviour {
 
     private GameObject lastGameObjectHit;
     private Rigidbody2D projectileRb;
-    private System.Collections.Generic.List<Collider2D> colliders = new();
-    private System.Collections.Generic.List<float> damageTimers = new();
+    private List<Collider2D> colliders = new();
+    private List<float> damageTimers = new();
     private float damageTimer = 0;
 
+    /// <summary>
+    /// The initial velocity of the projectile when it's launched.
+    /// </summary>
     public Vector2 InitialVelocity {
         get => initialVelocity;
         set {
@@ -28,8 +32,17 @@ public class CombatSystemProjectile : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Indicates which layers can be damaged.
+    /// </summary>
     public int DamageLayers { get; set; }
+    /// <summary>
+    /// Indicates the amount of damage the projectile will deal upon collision with a damageable object.
+    /// </summary>
     public float DamageAmount { get; set; }
+    /// <summary>
+    /// Indicates the shape of the projectile's hitbox. It can be a cirle or a box.
+    /// </summary>
     public HitboxShape HitboxShape => hitboxShape;
 
     private void Awake() {
@@ -61,10 +74,10 @@ public class CombatSystemProjectile : MonoBehaviour {
     }
 
     /// <summary>
-    /// Deals damage instantly to any new colliders that enters the specified hitbox and then deals damage again, to all targets, every 'x' seconds.
+    /// Deals damage instantly to any new colliders that enter the specified hitbox and then deals damage again, to all targets, every 'x' amount of seconds.
     /// </summary>
     /// <param name="damageAgainInSeconds">Damage frequency</param>
-    public void AreaOfEffectDamage(float damageAgainInSeconds) {
+    public void ContinuousAreaOfEffectDamage(float damageAgainInSeconds) {
         Collider2D[] colliderHit = null;
         if (hitboxShape == HitboxShape.Circle) {
             colliderHit = Physics2D.OverlapCircleAll(hitboxTransform.position, hitboxRadius, DamageLayers);

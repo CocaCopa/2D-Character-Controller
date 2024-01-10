@@ -60,16 +60,40 @@ public class CharacterCombat : MonoBehaviour {
     private bool isComboAttack = false;
 
     /// <summary>
-    /// Get the data of the currently casted attack.
+    /// The attack data (scriptable object) of the attack that is currently being performed.
     /// </summary>
     public AttackSO CurrentAttackData => currentAttackData;
+    /// <summary>
+    /// Specifies the current combo attack's sequence number.
+    /// </summary>
     public int AttackComboCounter => attackComboCounter;
+    /// <summary>
+    /// Indicates whether the character is currently attacking.
+    /// </summary>
     public bool IsAttacking => isAttacking;
-    public bool AttackCompleted => attackCompleted;
+    /// <summary>
+    /// Indicates whether the character is currently charging an attack.
+    /// </summary>
     public bool IsCharging => isCharging;
+    /// <summary>
+    /// Indicates whether an attack has been completed.
+    /// </summary>
+    public bool AttackCompleted => attackCompleted;
+    /// <summary>
+    /// Indicates the amount of time an attack needs in order to be fully charged in seconds.
+    /// </summary>
     public float ChargeTimer => chargeTimer;
+    /// <summary>
+    /// Indicates the amount of time an attack can be held before the character is forced to release/cancel it.
+    /// </summary>
     public float HoldAttackTimer => holdAttackTimer;
+    /// <summary>
+    /// Indicates whether the character is able to move while attacking.
+    /// </summary>
     public bool CanMoveWhileAttacking => currentAttackData != null && (currentAttackData.CanMoveWhileAttacking || currentAttackData.CanMoveWhileCharging);
+    /// <summary>
+    /// Indicates whether the character is able to change directions while attacking.
+    /// </summary>
     public bool CanChangeDirections => currentAttackData == null || currentAttackData.CanChangeDirections;
 
     #region --- Debug ---
@@ -93,7 +117,6 @@ public class CharacterCombat : MonoBehaviour {
                     //Gizmos.DrawWireSphere(center, radius);
                     DrawArc(center, radius, 360f, 20);
                 }
-                
             }
             else if (shape == HitboxShape.Box) {
                 Vector3 center = attackHitboxTransform.position;
@@ -109,39 +132,28 @@ public class CharacterCombat : MonoBehaviour {
     }
     void DrawArc(Vector3 center, float radius, float angle, int segments) {
         float angleStep = angle / segments;
-
-        float currentAngle = 0f;
-
+        float currentAngle;
         Vector3 prevPoint = center + Quaternion.Euler(0, 0, -angle / 2f) * Vector3.right * radius;
 
         for (int i = 1; i <= segments; i++) {
             currentAngle = i * angleStep;
-
             Vector3 nextPoint = center + Quaternion.Euler(0, 0, -angle / 2f + currentAngle) * Vector3.right * radius;
-
             Gizmos.DrawLine(prevPoint, nextPoint);
-
             prevPoint = nextPoint;
         }
     }
     void DrawFilledArc(Vector3 center, float radius, float angle, int segments) {
         float angleStep = angle / segments;
-
-        float currentAngle = 0f;
-
+        float currentAngle;
         Vector3 prevPoint = center + Quaternion.Euler(0, 0, -angle / 2f) * Vector3.right * radius;
 
         for (int i = 1; i <= segments; i++) {
             currentAngle = i * angleStep;
-
             Vector3 nextPoint = center + Quaternion.Euler(0, 0, -angle / 2f + currentAngle) * Vector3.right * radius;
-
             Gizmos.DrawLine(center, prevPoint);
             Gizmos.DrawLine(center, nextPoint);
-
             Gizmos.DrawRay(center, (prevPoint - center).normalized * radius);
             Gizmos.DrawRay(center, (nextPoint - center).normalized * radius);
-
             prevPoint = nextPoint;
         }
     }
@@ -266,7 +278,13 @@ public class CharacterCombat : MonoBehaviour {
         runningCoroutines.Clear();
     }
 
-    public void PerformNormalAttack(AttackSO attackData, bool isPartOfCombo, Transform projectileSpawnTransform = null) {
+    /// <summary>
+    /// Performs a normal single or combo attack.
+    /// </summary>
+    /// <param name="attackData">The scriptable object (AttackSO) that holds the data of the attack.</param>
+    /// <param name="isPartOfCombo">Indicates whether the provided AttackSO is part of a combo attack.</param>
+    /// <param name="projectileSpawnTransform">If the attack throws a projectile, a transform reference is needed.</param>
+    public void PerformNormalAttack(AttackSO attackData, bool isPartOfCombo = false, Transform projectileSpawnTransform = null) {
         receivedAttackData = attackData;
         this.projectileSpawnTransform = projectileSpawnTransform;
         if (receivedAttackData.IsChargeableAttack) {
@@ -344,6 +362,11 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Starts charging the specified charge attack.
+    /// </summary>
+    /// <param name="attackData">The scriptable object (AttackSO) that holds the data of the attack.</param>
+    /// <param name="projectileSpawPoint">If the attack throws a projectile, a transform reference is needed.</param>
     public void PerformChargedAttack(AttackSO attackData, Transform projectileSpawPoint = null) {
         if (IsAttacking && !IsCharging) {
             return;
@@ -403,6 +426,10 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Releases the current charge attack.
+    /// </summary>
+    /// <param name="projectileSpawnTransform">If the attack throws a projectile, a transform reference is needed.</param>
     public void TryReleaseChargedAttack(Transform projectileSpawnTransform = null) {
         if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
             return;
@@ -420,12 +447,16 @@ public class CharacterCombat : MonoBehaviour {
                 else {
                     Debug.LogError(currentAttackData.name + ": The attack is configured to launch a projectile, but no `Transform` has been specified. " +
                         "If you intend for the attack to throw\n a projectile on release, ensure that you provide the necessary `Transform` to both the " +
-                        "`PerformChargedAttack()` and `ReleaseChargedAttack()` functions.");
+                        "`PerformChargedAttack()` and `TryReleaseChargedAttack()` functions.");
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Cancels the current charge attack.
+    /// </summary>
+    /// <param name="attackData">The scriptable object (AttackSO) that holds the data of the attack.</param>
     public void CancelChargedAttack(AttackSO attackData) {
         if (canReleaseChargedAttack) {
             attackData.CurrentCooldownTime = Time.time + attackData.CooldownIfCanceled;
@@ -538,10 +569,6 @@ public class CharacterCombat : MonoBehaviour {
         }
     }
 
-    /// <summary>
-    /// Locks your character into 'Attack State' based on the scriptable object data
-    /// </summary>
-    /// <param name="attackData">The scriptable object that the data of the attack</param>
     private void EnterAttackState(AttackSO attackData) {
         if (!attackData.UseGravity) {
             characterRb.gravityScale = 0f;
@@ -605,11 +632,10 @@ public class CharacterCombat : MonoBehaviour {
     }
 
     /// <summary>
-    /// You should call this function after calculating the horizontal velocity to allow the
+    /// This function should be called after calculating the horizontal velocity to allow the
     /// combat system to adjust it based on the values provided in the scriptable object
     /// </summary>
-    /// <param name="attackData">The scriptable object that the data of the attack</param>
-    /// <param name="horizontalVelocity">Current horizontal velocity</param>
+    /// <param name="horizontalVelocity">Current horizontal velocity of the character.</param>
     public void CanMoveWhileCastingAttack(ref Vector2 horizontalVelocity) {
         if (currentAttackData == null) {
             return;

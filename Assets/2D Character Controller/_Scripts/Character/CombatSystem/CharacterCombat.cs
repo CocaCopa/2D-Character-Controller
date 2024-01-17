@@ -366,8 +366,8 @@ public class CharacterCombat : MonoBehaviour {
     /// Starts charging the specified charge attack.
     /// </summary>
     /// <param name="attackData">The scriptable object (AttackSO) that holds the data of the attack.</param>
-    /// <param name="projectileSpawPoint">If the attack throws a projectile, a transform reference is needed.</param>
-    public void PerformChargedAttack(AttackSO attackData, Transform projectileSpawPoint = null) {
+    /// <param name="projectileSpawnPoint">If the attack throws a projectile, a transform reference is needed.</param>
+    public void PerformChargedAttack(AttackSO attackData, Transform projectileSpawnPoint = null) {
         if (IsAttacking && !IsCharging) {
             return;
         }
@@ -393,7 +393,7 @@ public class CharacterCombat : MonoBehaviour {
         }
         else if (IsCharging) {
             isAttacking = true;
-            ChargeAttack(currentAttackData, projectileSpawPoint);
+            ChargeAttack(currentAttackData, projectileSpawnPoint);
         }
     }
 

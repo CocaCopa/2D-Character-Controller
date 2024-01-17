@@ -76,7 +76,7 @@ public class CombatSystemProjectile : MonoBehaviour {
     /// <summary>
     /// Deals damage instantly to any new colliders that enter the specified hitbox and then deals damage again, to all targets, every 'x' amount of seconds.
     /// </summary>
-    /// <param name="damageAgainInSeconds">Damage frequency</param>
+    /// <param name="damageAgainInSeconds">Damage frequency.</param>
     public void ContinuousAreaOfEffectDamage(float damageAgainInSeconds) {
         Collider2D[] colliderHit = null;
         if (hitboxShape == HitboxShape.Circle) {
@@ -114,7 +114,7 @@ public class CombatSystemProjectile : MonoBehaviour {
     /// <summary>
     /// Deals damage to all colliders inside the specified hitbox and then destroys the projectile.
     /// </summary>
-    public void Explode() {
+    public void ExplodeOnContact() {
         Collider2D[] collidersHit = null;
         if (hitboxShape == HitboxShape.Circle) {
             collidersHit = Physics2D.OverlapCircleAll(hitboxTransform.position, hitboxRadius, DamageLayers);
@@ -140,7 +140,6 @@ public class CombatSystemProjectile : MonoBehaviour {
         if (!visualizeHitbox) {
             return;
         }
-
         if (hitboxShape == HitboxShape.Circle) {
             Gizmos.DrawWireSphere(hitboxTransform.position, hitboxRadius);
         }

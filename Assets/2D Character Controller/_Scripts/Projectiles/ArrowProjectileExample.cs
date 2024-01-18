@@ -34,12 +34,16 @@ public class ArrowProjectileExample : MonoBehaviour {
             Destroy(gameObject);
         }
         else {
-            arrowRb.velocity = Vector2.zero;
-            arrowRb.simulated = false;
-            canDamage = false;
-            enabled = false;
+            StickToCollider();
             Invoke(nameof(Fall), fallIfStuckTime);
         }
+    }
+
+    private void StickToCollider() {
+        arrowRb.velocity = Vector2.zero;
+        arrowRb.simulated = false;
+        canDamage = false;
+        enabled = false;
     }
 
     private void Fall() {

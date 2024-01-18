@@ -15,7 +15,7 @@ public class CharacterCombat : MonoBehaviour {
     }
     public event EventHandler<CurrentAttackEventArgs> OnInitiateNormalAttack;
     public event EventHandler<CurrentAttackEventArgs> OnInitiateChargeAttack;
-    public event EventHandler<CurrentAttackEventArgs> OnChargedAttackFullyCharged;
+    public event EventHandler<CurrentAttackEventArgs> OnChargeAttackFullyCharged;
     public event EventHandler<CurrentAttackEventArgs> OnReleaseChargeAttack;
     public event EventHandler<CurrentAttackEventArgs> OnCancelChargeAttack;
     public event EventHandler<CurrentAttackEventArgs> OnAttackDealtDamage;
@@ -367,7 +367,7 @@ public class CharacterCombat : MonoBehaviour {
     /// </summary>
     /// <param name="attackData">The scriptable object (AttackSO) that holds the data of the attack.</param>
     /// <param name="projectileSpawnPoint">If the attack throws a projectile, a transform reference is needed.</param>
-    public void PerformChargedAttack(AttackSO attackData, Transform projectileSpawnPoint = null) {
+    public void PerformChargeAttack(AttackSO attackData, Transform projectileSpawnPoint = null) {
         if (IsAttacking && !IsCharging) {
             return;
         }
@@ -402,17 +402,17 @@ public class CharacterCombat : MonoBehaviour {
         runningCoroutines.Add(newCoroutine);
         if (canReleaseChargedAttack && attackCharged) {
             if (holdAttackTimer == attackData.HoldChargeTime) {
-                OnChargedAttackFullyCharged?.Invoke(this, new CurrentAttackEventArgs {
+                OnChargeAttackFullyCharged?.Invoke(this, new CurrentAttackEventArgs {
                     attackData = currentAttackData
                 });
             }
             if (Utilities.TickTimer(ref holdAttackTimer, attackData.HoldChargeTime, autoReset: false)) {
                 attackCharged = false;
                 if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceRelease) {
-                    TryReleaseChargedAttack(projectileSpawnPoint);
+                    TryReleaseChargeAttack(projectileSpawnPoint);
                 }
                 else if (currentAttackData.ChargeOverTime == ChargeOverTime.ForceCancel) {
-                    CancelChargedAttack(currentAttackData);
+                    CancelChargeAttack(currentAttackData);
                 }
             }
         }
@@ -430,7 +430,7 @@ public class CharacterCombat : MonoBehaviour {
     /// Releases the current charge attack.
     /// </summary>
     /// <param name="projectileSpawnTransform">If the attack throws a projectile, a transform reference is needed.</param>
-    public void TryReleaseChargedAttack(Transform projectileSpawnTransform = null) {
+    public void TryReleaseChargeAttack(Transform projectileSpawnTransform = null) {
         if (currentAttackData == null || !currentAttackData.IsChargeableAttack) {
             return;
         }
@@ -457,7 +457,7 @@ public class CharacterCombat : MonoBehaviour {
     /// Cancels the current charge attack.
     /// </summary>
     /// <param name="attackData">The scriptable object (AttackSO) that holds the data of the attack.</param>
-    public void CancelChargedAttack(AttackSO attackData) {
+    public void CancelChargeAttack(AttackSO attackData) {
         if (canReleaseChargedAttack) {
             attackData.CurrentCooldownTime = Time.time + attackData.CooldownIfCanceled;
         }

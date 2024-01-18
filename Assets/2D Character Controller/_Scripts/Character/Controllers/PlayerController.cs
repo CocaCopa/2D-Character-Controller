@@ -66,19 +66,19 @@ public class PlayerController : HumanoidController {
     private void PerformingChargedAttacks() {
         if (input.OnBowContinuous() && CanBowAttack()) {
             if (IsGrounded) {
-                characterCombat.PerformChargedAttack(bowChargeAttack, arrowSpawnTransform);
+                characterCombat.PerformChargeAttack(bowChargeAttack, arrowSpawnTransform);
             }
             else {
-                characterCombat.CancelChargedAttack(bowChargeAttack);
+                characterCombat.CancelChargeAttack(bowChargeAttack);
             }
         }
     }
 
     private void Input_OnBowReleased(object sender, System.EventArgs _) {
         if (IsGrounded)
-            characterCombat.TryReleaseChargedAttack(arrowSpawnTransform);
+            characterCombat.TryReleaseChargeAttack(arrowSpawnTransform);
         else {
-            characterCombat.CancelChargedAttack(bowChargeAttack);
+            characterCombat.CancelChargeAttack(bowChargeAttack);
         }
     }
 

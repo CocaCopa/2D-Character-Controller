@@ -67,10 +67,10 @@ public class CustomControllerTemplate : HumanoidController {
 
     private void SingleChargeAttack() {
         if (Input.GetKey(KeyCode.X)) {
-            characterCombat.PerformChargedAttack(singleChargeAttack);
+            characterCombat.PerformChargeAttack(singleChargeAttack);
         }
         else if (Input.GetKeyUp(KeyCode.X)) {
-            characterCombat.TryReleaseChargedAttack();
+            characterCombat.TryReleaseChargeAttack();
         }
     }
 

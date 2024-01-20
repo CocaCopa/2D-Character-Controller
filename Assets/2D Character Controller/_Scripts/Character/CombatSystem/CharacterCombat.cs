@@ -10,6 +10,10 @@ public class CharacterCombat : MonoBehaviour {
         public AttackSO attackData;
         public GameObject projectile;
     }
+    public class OnAttackDealtDamageEventArgs {
+        public AttackSO attackData;
+        public GameObject damagedObject;
+    }
     public class CurrentAttackEventArgs {
         public AttackSO attackData;
     }
@@ -18,7 +22,7 @@ public class CharacterCombat : MonoBehaviour {
     public event EventHandler<CurrentAttackEventArgs> OnChargeAttackFullyCharged;
     public event EventHandler<CurrentAttackEventArgs> OnReleaseChargeAttack;
     public event EventHandler<CurrentAttackEventArgs> OnCancelChargeAttack;
-    public event EventHandler<CurrentAttackEventArgs> OnAttackDealtDamage;
+    public event EventHandler<OnAttackDealtDamageEventArgs> OnAttackDealtDamage;
     public event EventHandler<OnProjectileThrownEventArgs> OnProjectileThrown;
 
     [Tooltip("The transform of the attack hitbox. Projictiles have their own attack hitbox which can be assigned to their attached CombatSystemProjectile script.")]
@@ -245,8 +249,9 @@ public class CharacterCombat : MonoBehaviour {
                 else if (!currentAttackData.IsChargeableAttack || (currentAttackData.IsChargeableAttack && !currentAttackData.ScalableDamage)) {
                     damageableObject.TakeDamage(currentAttackData.DamageAmount);
                 }
-                OnAttackDealtDamage?.Invoke(this, new CurrentAttackEventArgs {
-                    attackData = currentAttackData
+                OnAttackDealtDamage?.Invoke(this, new OnAttackDealtDamageEventArgs {
+                    attackData = currentAttackData,
+                    damagedObject = collidersHit.transform.root.gameObject
                 });
                 canDamage = false; // Ensures the attacker will only deal damage once. Resets when attackCompleted = true;
             }

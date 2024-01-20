@@ -59,16 +59,19 @@ public abstract class HumanoidController : MonoBehaviour {
     private const int OPPOSITE_DIRECTION = 180;
     #endregion
 
-    #region --- Private Properties ---
+    #region --- Protected Properties ---
     protected CapsuleCollider2D activeCollider;
     [HideInInspector] protected Rigidbody2D characterRb;
-    [HideInInspector]private CharacterAnimator characterAnimator;
-    [HideInInspector]private CharacterEnvironmentalQuery envQuery;
+    [HideInInspector] protected CharacterCombat characterCombat;
+    #endregion
+
+    #region --- Private Properties ---
+    [HideInInspector] private CharacterAnimator characterAnimator;
+    [HideInInspector] private CharacterEnvironmentalQuery envQuery;
     [HideInInspector] private CharacterMovement characterMovement;
     [HideInInspector] private CharacterSlide characterSlide;
     [HideInInspector] private CharacterDash characterDash;
     [HideInInspector] private CharacterLedgeGrab characterLedgeGrab;
-    [HideInInspector] protected CharacterCombat characterCombat;
 
     private bool floorSlideInputHold = false;
     private bool jumpKeyPressed = false;

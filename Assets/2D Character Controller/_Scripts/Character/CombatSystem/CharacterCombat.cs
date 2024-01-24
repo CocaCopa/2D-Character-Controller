@@ -638,7 +638,7 @@ public class CharacterCombat : MonoBehaviour {
 
     /// <summary>
     /// This function should be called after calculating the horizontal velocity to allow the
-    /// combat system to adjust it based on the values provided in the scriptable object
+    /// combat system to adjust it based on the values provided in the scriptable object.
     /// </summary>
     /// <param name="horizontalVelocity">Current horizontal velocity of the character.</param>
     public void CanMoveWhileCastingAttack(ref Vector2 horizontalVelocity) {

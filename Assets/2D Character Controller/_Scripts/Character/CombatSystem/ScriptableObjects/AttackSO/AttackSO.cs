@@ -23,13 +23,11 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool disableCastOnWall = false;
     [Tooltip("Specify at what distance away from a wall your character must be, in order to allow them to cast the attack.")]
     [SerializeField] private float wallCastDistance;
-    [Tooltip("True, sets your character's velocity to Vector3.zero when the attack is initiated. " +
-        "False, your character will continue moving at a constant speed based on their velocity before the attack.")]
+    [Tooltip("True, sets your character's velocity to Vector3.zero when the attack is initiated. False, your character will continue moving at a constant speed based on their velocity before the attack.")]
     [SerializeField] private bool resetVelocity = true;
     [Tooltip("Determines wether or not your character can change directions while they're attacking.")]
     [SerializeField] private bool canChangeDirections = false;
-    [Tooltip("If your animation offsets your character during the attack, you can adjust their position by setting an offset. " +
-        "After the attack, your character will teleport to that offseted position.")]
+    [Tooltip("If your animation offsets your character during the attack, you can adjust their position by setting an offset. After the attack, your character will teleport to that offseted position.")]
     [SerializeField] private Vector3 adjustPositionOnAttackEnd;
     [Tooltip("Determines if the character should be able to move while they cast an attack.")]
     [SerializeField] private bool canMoveWhileAttacking;
@@ -43,13 +41,12 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private ForceMode2D forceMode = ForceMode2D.Impulse;
     [Tooltip("How much force should be applied.")]
     [SerializeField] private Vector2 force;
-    [Tooltip("Specifies the delay in seconds before applying force. The specified delay time should be less than the duration of " +
-        "the animation clip; otherwise, it will not be considered and the desired force will not be applied.")]
+    [Tooltip("Specifies the delay in seconds before applying force. The specified delay time should be less than the duration of the animation clip; otherwise, it will not be considered and the desired force will not be applied.")]
     [SerializeField] private float delayForceTime;
     [Tooltip("Whether the character should be affected by gravity for the duration of the attack.")]
     [SerializeField] private bool useGravity;
     [Tooltip("Change the drag coeficient of the Rigidbody2D for the duration of the attack.")]
-    [SerializeField] private float dragCoeficient;
+    [SerializeField] private float dragCoefficient;
     [Tooltip("Choose which Rigidbody.AddForce() force mode should be applied.")]
     [SerializeField] private ForceMode2D m_ForceMode = ForceMode2D.Impulse;
     [Tooltip("How much force should be applied.")]
@@ -91,9 +88,9 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private float minimumProjectileDamage;
     [Tooltip("Enabling this option allows multiple prefabs to be assigned as projectiles. Upon attacking, a random prefab will be chosen.")]
     [SerializeField] private bool chooseRandomFromList = false;
-    [Tooltip("Projectile to spawn")]
+    [Tooltip("Projectile to spawn.")]
     [SerializeField] private GameObject projectilePrefab;
-    [Tooltip("Projectile to spawn")]
+    [Tooltip("Projectile to spawn.")]
     [SerializeField] private GameObject[] projectilePrefabs;
     [Tooltip("Indicates the exact timing for launching the projectile during the 'AttackAnimation', based on a specified percentage.")]
     [SerializeField, Range(0f, 0.98f)] private float throwAtPercentage;
@@ -131,7 +128,7 @@ public class AttackSO : ScriptableObject {
     public Vector3 Force => force;
     public float DelayForceTime => delayForceTime;
     public bool UseGravity => useGravity;
-    public float DragCoeficient => dragCoeficient;
+    public float DragCoefficient => dragCoefficient;
     public ForceMode2D ReleaseForceMode => m_ForceMode;
     public Vector3 ReleaseFoce => m_Force;
     public float ReleaseDelayForceTime => m_DelayForceTime;

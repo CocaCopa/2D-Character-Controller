@@ -608,7 +608,7 @@ public class CharacterCombat : MonoBehaviour {
             Vector3 force = attackData.Force;
             force.x *= direction.x;
             characterRb.AddForce(force, attackData.ForceMode);
-            characterRb.drag = attackData.DragCoeficient;
+            characterRb.drag = attackData.DragCoefficient;
         }
         else {
             yield return new WaitForSeconds(attackData.ReleaseDelayForceTime);

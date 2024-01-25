@@ -36,7 +36,7 @@ MonoBehaviour:
   force: {x: 500, y: 0}
   delayForceTime: 0
   useGravity: 0
-  dragCoeficient: 10
+  dragCoefficient: 10
   m_ForceMode: 1
   m_Force: {x: 0, y: 0}
   m_DelayForceTime: 0

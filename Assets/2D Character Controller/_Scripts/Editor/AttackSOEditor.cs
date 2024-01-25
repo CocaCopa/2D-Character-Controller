@@ -27,7 +27,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty force;
     SerializedProperty delayForceTime;
     SerializedProperty useGravity;
-    SerializedProperty dragCoeficient;
+    SerializedProperty dragCoefficient;
     SerializedProperty m_ForceMode;
     SerializedProperty m_Force;
     SerializedProperty m_DelayForceTime;
@@ -76,7 +76,7 @@ public class AttackSOEditor : Editor {
         force = serializedObject.FindProperty(nameof(force));
         delayForceTime = serializedObject.FindProperty(nameof(delayForceTime));
         useGravity = serializedObject.FindProperty(nameof(useGravity));
-        dragCoeficient = serializedObject.FindProperty(nameof(dragCoeficient));
+        dragCoefficient = serializedObject.FindProperty(nameof(dragCoefficient));
         m_ForceMode = serializedObject.FindProperty(nameof(m_ForceMode));
         m_Force = serializedObject.FindProperty(nameof(m_Force));
         m_DelayForceTime = serializedObject.FindProperty(nameof(m_DelayForceTime));
@@ -187,7 +187,7 @@ public class AttackSOEditor : Editor {
                 EditorGUILayout.PropertyField(force);
                 EditorGUILayout.PropertyField(delayForceTime);
                 EditorGUILayout.PropertyField(useGravity);
-                EditorGUILayout.PropertyField(dragCoeficient);
+                EditorGUILayout.PropertyField(dragCoefficient);
                 EditorGUILayout.Space(10);
 
             }
@@ -199,7 +199,7 @@ public class AttackSOEditor : Editor {
                     EditorGUILayout.PropertyField(force);
                     EditorGUILayout.PropertyField(delayForceTime);
                     EditorGUILayout.PropertyField(useGravity);
-                    EditorGUILayout.PropertyField(dragCoeficient);
+                    EditorGUILayout.PropertyField(dragCoefficient);
                     EditorGUILayout.Space(10);
                     EditorGUI.indentLevel--;
                 }

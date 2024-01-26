@@ -53,9 +53,8 @@ MonoBehaviour:
   chargeMoveSpeedPercentage: 0
   canMoveOnReleaseAttack: 0
   throwsProjectile: 1
-  projectileDamage: 310
   scalableProjectileDamage: 0
-  minimumProjectileDamage: 0
+  scalableProjectileVelocity: 0
   chooseRandomFromList: 0
   projectilePrefab: {fileID: 3690905825076657289, guid: 5be39f81d0a6af74da2eaae4673c3a3c, type: 3}
   projectilePrefabs: []

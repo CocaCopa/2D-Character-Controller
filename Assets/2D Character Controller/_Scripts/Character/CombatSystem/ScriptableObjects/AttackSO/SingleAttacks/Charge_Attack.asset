@@ -36,7 +36,7 @@ MonoBehaviour:
   force: {x: 500, y: 0}
   delayForceTime: 0
   useGravity: 1
-  dragCoeficient: 10
+  dragCoefficient: 0
   m_ForceMode: 1
   m_Force: {x: 2000, y: 0}
   m_DelayForceTime: 0
@@ -53,9 +53,8 @@ MonoBehaviour:
   chargeMoveSpeedPercentage: 0.337
   canMoveOnReleaseAttack: 0
   throwsProjectile: 1
-  projectileDamage: 220
   scalableProjectileDamage: 1
-  minimumProjectileDamage: 95
+  scalableProjectileVelocity: 1
   chooseRandomFromList: 0
   projectilePrefab: {fileID: 846552828456564998, guid: 337d447b9eee1ad4882c234b345c64d1, type: 3}
   projectilePrefabs: []

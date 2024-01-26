@@ -7,6 +7,10 @@ public class CombatSystemProjectileEditor : Editor {
     #region --- Properties ---
     SerializedProperty initialVelocity;
     SerializedProperty minimumInitialVelocity;
+
+    SerializedProperty damageAmount;
+    SerializedProperty minimumDamageAmount;
+
     SerializedProperty hitboxTransform;
     SerializedProperty visualizeHitbox;
     SerializedProperty hitboxShape;
@@ -16,6 +20,10 @@ public class CombatSystemProjectileEditor : Editor {
     private void OnEnable() {
         initialVelocity = serializedObject.FindProperty(nameof(initialVelocity));
         minimumInitialVelocity = serializedObject.FindProperty(nameof(minimumInitialVelocity));
+
+        damageAmount = serializedObject.FindProperty(nameof(damageAmount));
+        minimumDamageAmount = serializedObject.FindProperty(nameof(minimumDamageAmount));
+
         hitboxTransform = serializedObject.FindProperty(nameof(hitboxTransform));
         visualizeHitbox = serializedObject.FindProperty(nameof(visualizeHitbox));
         hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
@@ -42,7 +50,10 @@ public class CombatSystemProjectileEditor : Editor {
         serializedObject.Update();
         EditorGUILayout.PropertyField(initialVelocity);
         EditorGUILayout.PropertyField(minimumInitialVelocity);
-        EditorGUILayout.Space(10);
+
+        EditorGUILayout.PropertyField(damageAmount);
+        EditorGUILayout.PropertyField(minimumDamageAmount);
+
         EditorGUILayout.PropertyField(hitboxTransform);
         EditorGUILayout.PropertyField(visualizeHitbox);
         EditorGUILayout.PropertyField(hitboxShape);

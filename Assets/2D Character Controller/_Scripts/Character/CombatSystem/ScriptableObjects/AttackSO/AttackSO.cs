@@ -5,6 +5,7 @@ public class AttackSO : ScriptableObject {
 
     [SerializeField] private string attackName;
     [SerializeField] private Sprite attackIcon;
+
     [Tooltip("The animation clip of the attack.")]
     [SerializeField] private AnimationClip attackAnimation;
     [Tooltip("Define the shape of this attack's hitbox.")]
@@ -19,6 +20,7 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private float minimumDamage;
     [Tooltip("Attack cooldown in seconds.")]
     [SerializeField] private float cooldown;
+
     [Tooltip("Wether or not your character should be able to cast the attack, if a wall is detected in front of them.")]
     [SerializeField] private bool disableCastOnWall = false;
     [Tooltip("Specify at what distance away from a wall your character must be, in order to allow them to cast the attack.")]
@@ -33,6 +35,7 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private bool canMoveWhileAttacking;
     [Tooltip("Adjusts the character's movement speed as a percentage of their maximum speed.")]
     [SerializeField, Range(0f,1f)] private float attackMoveSpeedPercentage;
+
     [Tooltip("If 'true,' a force will be applied to the character in the direction they are facing when the attack is initiated.")]
     [SerializeField] private bool attackPushesCharacter;
     [Tooltip("Choose when your character should be pushed. OnInitiate: Once the attack is initiated. OnRelease: Once the attack is released.")]
@@ -51,13 +54,13 @@ public class AttackSO : ScriptableObject {
     [SerializeField] private ForceMode2D m_ForceMode = ForceMode2D.Impulse;
     [Tooltip("How much force should be applied.")]
     [SerializeField] private Vector2 m_Force;
-    [Tooltip("Specifies the delay in seconds before applying force. The specified delay time should be less than the duration of " +
-        "the animation clip; otherwise, it will not be considered and the desired force will not be applied.")]
+    [Tooltip("Specifies the delay in seconds before applying force. The specified delay time should be less than the duration of the animation clip; otherwise, it will not be considered and the desired force will not be applied.")]
     [SerializeField] private float m_DelayForceTime;
     [Tooltip("Whether the character should be affected by gravity for the duration of the attack.")]
     [SerializeField] private bool m_UseGravity;
     [Tooltip("Change the drag coeficient of the Rigidbody2D for the duration of the attack.")]
     [SerializeField] private float m_DragCoeficient;
+
     [Tooltip("Wether or not this attack can be charged.")]
     [SerializeField] private bool isChargeableAttack = false;
     [Tooltip("Animation to play when the attack is initiated. Can be null.")]
@@ -78,23 +81,22 @@ public class AttackSO : ScriptableObject {
     [SerializeField, Range(0f,1f)] private float chargeMoveSpeedPercentage;
     [Tooltip("True if you want your character to be allowed to move as soon as the attack is released.")]
     [SerializeField] private bool canMoveOnReleaseAttack;
+
     [Tooltip("Set to 'true' if your attack should throw a projectile.")]
     [SerializeField] private bool throwsProjectile = false;
-    [Tooltip("How much damage should the projectile deal.")]
-    [SerializeField] private float projectileDamage;
-    [Tooltip("Determines if the attack damage should scale with the level of charge applied.")]
+    [Tooltip("Determines if the damage of the projectile should scale with the level of charge applied.")]
     [SerializeField] private bool scalableProjectileDamage;
-    [Tooltip("Minimum damage of the projectile.")]
-    [SerializeField] private float minimumProjectileDamage;
+    [Tooltip("Determines if the velocity of the projectile should scale with the level of charge applied.")]
+    [SerializeField] private bool scalableProjectileVelocity;
     [Tooltip("Enabling this option allows multiple prefabs to be assigned as projectiles. Upon attacking, a random prefab will be chosen.")]
     [SerializeField] private bool chooseRandomFromList = false;
-    [Tooltip("Projectile to spawn.")]
+    [Tooltip("Projectile to spawn.\n\nEnsure that the provided prefab has the 'CombatSystemProjectile' component attached for correct functionality.")]
     [SerializeField] private GameObject projectilePrefab;
-    [Tooltip("Projectile to spawn.")]
+    [Tooltip("Projectiles to spawn. A random prefab will be selected from the list once the attack spawns the projectile.\n\nEnsure that the provided prefabs have the 'CombatSystemProjectile' component attached for correct functionality.")]
     [SerializeField] private GameObject[] projectilePrefabs;
     [Tooltip("Indicates the exact timing for launching the projectile during the 'AttackAnimation', based on a specified percentage.")]
     [SerializeField, Range(0f, 0.98f)] private float throwAtPercentage;
-    [Tooltip("Specifies the delay, in seconds, before the projectile is thrown.")]
+    [Tooltip("Specifies the delay, in seconds, before the projectile is thrown.\nIn most cases this value will be 0.")]
     [SerializeField] private float delayProjectileThrow;
 
     private void OnEnable() {
@@ -115,6 +117,7 @@ public class AttackSO : ScriptableObject {
     public bool ScalableDamage => scalableDamage;
     public float MinimumDamage => minimumDamage;
     public float Cooldown => cooldown;
+
     public bool DisableCastOnWall => disableCastOnWall;
     public float WallCastDistance => wallCastDistance;
     public bool ResetVelocity => resetVelocity;
@@ -122,6 +125,7 @@ public class AttackSO : ScriptableObject {
     public Vector3 AdjustPositionOnAttackEnd => adjustPositionOnAttackEnd;
     public bool CanMoveWhileAttacking => !IsChargeableAttack && canMoveWhileAttacking;
     public float AttackMoveSpeedPercentage => attackMoveSpeedPercentage;
+
     public bool AttackPushesCharacter => attackPushesCharacter;
     public PushMode AttackPushMode => attackPushMode;
     public ForceMode2D ForceMode => forceMode;
@@ -134,6 +138,7 @@ public class AttackSO : ScriptableObject {
     public float ReleaseDelayForceTime => m_DelayForceTime;
     public bool ReleaseUseGravity => m_UseGravity;
     public float ReleaseDragCoeficient => m_DragCoeficient;
+
     public bool IsChargeableAttack => isChargeableAttack;
     public AnimationClip InitiateChargeAnimation => initiateChargeAnimation;
     public AnimationClip ChargeAnimation => chargeAnimation;
@@ -144,10 +149,10 @@ public class AttackSO : ScriptableObject {
     public bool CanMoveWhileCharging => IsChargeableAttack && canMoveWhileCharging;
     public float ChargeMoveSpeedPercentage => chargeMoveSpeedPercentage;
     public bool CanMoveOnReleaseAttack => canMoveOnReleaseAttack;
+
     public bool ThrowsProjectile => throwsProjectile;
-    public float ProjectileDamage => projectileDamage;
     public bool ScalableProjectileDamage => scalableProjectileDamage;
-    public float MinimumProjectileDamage => minimumProjectileDamage;
+    public bool ScalableProjectileVelocity => scalableProjectileVelocity;
     public bool ChooseRandomFromList => chooseRandomFromList;
     public GameObject ProjectilePrefab => projectilePrefab;
     public GameObject[] ProjectilePrefabs => projectilePrefabs;

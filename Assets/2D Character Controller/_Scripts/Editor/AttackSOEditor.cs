@@ -7,6 +7,7 @@ public class AttackSOEditor : Editor {
     #region --- Serialized Properties ---
     SerializedProperty attackName;
     SerializedProperty attackIcon;
+
     SerializedProperty attackAnimation;
     SerializedProperty hitboxShape;
     SerializedProperty damageableLayers;
@@ -14,6 +15,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty scalableDamage;
     SerializedProperty minimumDamage;
     SerializedProperty cooldown;
+
     SerializedProperty disableCastOnWall;
     SerializedProperty wallCastDistance;
     SerializedProperty resetVelocity;
@@ -21,6 +23,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty adjustPositionOnAttackEnd;
     SerializedProperty canMoveWhileAttacking;
     SerializedProperty attackMoveSpeedPercentage;
+
     SerializedProperty attackPushesCharacter;
     SerializedProperty attackPushMode;
     SerializedProperty forceMode;
@@ -33,6 +36,7 @@ public class AttackSOEditor : Editor {
     SerializedProperty m_DelayForceTime;
     SerializedProperty m_UseGravity;
     SerializedProperty m_DragCoeficient;
+
     SerializedProperty isChargeableAttack;
     SerializedProperty initiateChargeAnimation;
     SerializedProperty chargeAnimation;
@@ -43,10 +47,10 @@ public class AttackSOEditor : Editor {
     SerializedProperty canMoveWhileCharging;
     SerializedProperty chargeMoveSpeedPercentage;
     SerializedProperty canMoveOnReleaseAttack;
+
     SerializedProperty throwsProjectile;
-    SerializedProperty projectileDamage;
     SerializedProperty scalableProjectileDamage;
-    SerializedProperty minimumProjectileDamage;
+    SerializedProperty scalableProjectileVelocity;
     SerializedProperty chooseRandomFromList;
     SerializedProperty projectilePrefab;
     SerializedProperty projectilePrefabs;
@@ -56,6 +60,7 @@ public class AttackSOEditor : Editor {
     private void OnEnable() {
         attackName = serializedObject.FindProperty(nameof(attackName));
         attackIcon = serializedObject.FindProperty(nameof(attackIcon));
+
         attackAnimation = serializedObject.FindProperty(nameof(attackAnimation));
         hitboxShape = serializedObject.FindProperty(nameof(hitboxShape));
         damageableLayers = serializedObject.FindProperty(nameof(damageableLayers));
@@ -63,6 +68,7 @@ public class AttackSOEditor : Editor {
         scalableDamage = serializedObject.FindProperty(nameof(scalableDamage));
         minimumDamage = serializedObject.FindProperty(nameof(minimumDamage));
         cooldown = serializedObject.FindProperty(nameof(cooldown));
+
         disableCastOnWall = serializedObject.FindProperty(nameof(disableCastOnWall));
         wallCastDistance = serializedObject.FindProperty(nameof(wallCastDistance));
         resetVelocity = serializedObject.FindProperty(nameof(resetVelocity));
@@ -70,6 +76,7 @@ public class AttackSOEditor : Editor {
         adjustPositionOnAttackEnd = serializedObject.FindProperty(nameof(adjustPositionOnAttackEnd));
         canMoveWhileAttacking = serializedObject.FindProperty(nameof(canMoveWhileAttacking));
         attackMoveSpeedPercentage = serializedObject.FindProperty(nameof(attackMoveSpeedPercentage));
+
         attackPushesCharacter = serializedObject.FindProperty(nameof(attackPushesCharacter));
         attackPushMode = serializedObject.FindProperty(nameof(attackPushMode));
         forceMode = serializedObject.FindProperty(nameof(forceMode));
@@ -82,6 +89,7 @@ public class AttackSOEditor : Editor {
         m_DelayForceTime = serializedObject.FindProperty(nameof(m_DelayForceTime));
         m_UseGravity = serializedObject.FindProperty(nameof(m_UseGravity));
         m_DragCoeficient = serializedObject.FindProperty(nameof(m_DragCoeficient));
+
         isChargeableAttack = serializedObject.FindProperty(nameof(isChargeableAttack));
         initiateChargeAnimation = serializedObject.FindProperty(nameof(initiateChargeAnimation));
         chargeAnimation = serializedObject.FindProperty(nameof(chargeAnimation));
@@ -92,10 +100,10 @@ public class AttackSOEditor : Editor {
         canMoveWhileCharging = serializedObject.FindProperty(nameof(canMoveWhileCharging));
         chargeMoveSpeedPercentage = serializedObject.FindProperty(nameof(chargeMoveSpeedPercentage));
         canMoveOnReleaseAttack = serializedObject.FindProperty(nameof(canMoveOnReleaseAttack));
+
         throwsProjectile = serializedObject.FindProperty(nameof(throwsProjectile));
-        projectileDamage = serializedObject.FindProperty(nameof(projectileDamage));
         scalableProjectileDamage = serializedObject.FindProperty(nameof(scalableProjectileDamage));
-        minimumProjectileDamage = serializedObject.FindProperty(nameof(minimumProjectileDamage));
+        scalableProjectileVelocity = serializedObject.FindProperty(nameof(scalableProjectileVelocity));
         chooseRandomFromList = serializedObject.FindProperty(nameof(chooseRandomFromList));
         projectilePrefab = serializedObject.FindProperty(nameof(projectilePrefab));
         projectilePrefabs = serializedObject.FindProperty(nameof(projectilePrefabs));
@@ -161,6 +169,7 @@ public class AttackSOEditor : Editor {
             EditorGUILayout.PropertyField(canMoveWhileAttacking);
             if (canMoveWhileAttacking.boolValue) {
                 EditorGUILayout.PropertyField(attackMoveSpeedPercentage);
+                attackPushesCharacter.boolValue = false;
             }
         }
         else {
@@ -168,6 +177,7 @@ public class AttackSOEditor : Editor {
             if (canMoveWhileCharging.boolValue) {
                 EditorGUILayout.PropertyField(chargeMoveSpeedPercentage);
                 EditorGUILayout.PropertyField(canMoveOnReleaseAttack);
+                attackPushesCharacter.boolValue = false;
             }
         }
     }
@@ -247,12 +257,9 @@ public class AttackSOEditor : Editor {
         }
         EditorGUILayout.PropertyField(throwsProjectile);
         if (throwsProjectile.boolValue) {
-            EditorGUILayout.PropertyField(projectileDamage);
             if (isChargeableAttack.boolValue) {
                 EditorGUILayout.PropertyField(scalableProjectileDamage);
-                if (scalableProjectileDamage.boolValue) {
-                    EditorGUILayout.PropertyField(minimumProjectileDamage);
-                }
+                EditorGUILayout.PropertyField(scalableProjectileVelocity);
             }
             EditorGUILayout.PropertyField(chooseRandomFromList);
             if (chooseRandomFromList.boolValue) {

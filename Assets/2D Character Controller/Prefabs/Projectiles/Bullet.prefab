@@ -88,6 +88,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialVelocity: {x: 60, y: 0}
   minimumInitialVelocity: {x: 0, y: 0}
+  damageAmount: 310
+  minimumDamageAmount: 0
   hitboxTransform: {fileID: 5024073062422946801}
   hitboxShape: 0
   hitboxRadius: 0.1

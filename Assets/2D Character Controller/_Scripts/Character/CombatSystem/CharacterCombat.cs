@@ -544,25 +544,19 @@ public class CharacterCombat : MonoBehaviour {
 
     private void SetUpProjectileGameObject(GameObject spawnedProjectile, AttackSO attackData) {
         if (spawnedProjectile.TryGetComponent<CombatSystemProjectile>(out var projectile)) {
-            projectile.DamageAmount = attackData.ProjectileDamage;
             projectile.DamageLayers = attackData.DamageableLayers;
             if (attackData.IsChargeableAttack) {
                 if (attackData.ScalableProjectileDamage) {
-                    float projectileDamage = attackData.ProjectileDamage * (1 - chargeTimer / attackData.ChargeTime);
-                    if (projectileDamage < attackData.MinimumProjectileDamage) {
-                        projectileDamage = attackData.MinimumProjectileDamage;
-                    }
-                    projectile.DamageAmount = projectileDamage;
+                    float damageMultiplier = chargeTimer / attackData.ChargeTime;
+                    projectile.DamageAmount *= 1 - damageMultiplier;
                 }
-                float speedMultiplier = chargeTimer / attackData.ChargeTime;
-                projectile.InitialVelocity *= 1 - speedMultiplier;
-                projectile.InitialVelocity *= transform.right.x;
-                projectile.enabled = true;
+                if (attackData.ScalableProjectileVelocity) {
+                    float speedMultiplier = chargeTimer / attackData.ChargeTime;
+                    projectile.InitialVelocity *= 1 - speedMultiplier;
+                }
             }
-            else {
-                projectile.InitialVelocity *= transform.right.x;
-                projectile.enabled = true;
-            }
+            projectile.InitialVelocity *= transform.right.x;
+            projectile.enabled = true;
         }
         else {
             string projectileName = spawnedProjectile.name;

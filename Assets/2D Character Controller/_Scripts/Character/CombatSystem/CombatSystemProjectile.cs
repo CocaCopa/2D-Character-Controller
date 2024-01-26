@@ -4,10 +4,19 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
 public class CombatSystemProjectile : MonoBehaviour {
 
+    [Header("--- Speed ---")]
     [Tooltip("The initial velocity of the projectile when it's launched.")]
     [SerializeField] private Vector2 initialVelocity;
-    [Tooltip("If the projectile is spawned by a chargeable attack, this is the minimum initial velocity, the projectile's velocity can be set to, based on the amount of charge")]
+    [Tooltip("If the 'initialVelocity' of the projectile is modified by an external script, it is ensured that the new value will not fall below the specified minimum.")]
     [SerializeField] private Vector2 minimumInitialVelocity;
+
+    [Header("--- Damage ---")]
+    [Tooltip("The amount of damage the projectile should deal upon colliding with a damageable object.")]
+    [SerializeField] private float damageAmount;
+    [Tooltip("If the 'damageAmount' of the projectile is modified by an external script, it is ensured that the new value will not fall below the specified minimum.")]
+    [SerializeField] private float minimumDamageAmount;
+
+    [Header("--- Hitbox ---")]
     [SerializeField] private Transform hitboxTransform;
     [SerializeField] private HitboxShape hitboxShape;
     [SerializeField] private float hitboxRadius;
@@ -33,13 +42,23 @@ public class CombatSystemProjectile : MonoBehaviour {
     }
 
     /// <summary>
+    /// Indicates the amount of damage the projectile will deal upon collision with a damageable object.
+    /// </summary>
+    public float DamageAmount {
+        get => damageAmount;
+        set {
+            if (value < minimumDamageAmount) {
+                value = minimumDamageAmount;
+            }
+            damageAmount = value;
+        }
+    }
+
+    /// <summary>
     /// Indicates which layers can be damaged.
     /// </summary>
     public int DamageLayers { get; set; }
-    /// <summary>
-    /// Indicates the amount of damage the projectile will deal upon collision with a damageable object.
-    /// </summary>
-    public float DamageAmount { get; set; }
+
     /// <summary>
     /// Indicates the shape of the projectile's hitbox. It can be a cirle or a box.
     /// </summary>

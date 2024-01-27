@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(CombatSystemProjectile))]
 public class BulletProjectileExample : MonoBehaviour {
 
     [Tooltip("Prefab to spawn once a collision has occured")]

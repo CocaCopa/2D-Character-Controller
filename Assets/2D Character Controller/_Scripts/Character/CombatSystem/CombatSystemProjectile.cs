@@ -59,10 +59,12 @@ public class CombatSystemProjectile : MonoBehaviour {
     /// </summary>
     public int DamageLayers { get; set; }
 
+#if UNITY_EDITOR
     /// <summary>
     /// Indicates the shape of the projectile's hitbox. It can be a cirle or a box.
     /// </summary>
     public HitboxShape HitboxShape => hitboxShape;
+#endif
 
     private void Awake() {
         projectileRb = GetComponent<Rigidbody2D>();
@@ -131,9 +133,10 @@ public class CombatSystemProjectile : MonoBehaviour {
     }
 
     /// <summary>
-    /// Deals damage to all colliders inside the specified hitbox and then destroys the projectile.
+    /// Deals damage to all colliders inside the specified hitbox.
     /// </summary>
-    public void ExplodeOnContact() {
+    /// <param name="destroyProjectile">True, the game object, to which this component is attached, will be destroyed upon completion of the function's execution.</param>
+    public void ExplodeOnContact(bool destroyProjectile = true) {
         Collider2D[] collidersHit = null;
         if (hitboxShape == HitboxShape.Circle) {
             collidersHit = Physics2D.OverlapCircleAll(hitboxTransform.position, hitboxRadius, DamageLayers);
@@ -149,7 +152,10 @@ public class CombatSystemProjectile : MonoBehaviour {
                 }
             }
         }
-        Destroy(gameObject);
+
+        if (destroyProjectile) {
+            Destroy(gameObject);
+        }
     }
 
 #if UNITY_EDITOR

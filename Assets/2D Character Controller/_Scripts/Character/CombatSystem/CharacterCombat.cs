@@ -613,7 +613,6 @@ public class CharacterCombat : MonoBehaviour {
             characterRb.drag = attackData.ReleaseDragCoeficient;
         }
     }
-
     
     private void ExitAttackState(AttackSO attackData, bool adjustPosition = true) {
         if (adjustPosition && attackData.AdjustPositionOnAttackEnd != Vector3.zero) {

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(CombatSystemProjectile))]
 public class ArrowProjectileExample : MonoBehaviour {
 
     [Tooltip("Time in seconds at which the arrow should fall to the ground if it stuck on a wall.")]

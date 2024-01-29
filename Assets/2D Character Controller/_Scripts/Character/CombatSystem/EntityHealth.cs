@@ -17,7 +17,7 @@ public class EntityHealth : MonoBehaviour, IDamageable {
     [SerializeField] private float maxHealthPoints;
     [Tooltip("Current health points of the entity.")]
     [SerializeField] private float currentHealthPoints;
-    [Tooltip("Whether or not your character/object is able to regen missing health points.")]
+    [Tooltip("Whether or not your entity is able to regen missing health points.")]
     [SerializeField] private bool canRegenHealth;
     [Tooltip("Choose whether or not your entity should stop regenerating health, when they take damage.")]
     [SerializeField] private bool interruptWhenDamaged = true;
@@ -26,11 +26,30 @@ public class EntityHealth : MonoBehaviour, IDamageable {
     [Tooltip("How many health points per second the entity should gain, once the regen effect has been triggered.")]
     [SerializeField] private float regenHealthPoints;
 
+    /// <summary>
+    /// Indicates whether the entity is alive.
+    /// </summary>
+    public bool IsAlive => currentHealthPoints > 0;
     public ArmourSO ArmourData { get => armourData; set => armourData = value; }
+    /// <summary>
+    /// Maximum health points of the entity.
+    /// </summary>
     public float MaxHealthPoints { get => maxHealthPoints; set => maxHealthPoints = value; }
+    /// <summary>
+    /// The current health points of the entity.
+    /// </summary>
     public float CurrentHealthPoints { get => currentHealthPoints; set => currentHealthPoints = value; }
+    /// <summary>
+    /// Whether or not your entity is able to regen missing health points.
+    /// </summary>
     public bool CanRegenHealth { get => canRegenHealth; set => canRegenHealth = value; }
+    /// <summary>
+    /// Choose whether or not your entity should stop regenerating health, when they take damage.
+    /// </summary>
     public bool InterruptHealthRegenWhenDamaged { get => interruptWhenDamaged; set => interruptWhenDamaged = value; }
+    /// <summary>
+    /// The amount of health points the entity should regenrate, once the health regeneration effect has been triggered.
+    /// </summary>
     public float RegenHealthPoints { get => regenHealthPoints; set => regenHealthPoints = value; }
     /// <summary>
     /// Time in seconds before health regeneration triggers.
@@ -40,6 +59,9 @@ public class EntityHealth : MonoBehaviour, IDamageable {
     /// Triggers health regeneration when this value reaches 0.
     /// </summary>
     public float RegenTriggerTimer { get => regenTriggerTimer; set => regenTriggerTimer = value; }
+    /// <summary>
+    /// Indicates whether the entity is regenerating health points.
+    /// </summary>
     public bool IsRegeneratingHealth => isRegenerating;
     /// <summary>
     /// Starts health regeneration.
@@ -113,16 +135,22 @@ public class EntityHealth : MonoBehaviour, IDamageable {
         });
 
         if (currentHealthPoints <= 0) {
-            Death();
+            KillEntity();
         }
     }
 
-    public void Death() {
+    /// <summary>
+    /// Kills the entity.
+    /// </summary>
+    public void KillEntity() {
         canRegenHealth = false;
         enabled = false;
         OnEntityDeath?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Respawns the entity.
+    /// </summary>
     public void Alive() {
         regenTriggerTimer = regenTriggerTime;
         canRegenHealth = defaultCanRegenHealth;

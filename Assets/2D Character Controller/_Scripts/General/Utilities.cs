@@ -7,9 +7,9 @@ namespace CocaCopa {
         /// <summary>
         /// Start a timer with the specified values
         /// </summary>
-        /// <param name="waitTimer">Current timer value</param>
-        /// <param name="waitTime">Maximum timer value</param>
-        /// <param name="autoReset">Set to true if you want the timer to automatically reset</param>
+        /// <param name="waitTimer">Current timer value.</param>
+        /// <param name="waitTime">Maximum timer value.</param>
+        /// <param name="autoReset">True,  if you prefer the timer to reset automatically.</param>
         /// <returns>True, when the timer value is 0</returns>
         public static bool TickTimer(ref float waitTimer, float waitTime, bool autoReset = true) {
             if (waitTimer == 0) {
@@ -62,10 +62,10 @@ namespace CocaCopa {
         }
 
         /// <summary>
-        /// Swaps the values between the 2 given Vectors
+        /// Swaps the values between 2 given Vectors
         /// </summary>
-        /// <param name="vector_1"></param>
-        /// <param name="vector_2"></param>
+        /// <param name="vector_1">Value 1.</param>
+        /// <param name="vector_2">Value 2.</param>
         public static void SwapVectorValues(ref Vector3 vector_1, ref Vector3 vector_2) {
             Vector3 temp = vector_1;
             vector_1 = vector_2;
@@ -75,8 +75,8 @@ namespace CocaCopa {
         /// <summary>
         /// Swaps the values between the 2 given floats
         /// </summary>
-        /// <param name="vector_1"></param>
-        /// <param name="vector_2"></param>
+        /// <param name="float_1">Value 1.</param>
+        /// <param name="float_2">Value 2.</param>
         public static void SwapFloatValues(ref float float_1, ref float float_2) {
             float temp = float_1;
             float_1 = float_2;
@@ -86,9 +86,9 @@ namespace CocaCopa {
         /// <summary>
         /// Generate a random Vector3 inside the given circle
         /// </summary>
-        /// <param name="center">Center of the circle</param>
-        /// <param name="radius">Radius of the circle</param>
-        /// <param name="forwardDirection">Orientation of the circle</param>
+        /// <param name="center">Center of the circle.</param>
+        /// <param name="radius">Radius of the circle.</param>
+        /// <param name="forwardDirection">Orientation of the circle.</param>
         /// <returns>The generated Vector3</returns>
         public static Vector3 RandomVectorPointInCircle(Vector3 center, float radius, Vector3 forwardDirection) {
             var vector2 = Random.insideUnitCircle * radius;
@@ -100,13 +100,13 @@ namespace CocaCopa {
         }
 
         /// <summary>
-        /// Checks of the given Vector3 is inside the given box
+        /// Checks if the given Vector3 is inside the given box.
         /// </summary>
-        /// <param name="transform">Transfom of the object calling the function</param>
-        /// <param name="point">Position to check</param>
-        /// <param name="limitsX">Box size X</param>
-        /// <param name="limitsZ">Box size Z</param>
-        /// <returns></returns>
+        /// <param name="transform">Transfom of the object calling the function.</param>
+        /// <param name="point">Position to check.</param>
+        /// <param name="limitsX">Box size X.</param>
+        /// <param name="limitsZ">Box size Z.</param>
+        /// <returns>True, if the given point is out of the specified limits.</returns>
         public static bool OutOfBounds(Transform transform, Vector3 point, float limitsX, float limitsZ) {
             Vector3 pointWorldToLocal = transform.InverseTransformPoint(point);
             bool outOfBoundsUp    = pointWorldToLocal.z - limitsZ / 2 > 0;
@@ -117,12 +117,12 @@ namespace CocaCopa {
         }
 
         /// <summary>
-        /// Checks if the given position is close to any of the positions in a list
+        /// Checks if the given position is close to any of the positions in a list.
         /// </summary>
-        /// <param name="position">Position to check</param>
-        /// <param name="positions">List of positions</param>
-        /// <param name="distance">Distance</param>
-        /// <returns>True, if the distance is less than the specified 'distance'</returns>
+        /// <param name="position">Position to check.</param>
+        /// <param name="positions">List of positions.</param>
+        /// <param name="distance">Distance.</param>
+        /// <returns>True, if the distance is less than the specified 'distance'.</returns>
         public static bool IsPositionCloseToAnyPosition(Vector3 position, List<Vector3> positions, float distance) {
             bool tooClose = false;
             for (int i = 0; i < positions.Count; i++) {

@@ -162,6 +162,9 @@ public abstract class HumanoidController : MonoBehaviour {
     protected virtual void Awake() {
         FindComponents();
         InitializeProperties();
+        if ((characterRb.constraints & (RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY)) != 0) {
+            Debug.LogWarning("The character's rigidbody has constraints set on the X or Y axis. Movement may not behave as expected.");
+        }
     }
 
     protected virtual void Start() {

@@ -653,6 +653,8 @@ MonoBehaviour:
   minimumFloorSlideSpeed: 6
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
+  respawnTransform: {fileID: 0}
+  respawnTime: 2
   meleeCombo_1:
   - {fileID: 11400000, guid: f45099718b4fe444184956f4b657cdda, type: 2}
   - {fileID: 11400000, guid: b00556469649b564d8fe72bd031fc611, type: 2}
@@ -907,13 +909,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef49ad99acd070e448ccef633fc7e1b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armourData: {fileID: 0}
-  maxHealthPoints: 100
+  armourData: {fileID: 11400000, guid: c6abe1415c2bc4b47a13f8aedc7bdb30, type: 2}
+  maxHealthPoints: 500
   currentHealthPoints: 0
-  canRegenHealth: 0
+  canRegenHealth: 1
   interruptWhenDamaged: 1
-  regenTriggerTime: 0
-  regenHealthPoints: 0
+  regenTriggerTime: 2
+  regenHealthPoints: 200
 --- !u!1 &2353421476987182329
 GameObject:
   m_ObjectHideFlags: 0

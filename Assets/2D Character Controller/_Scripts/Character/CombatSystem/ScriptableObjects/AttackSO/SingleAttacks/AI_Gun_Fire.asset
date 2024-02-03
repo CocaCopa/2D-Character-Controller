@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 748551abfae5915438534e35c217d069, type: 3}
+  m_Name: AI_Gun_Fire
+  m_EditorClassIdentifier: 
+  attackName: 
+  attackIcon: {fileID: 0}
+  attackAnimation: {fileID: 7400000, guid: 725f2bcdba0d61b4ab2b87af4fe7666d, type: 2}
+  hitboxShape: 0
+  damageableLayers:
+    serializedVersion: 2
+    m_Bits: 192
+  damageAmount: 0
+  scalableDamage: 0
+  minimumDamage: 0
+  cooldown: 0.25
+  disableCastOnWall: 1
+  wallCastDistance: 0.25
+  resetVelocity: 1
+  canChangeDirections: 1
+  adjustPositionOnAttackEnd: {x: 0, y: 0, z: 0}
+  canMoveWhileAttacking: 0
+  attackMoveSpeedPercentage: 0
+  attackPushesCharacter: 1
+  attackPushMode: 0
+  forceMode: 1
+  force: {x: -75, y: 0}
+  delayForceTime: 0.05
+  useGravity: 0
+  dragCoefficient: 10
+  m_ForceMode: 1
+  m_Force: {x: 0, y: 0}
+  m_DelayForceTime: 0
+  m_UseGravity: 0
+  m_DragCoeficient: 0
+  isChargeableAttack: 0
+  initiateChargeAnimation: {fileID: 0}
+  chargeAnimation: {fileID: 0}
+  chargeTime: 0
+  holdChargeTime: 0
+  chargeOverTime: 1
+  cooldownIfCanceled: 0
+  canMoveWhileCharging: 0
+  chargeMoveSpeedPercentage: 0
+  canMoveOnReleaseAttack: 0
+  throwsProjectile: 1
+  scalableProjectileDamage: 0
+  scalableProjectileVelocity: 0
+  chooseRandomFromList: 0
+  projectilePrefab: {fileID: 3690905825076657289, guid: 5be39f81d0a6af74da2eaae4673c3a3c, type: 3}
+  projectilePrefabs: []
+  throwAtPercentage: 0.25
+  delayProjectileThrow: 0

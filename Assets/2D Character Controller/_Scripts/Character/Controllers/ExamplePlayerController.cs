@@ -1,13 +1,20 @@
+using CocaCopa;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : HumanoidController {
+public class ExamplePlayerController : HumanoidController {
+
+    [Header("--- Respawn ---")]
+    [SerializeField] private Transform respawnTransform;
+    [SerializeField] private float respawnTime;
 
     [Header("--- Combo Attack ---")]
     [SerializeField] private List<AttackSO> meleeCombo_1 = new();
+
     [Header("--- Bow Charge Attack ---")]
     [SerializeField] private AttackSO bowChargeAttack;
     [SerializeField] private Transform arrowSpawnTransform;
+
     [Header("--- Gun Normal Attack ---")]
     [SerializeField] private AttackSO gunFireAttack;
     [Tooltip("Position at which the projectile of this attack will be spawned.")]
@@ -20,17 +27,22 @@ public class PlayerController : HumanoidController {
     [SerializeField] private float destroyMuzzleEffectTime;
 
     [HideInInspector] private PlayerInput input;
+    [HideInInspector] private EntityHealth healthScript;
+    [HideInInspector] private CharacterMovement movement;
     private bool canLedgeClimb = false;
+    private float respawnTimer;
 
     protected override void Awake() {
         base.Awake();
+        respawnTimer = respawnTime;
         input = FindObjectOfType<PlayerInput>();
+        healthScript = GetComponent<EntityHealth>();
+        movement = GetComponent<CharacterMovement>();
     }
 
     protected override void Start() {
         base.Start();
         SubscribeToEvents();
-        characterCombat.OnProjectileThrown += Combat_ProjectileThrown;
     }
 
     protected override void OnDisable() {
@@ -39,6 +51,10 @@ public class PlayerController : HumanoidController {
     }
 
     protected override void Update() {
+        if (!healthScript.IsAlive) {
+            Respawn();
+            return;
+        }
         base.Update();
         LocomotionController();
         PerformingChargedAttacks();
@@ -107,18 +123,23 @@ public class PlayerController : HumanoidController {
         }
     }
 
-    private void SubscribeToEvents() {
-        input.OnJumpPerformed += Input_OnJumpPerformed;
-        input.OnDashPerformed += Input_OnDashPerformed;
-        input.OnCombatNormalAttacks += Input_OnComboNomalAttacksPerformed;
-        input.OnBowReleased += Input_OnBowReleased;
+    private void Health_OnEntityAlive(object sender, System.EventArgs e) {
+        transform.position = respawnTransform.position;
+        movement.CurrentSpeed = 0;
+        SubscribeToEvents();
     }
 
-    private void UnsubscribeFromEvents() {
-        input.OnJumpPerformed -= Input_OnJumpPerformed;
-        input.OnDashPerformed -= Input_OnDashPerformed;
-        input.OnCombatNormalAttacks -= Input_OnComboNomalAttacksPerformed;
-        input.OnBowReleased -= Input_OnBowReleased;
+    private void Script_OnEntityDeath(object sender, System.EventArgs e) {
+        UnsubscribeFromEvents();
+        Vector3 velocity = characterRb.velocity;
+        velocity.x = 0;
+        characterRb.velocity = velocity;
+    }
+
+    private void Respawn() {
+        if (Utilities.TickTimer(ref respawnTimer, respawnTime)) {
+            healthScript.Alive();
+        }
     }
 
     private bool CanBowAttack() {
@@ -131,5 +152,22 @@ public class PlayerController : HumanoidController {
 
     private bool CanGunAttack() {
         return IsGrounded && !IsFloorSliding && !IsLedgeClimbing && !IsLedgeGrabbing && !IsDashing && !IsWallSliding;
+    }
+
+    private void SubscribeToEvents() {
+        input.OnJumpPerformed += Input_OnJumpPerformed;
+        input.OnDashPerformed += Input_OnDashPerformed;
+        input.OnCombatNormalAttacks += Input_OnComboNomalAttacksPerformed;
+        input.OnBowReleased += Input_OnBowReleased;
+        characterCombat.OnProjectileThrown += Combat_ProjectileThrown;
+        healthScript.OnEntityDeath += Script_OnEntityDeath;
+        healthScript.OnEntityAlive += Health_OnEntityAlive;
+    }
+
+    private void UnsubscribeFromEvents() {
+        input.OnJumpPerformed -= Input_OnJumpPerformed;
+        input.OnDashPerformed -= Input_OnDashPerformed;
+        input.OnCombatNormalAttacks -= Input_OnComboNomalAttacksPerformed;
+        input.OnBowReleased -= Input_OnBowReleased;
     }
 }

@@ -13,7 +13,7 @@ public class DashEffect : MonoBehaviour {
     private void Awake() {
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        playerObject = FindObjectOfType<PlayerController>().gameObject;
+        playerObject = FindObjectOfType<ExamplePlayerController>().gameObject;
 
         WarningMessage();
 

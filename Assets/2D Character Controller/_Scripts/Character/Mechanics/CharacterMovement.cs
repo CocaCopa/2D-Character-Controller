@@ -66,7 +66,6 @@ public class CharacterMovement : MonoBehaviour {
     public void SetCharacterMoveSpeed(float value) => moveSpeed = value;
 
     private void Update() {
-        
         if (currentSpeed == 0) {
             ResetOnGroundValues();
         }
@@ -85,7 +84,6 @@ public class CharacterMovement : MonoBehaviour {
     /// <param name="runsIntoWall">Indicates whether the character is colliding with a wall</param>
     /// <returns>A vector with the calculated X axis velocity</returns>
     public Vector2 OnGroundHorizontalVelocity(Vector2 moveInput, bool runsIntoWall) {
-
         if (runsIntoWall) {
             ResetOnGroundValues();
             return Vector3.zero;
@@ -109,12 +107,10 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     private void GroundAnimPointsEvaluation(Vector2 moveInput) {
-
         if (moveInput != Vector2.zero) {
             onGroundAnimPoints += curveEvaluationSpeed * Time.deltaTime;
             speedMultiplier = accelerationCurve.Evaluate(onGroundAnimPoints);
         }
-
         if (moveInput == Vector2.zero) {
             if (onGroundAnimPoints > 0) {
                 onGroundAnimPoints -= curveEvaluationSpeed * Time.deltaTime;
@@ -133,7 +129,6 @@ public class CharacterMovement : MonoBehaviour {
     /// <param name="againstWall">ITrue, if your character is performing a jump against a wall.</param>
     /// <returns>A vector with the calculated velocity for the Y axis only</returns>
     public Vector2 VerticalVelocity(bool againstWall) {
-
         if (againstWall) {
             ResetOnAirValues();
             moveDirection = -transform.right;

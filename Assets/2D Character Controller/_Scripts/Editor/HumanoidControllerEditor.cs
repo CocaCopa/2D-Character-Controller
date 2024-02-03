@@ -1,5 +1,3 @@
-using System;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -41,7 +39,7 @@ public class HumanoidControllerEditor : Editor {
     public override void OnInspectorGUI() {
         DisplayScriptReference();
         DrawCustomInspector();
-        EditorGUILayout.Space(1);
+        EditorGUILayout.Space(20);
         DrawDefaultExcludingCustomFields();
     }
 

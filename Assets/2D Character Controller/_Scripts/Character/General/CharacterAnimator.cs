@@ -43,16 +43,18 @@ public class CharacterAnimator : MonoBehaviour {
     private void Awake() {
         animator = GetComponent<Animator>();
         humanoidController = GetComponentInParent<HumanoidController>();
-        characterCombat = GetComponentInParent<CharacterCombat>();
+        transform.root.TryGetComponent<CharacterCombat>(out characterCombat);
         entityHealth = GetComponentInParent<EntityHealth>();
     }
 
     private void Start() {
         humanoidController.OnCharacterJump += Controller_OnCharacterJump;
-        characterCombat.OnInitiateNormalAttack += Controller_OnCharacterNormalAttack;
-        characterCombat.OnInitiateChargeAttack += Controller_OnCharacterChargeAttack;
-        characterCombat.OnReleaseChargeAttack += Controller_OnCharacterReleaseAttack;
-        characterCombat.OnCancelChargeAttack += Controller_OnCharacterCancelAttack;
+        if (characterCombat) {
+            characterCombat.OnInitiateNormalAttack += Controller_OnCharacterNormalAttack;
+            characterCombat.OnInitiateChargeAttack += Controller_OnCharacterChargeAttack;
+            characterCombat.OnReleaseChargeAttack += Controller_OnCharacterReleaseAttack;
+            characterCombat.OnCancelChargeAttack += Controller_OnCharacterCancelAttack;
+        }
         entityHealth.OnTakeDamage += Health_OnTakeDamage;
         entityHealth.OnEntityDeath += Health_OnDeath;
         entityHealth.OnEntityAlive += Health_OnAlive;
@@ -60,10 +62,12 @@ public class CharacterAnimator : MonoBehaviour {
 
     private void OnDisable() {
         humanoidController.OnCharacterJump -= Controller_OnCharacterJump;
-        characterCombat.OnInitiateNormalAttack -= Controller_OnCharacterNormalAttack;
-        characterCombat.OnInitiateChargeAttack -= Controller_OnCharacterChargeAttack;
-        characterCombat.OnReleaseChargeAttack -= Controller_OnCharacterReleaseAttack;
-        characterCombat.OnCancelChargeAttack -= Controller_OnCharacterCancelAttack;
+        if (characterCombat) {
+            characterCombat.OnInitiateNormalAttack -= Controller_OnCharacterNormalAttack;
+            characterCombat.OnInitiateChargeAttack -= Controller_OnCharacterChargeAttack;
+            characterCombat.OnReleaseChargeAttack -= Controller_OnCharacterReleaseAttack;
+            characterCombat.OnCancelChargeAttack -= Controller_OnCharacterCancelAttack;
+        }
         entityHealth.OnTakeDamage -= Health_OnTakeDamage;
         entityHealth.OnEntityDeath -= Health_OnDeath;
         entityHealth.OnEntityAlive -= Health_OnAlive;
@@ -104,7 +108,7 @@ public class CharacterAnimator : MonoBehaviour {
     }
 
     private void Controller_OnCharacterJump(object sender, System.EventArgs _) {
-        if (humanoidController.IsGrounded == false || characterCombat.IsAttacking) {
+        if (humanoidController.IsGrounded == false || (characterCombat != null && characterCombat.IsAttacking)) {
             animator.SetTrigger(DOUBLE_JUMP);
         }
     }
@@ -122,9 +126,6 @@ public class CharacterAnimator : MonoBehaviour {
         bool isDashing = humanoidController.IsDashing;
         bool isLedgeGrabbing = humanoidController.IsLedgeClimbing;
 
-        bool isAttacking = characterCombat.IsAttacking;
-        bool isCharging = characterCombat.IsCharging;
-
         animator.SetFloat(VERTICAL_VELOCITY, verticalVelocity);
         animator.SetBool(IS_RUNNING, isRunning);
         animator.SetBool(IS_FLOOR_SLIDING, isFloorSliding);
@@ -133,8 +134,13 @@ public class CharacterAnimator : MonoBehaviour {
         animator.SetBool(IS_DASHING, isDashing);
         animator.SetBool(LEDGE_CLIMB, isLedgeGrabbing);
 
-        animator.SetBool(IS_ATTACKING, isAttacking);
-        animator.SetBool(IS_CHARGING, isCharging);
+        if (characterCombat != null) {
+            bool isAttacking = characterCombat.IsAttacking;
+            bool isCharging = characterCombat.IsCharging;
+         
+            animator.SetBool(IS_ATTACKING, isAttacking);
+            animator.SetBool(IS_CHARGING, isCharging);
+        }
 
         LedgeGrabLogic();
     }

@@ -230,7 +230,8 @@ public abstract class HumanoidController : MonoBehaviour {
             return canBeGrounded && groundCheck;
         }
         bool Run() {
-            return !characterCombat.IsAttacking && IsGrounded && HorizontalVelocity != 0 && !RunsIntoWall(wallSlideCheck: false);
+            bool outOfCombat = characterCombat == null || !characterCombat.IsAttacking;
+            return outOfCombat && IsGrounded && HorizontalVelocity != 0 && !RunsIntoWall(wallSlideCheck: false);
         }
         bool WallSlide() {
             bool canWallSlide = this.canWallSlide && envQuery.WallInFront()
@@ -298,7 +299,9 @@ public abstract class HumanoidController : MonoBehaviour {
         Vector2 horizontalVelocity = IsGrounded
             ? characterMovement.OnGroundHorizontalVelocity(moveDirection, RunsIntoWall(false))
             : characterMovement.OnAirHorizontalVelocity(moveDirection, RunsIntoWall(false));
-        characterCombat.CanMoveWhileCastingAttack(ref horizontalVelocity);
+        if (characterCombat) {
+            characterCombat.CanMoveWhileCastingAttack(ref horizontalVelocity);
+        }
         Vector2 currentVerticalVelocity = new (0, characterRb.velocity.y);
         Vector2 characterVelocity = horizontalVelocity + currentVerticalVelocity;
 
@@ -306,8 +309,9 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     private bool DontAllowMovement() {
-        bool restrictMovement = characterCombat.IsAttacking || IsFloorSliding || IsDashing || IsLedgeGrabbing || IsLedgeClimbing || IsWallSliding;
-        bool bypassRestriction = characterCombat.CanMoveWhileAttacking;
+        bool isAttacking = characterCombat != null && characterCombat.IsAttacking;
+        bool restrictMovement = isAttacking || IsFloorSliding || IsDashing || IsLedgeGrabbing || IsLedgeClimbing || IsWallSliding;
+        bool bypassRestriction = characterCombat != null && characterCombat.CanMoveWhileAttacking;
         return restrictMovement && !bypassRestriction;
     }
     #endregion
@@ -381,7 +385,8 @@ public abstract class HumanoidController : MonoBehaviour {
     /// </summary>
     /// <param name="canLedgeGrab">True, your character will automatically perform a ledge grab as soon as a ledge is detected</param>
     protected void LedgeGrab(bool canLedgeGrab = true) {
-        if (!characterLedgeGrab || characterCombat.IsAttacking || IsDashing || IsFloorSliding || IsLedgeClimbing) {
+        bool isAttacking = characterCombat != null && characterCombat.IsAttacking;
+        if (!characterLedgeGrab || isAttacking || IsDashing || IsFloorSliding || IsLedgeClimbing) {
             return;
         }
         // LedgeDetected will be forced to return false if 'exitLedgeGrab' is true.
@@ -419,7 +424,8 @@ public abstract class HumanoidController : MonoBehaviour {
     /// </summary>
     /// <param name="canLedgeClimb">True, your character will automatically perform a ledge climb as soon as a ledge is detected</param>
     protected void LedgeClimb(bool canLedgeClimb = true) {
-        if (!characterLedgeGrab || characterCombat.IsAttacking || IsDashing || IsFloorSliding) {
+        bool isAttacking = characterCombat != null && characterCombat.IsAttacking;
+        if (!characterLedgeGrab || isAttacking || IsDashing || IsFloorSliding) {
             return;
         }
         if ((LedgeDetected && canLedgeClimb) || IsLedgeClimbing) {
@@ -467,7 +473,8 @@ public abstract class HumanoidController : MonoBehaviour {
     }
 
     private bool CanDash() {
-        bool canDash = !IsWallSliding && !IsFloorSliding && !characterCombat.IsAttacking;
+        bool outOfCombat = characterCombat == null || !characterCombat.IsAttacking;
+        bool canDash = !IsWallSliding && !IsFloorSliding && outOfCombat;
         bool allowDash = !envQuery.WallInFront(minimumDashDistance) && Time.time >= dashCooldownTimer;
         return canDash && allowDash;
     }
@@ -606,7 +613,8 @@ public abstract class HumanoidController : MonoBehaviour {
     /// </summary>
     /// <param name="directionX">The direction the character should face.</param>
     protected void FlipCharacter(float directionX) {
-        if (IsLedgeClimbing || IsLedgeGrabbing || !characterCombat.CanChangeDirections) {
+        bool combatRestriction = characterCombat != null && !characterCombat.CanChangeDirections;
+        if (IsLedgeClimbing || IsLedgeGrabbing || combatRestriction) {
             return;
         }
 

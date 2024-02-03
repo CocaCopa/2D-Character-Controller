@@ -1032,6 +1032,8 @@ MonoBehaviour:
   ledgeJumpThreshold: 0.25
   maxLedgeGrabTime: 4
   playerTransform: {fileID: 0}
+  disappearTime: 1.2
+  respawnTime: 4
 --- !u!114 &3235895541960884469
 MonoBehaviour:
   m_ObjectHideFlags: 0

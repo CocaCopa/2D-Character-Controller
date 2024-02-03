@@ -87,23 +87,25 @@ public class EntityHealth : MonoBehaviour, IDamageable {
     }
 
     private void Update() {
-        RegenerateHealth();
+        if (canRegenHealth) {
+            RegenerateHealth();
+        }
+        else {
+            enabled = false;
+        }
     }
 
     private void RegenerateHealth() {
-        if (canRegenHealth) {
-            if (Utilities.TickTimer(ref regenTriggerTimer, regenTriggerTime, autoReset: false)) {
-                isRegenerating = true;
-                currentHealthPoints += regenHealthPoints * Time.deltaTime;
-                currentHealthPoints = Mathf.Clamp(currentHealthPoints, 0, maxHealthPoints);
-            }
-            if (currentHealthPoints == maxHealthPoints) {
-                isRegenerating = false;
-                regenTriggerTimer = regenTriggerTime;
-                enabled = false;
-            }
+        if (Utilities.TickTimer(ref regenTriggerTimer, regenTriggerTime, autoReset: false)) {
+            isRegenerating = true;
+            currentHealthPoints += regenHealthPoints * Time.deltaTime;
+            currentHealthPoints = Mathf.Clamp(currentHealthPoints, 0, maxHealthPoints);
         }
-        else enabled = false;
+        if (currentHealthPoints == maxHealthPoints) {
+            isRegenerating = false;
+            regenTriggerTimer = regenTriggerTime;
+            enabled = false;
+        }
     }
 
     public void TakeDamage(float amount) {

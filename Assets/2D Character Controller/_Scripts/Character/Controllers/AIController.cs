@@ -2,7 +2,14 @@ using UnityEngine;
 
 public class AIController : HumanoidController {
 
+    [Header("--- Player Character ---")]
     [SerializeField] private Transform playerTransform;
+
+    [Header("--- Death ---")]
+    [Tooltip("Time in seconds at which the character will disappear after death.")]
+    [SerializeField] private float disappearTime;
+    [Tooltip("Time in seconds at which the character will respawn after death.")]
+    [SerializeField] private float respawnTime;
 
     private EntityHealth entityHealth;
 
@@ -43,7 +50,7 @@ public class AIController : HumanoidController {
         enabled = false;
         characterRb.simulated = false;
         activeCollider.enabled = false;
-        Invoke(nameof(Disable), 1.2f);
-        Invoke(nameof(Respawn), 4f);
+        Invoke(nameof(Disable), disappearTime);
+        Invoke(nameof(Respawn), respawnTime);
     }
 }
